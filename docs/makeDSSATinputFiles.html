@@ -11,9 +11,9 @@
 
 <meta name="author" content="MichelleCGM" />
 
-<meta name="date" content="2021-05-10" />
+<meta name="date" content="2021-05-24" />
 
-<title>first-analysis</title>
+<title>makeDSSATinputFiles</title>
 
 <script src="site_libs/header-attrs-2.8/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -358,9 +358,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">first-analysis</h1>
+<h1 class="title toc-ignore">makeDSSATinputFiles</h1>
 <h4 class="author">MichelleCGM</h4>
-<h4 class="date">2021-05-10</h4>
+<h4 class="date">2021-05-24</h4>
 
 </div>
 
@@ -592,7 +592,7 @@ Note that any generated files, e.g. HTML, png, CSS, etc., are not included in t
 <div id="versions" class="tab-pane fade">
 
 <p>
-These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/first-analysis.Rmd</code>) and HTML (<code>docs/first-analysis.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
+These are the previous versions of the repository in which changes were made to the R Markdown (<code>analysis/makeDSSATinputFiles.Rmd</code>) and HTML (<code>docs/makeDSSATinputFiles.html</code>) files. If you’ve configured a remote Git repository (see <code>?wflow_git_remote</code>), click on the hyperlinks in the table below to view the files as they were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -618,27 +618,10 @@ Message
 <tbody>
 <tr>
 <td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/Opamelas83/myproject/e7fb684f7efa124ec26c566a48787abbb44e4a2e/docs/first-analysis.html" target="_blank">e7fb684</a>
-</td>
-<td>
-MichelleCGM
-</td>
-<td>
-2021-05-26
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
 Rmd
 </td>
 <td>
-<a href="https://github.com/Opamelas83/myproject/blob/09858763a3a17af51c9da404e93a3685bce00a25/analysis/first-analysis.Rmd" target="_blank">0985876</a>
+<a href="https://github.com/Opamelas83/myproject/blob/9ef6daad5ab7d681fb10475af12af8e7990b9546/analysis/makeDSSATinputFiles.Rmd" target="_blank">9ef6daa</a>
 </td>
 <td>
 MichelleCGM
@@ -647,7 +630,7 @@ MichelleCGM
 2021-05-26
 </td>
 <td>
-analysis/makeDSSATinputFiles.Rmd
+Publish the initial files for RDSSATMICH
 </td>
 </tr>
 </tbody>
@@ -659,6 +642,256 @@ analysis/makeDSSATinputFiles.Rmd
 </div>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
+<div id="load-packages" class="section level3">
+<h3>Load packages</h3>
+<pre class="r"><code>ip &lt;- installed.packages()
+packages_used &lt;- c(&quot;workflowr&quot;, &quot;tidyverse&quot;, &quot;here&quot;, &quot;lubridate&quot;)
+for (package in packages_used){
+  if (!(package %in% ip[,&quot;Package&quot;])) install.packages(package)
+}
+library(tidyverse)
+here::i_am(&quot;analysis/makeDSSATinputFiles.Rmd&quot;)</code></pre>
+</div>
+<div id="read-the-gxe-trials-file" class="section level3">
+<h3>Read the GxE trials file</h3>
+<pre class="r"><code>colClasses &lt;- readr::read_csv(here::here(&quot;data&quot;, &quot;colClasses.csv&quot;))</code></pre>
+<pre><code>
+-- Column specification --------------------------------------------------------
+cols(
+  colName = col_character(),
+  colClass = col_character()
+)</code></pre>
+<pre class="r"><code># colClasses[14, 2] &lt;- colClasses[15, 2] &lt;- &quot;Date&quot;
+colString &lt;- paste0(substring(colClasses$colClass, 1, 1), collapse=&quot;&quot;)
+uytAll &lt;- readr::read_csv(here::here(&quot;data&quot;, &quot;UYT_GXE_pheno.csv&quot;), 
+                                     col_types=colString)
+trials &lt;- uytAll %&gt;% distinct(studyYear, locationName)</code></pre>
+<p>The input files to DSSAT need formatted dates and number of days after planting</p>
+<pre class="r"><code>makeDateStrings &lt;- function(trial){
+  plant &lt;- parse_date(trial$plantingDate[1], format=&quot;%Y-%B-%d&quot;)
+  harvest &lt;- parse_date(trial$harvestDate[1], format=&quot;%Y-%B-%d&quot;)
+  yearPlant &lt;- lubridate::year(plant)
+  yearHarv &lt;- lubridate::year(harvest)
+  DAP &lt;- julian(harvest) - julian(plant)
+  plantString &lt;- paste0(substring(lubridate::year(plant), 3, 4),
+    julian(plant, 
+    origin=lubridate::as_date(paste0(lubridate::year(plant), &quot;-01-01&quot;))))
+  harvestString &lt;- paste0(substring(lubridate::year(harvest), 3, 4),
+    julian(harvest, 
+    origin=lubridate::as_date(paste0(lubridate::year(harvest), &quot;-01-01&quot;))))
+  return(list(plntStr=plantString, harvStr=harvestString, DAP=DAP))
+}
+
+# Uniform trial name based on trial data
+makeTrialName &lt;- function(trial){
+  loc &lt;- trial$locationName[1]
+  year &lt;- trial$studyYear[1]
+  # Put in EXP.DETAILS
+  trialName &lt;- paste0(&quot;UY&quot;, substring(toupper(loc), 1, 2), year%%100, 
+                   &quot;01&quot;)
+  return(trialName)
+}</code></pre>
+<p>The .CUL file for DSSAT has plant architecture parameters for each cultivar. It also defines the cultivar number (UC prefix) linked to the cultivar names. This function defines a cultivar number for all accessions in the <code>UYT_GXE_pheno.csv</code> file. It will set all the ecotypes to 990029 which is WestAfricaWhite.</p>
+<pre class="r"><code>template &lt;- &quot;CSYCA047.CUL&quot;
+ucStart &lt;- 50 # What UC number should the file start at?
+varNameSpace &lt;- 21 # How many spaces are available for the cultivar name?
+# What to end the row with once you have defined the UC and culitvar name
+# NOTE: this row end includes the ecotype, 990029 in this case
+rowEnd &lt;- &quot;. 990029 420.0 600.0 600.0 600.0   4.0   4.0   4.0   3.0   700   200   957  0.33  1.20  8.30   2.0&quot;
+uniCul &lt;- uytAll %&gt;% distinct(germplasmName)
+
+makeUCstring &lt;- function(ucNum){
+  pad &lt;- paste0(rep(&quot;0&quot;, 3-floor(log10(ucNum))), collapse=&quot;&quot;)
+  return(paste0(&quot;UC&quot;, pad, ucNum))
+}
+padCulName &lt;- function(culName){
+  pad &lt;- paste0(rep(&quot; &quot;, varNameSpace-nchar(culName)), collapse=&quot;&quot;)
+  return(paste0(culName, pad))
+}
+
+curCUL &lt;- read_lines(here::here(&quot;data&quot;, template))
+ucss &lt;- makeUCstring(ucStart)
+lineStart &lt;- grep(ucss, curCUL)
+curCUL &lt;- curCUL[1:(lineStart-1)]
+
+for (i in 1:nrow(uniCul)){
+  ucString &lt;- makeUCstring(ucStart - 1 + i)
+  curCUL &lt;- c(curCUL, paste0(ucString, &quot; &quot;, padCulName(uniCul[i,1]), rowEnd))
+}
+
+newCULname &lt;- paste0(template, &quot;_&quot;, lubridate::today())
+write_lines(curCUL, here::here(&quot;data&quot;, newCULname))
+
+# Add the ucNames to the germplasmNames: they will be needed later
+uniCul &lt;- uniCul %&gt;% mutate(
+  ucName=sapply(ucStart - 1 + 1:nrow(uniCul), makeUCstring))</code></pre>
+<p>Function to take data from a trial extracted from <code>uytAll</code> and make a new .CSX file with it</p>
+<pre class="r"><code>makeXfile &lt;- function(trial){
+  template &lt;- &quot;UYAB1901.CSX&quot;
+  xFile &lt;- read_lines(here::here(&quot;data&quot;, template))
+  # Put in new file name
+  fileName &lt;- makeTrialName(trial)
+  xFile &lt;- gsub(&quot;UYAB1901CS&quot;, paste0(fileName, &quot;CS&quot;), xFile, fixed=T)
+  xFile &lt;- gsub(&quot;UYAB1901&quot;, fileName, xFile, fixed=T)
+  # Put in new location
+  xFile &lt;- gsub(&quot;ABUJA&quot;, toupper(trial$locationName[1]), xFile, fixed=T)
+  # Figure out number of TNAME
+  culThisTrial &lt;- trial %&gt;% distinct(germplasmName)
+  culThisTrial &lt;- culThisTrial[order(culThisTrial$germplasmName),]
+  nCul &lt;- nrow(culThisTrial)
+  culThisTrial &lt;- culThisTrial %&gt;% mutate(culNum=1:nCul)
+  varNameSpace &lt;- 26 # How many spaces are available for the cultivar name?
+  makeTrtRow &lt;- function(culNum, culName){
+    rowEnd &lt;- &quot;  1  0  0  1  0  0  0  0  0  0  1  1&quot;
+    cn &lt;- paste0(ifelse(culNum &gt; 9, &quot;&quot;, &quot; &quot;), culNum)
+    pad &lt;- paste0(rep(&quot; &quot;, varNameSpace-nchar(culName)), collapse=&quot;&quot;)
+    return(paste0(cn, &quot; 1 1 0 &quot;, culName, pad, cn, rowEnd))
+  }
+  makeCulRow &lt;- function(culNum, culName){
+    cn &lt;- paste0(ifelse(culNum &gt; 9, &quot;&quot;, &quot; &quot;), culNum)
+    inGeno &lt;- uniCul %&gt;% filter(germplasmName==culName) %&gt;% pull(ucName)
+    return(paste0(cn, &quot; CS &quot;, inGeno, &quot; &quot;, culName))
+  }
+  # WARNING this is specific to this template
+  strtTrt &lt;- grep(&quot;*TREATMENTS&quot;, xFile, fixed=T)+2
+  endTrt &lt;- grep(&quot;*CULTIVARS&quot;, xFile, fixed=T)-2
+  xFile &lt;- xFile[-(strtTrt:endTrt)]
+  trtInsert &lt;- mapply(makeTrtRow, culNum=culThisTrial$culNum,
+                      culName=culThisTrial$germplasmName)
+  xFile &lt;- R.utils::insert(xFile, ats=strtTrt, value=trtInsert)
+  
+  strtCul &lt;- grep(&quot;*CULTIVARS&quot;, xFile, fixed=T)+2
+  endCul &lt;- grep(&quot;*FIELDS&quot;, xFile, fixed=T)-2
+  xFile &lt;- xFile[-(strtCul:endCul)]
+  culInsert &lt;- mapply(makeCulRow, culNum=culThisTrial$culNum,
+                      culName=culThisTrial$germplasmName)
+  xFile &lt;- R.utils::insert(xFile, ats=strtCul, value=culInsert)
+  
+  write_lines(xFile, here::here(&quot;data&quot;, &quot;CSfiles&quot;, paste0(fileName, &quot;.CSX&quot;)))
+  return(culThisTrial)
+}</code></pre>
+<p>Function to take data from a trial extracted from <code>uytAll</code> and make a new .CSA file with it</p>
+<pre class="r"><code>makeAfile &lt;- function(trial){
+  template &lt;- &quot;UYAB1901.CSA&quot;
+  aFile &lt;- read_lines(here::here(&quot;data&quot;, template))
+  # Put in new file name
+  fileName &lt;- makeTrialName(trial)
+  aFile &lt;- gsub(&quot;UYAB1901CS&quot;, fileName, aFile, fixed=T)
+  # Take the mean of DMC and the mean of FYLD and multiply
+  # For the tops, I&#39;m just going to take the weight and divide by two
+  cloneMeans &lt;- trial %&gt;% group_by(germplasmName) %&gt;% summarise(across(
+    c(&#39;dry matter content percentage|CO_334:0000092&#39;,
+      &#39;fresh shoot weight measurement in kg per plot|CO_334:0000016&#39;,
+      &#39;fresh storage root weight per plot|CO_334:0000012&#39;
+      ), 
+    mean, na.rm=T))
+  cloneMeans &lt;- cloneMeans[order(cloneMeans$germplasmName),]
+  cloneMeans &lt;- cloneMeans %&gt;% rename(
+    dmc=&#39;dry matter content percentage|CO_334:0000092&#39;,
+    fyld=&#39;fresh storage root weight per plot|CO_334:0000012&#39;,
+    shtwt=&#39;fresh shoot weight measurement in kg per plot|CO_334:0000016&#39;)
+  cloneMeans &lt;- cloneMeans %&gt;% mutate(HWAM=round(dmc/100*fyld*10000/16),
+                                      CWAM=round(shtwt*10000/16/2),
+                                      &quot;@TRNO&quot;=1:nrow(cloneMeans),
+                                      B1DAP=40,
+                                      B5DAP=160)
+  toWrite &lt;- cloneMeans %&gt;% select(&quot;@TRNO&quot;, HWAM, CWAM, B1DAP, B5DAP)
+  filePath &lt;- here::here(&quot;data&quot;, &quot;CSfiles&quot;, paste0(fileName, &quot;.CSA&quot;))
+  write_lines(aFile[1:2], filePath)
+  dateComment &lt;- paste0(&quot;! File last edited on &quot;, date())
+  write_lines(dateComment, filePath, append=T)
+  write_lines(&quot;&quot;, filePath, append=T)
+  write_delim(toWrite, filePath, append=T, col_names=T, na=&quot;-99&quot;)
+  return(toWrite)
+}</code></pre>
+<p>Function to take data from a trial extracted from <code>uytAll</code> and make a new .CST file with it</p>
+<pre class="r"><code>makeTfile &lt;- function(trial){
+  template &lt;- &quot;UYAB1901.CST&quot;
+  tFile &lt;- read_lines(here::here(&quot;data&quot;, template))
+  # Put in new file name
+  fileName &lt;- makeTrialName(trial)
+  tFile &lt;- gsub(&quot;UYAB1901CS&quot;, fileName, tFile, fixed=T)
+  dt &lt;- makeDateStrings(trial)
+  trial &lt;- trial[order(trial$germplasmName),]
+  trial &lt;- trial %&gt;% rename(
+    dmc=&#39;dry matter content percentage|CO_334:0000092&#39;,
+    fyld=&#39;fresh storage root weight per plot|CO_334:0000012&#39;,
+    shtwt=&#39;fresh shoot weight measurement in kg per plot|CO_334:0000016&#39;)
+
+  gNmToTrtNo &lt;- function(gNm){
+    return(culThisTrial %&gt;% filter(germplasmName==gNm) %&gt;% pull(culNum))
+  }
+  trtNo &lt;- sapply(trial$germplasmName, gNmToTrtNo)
+  trial &lt;- trial %&gt;% mutate(TRNO=trtNo, CWAD=round(shtwt*10000/16/2),
+                            DAP=dt$DAP, DATE=dt$harvStr)
+  
+  toWrite &lt;- trial %&gt;% select(TRNO, CWAD, DAP, DATE)
+  filePath &lt;- here::here(&quot;data&quot;, &quot;CSfiles&quot;, paste0(fileName, &quot;.CST&quot;))
+  write_lines(tFile[1:2], filePath)
+  dateComment &lt;- paste0(&quot;! File last edited on &quot;, date())
+  write_lines(dateComment, filePath, append=T)
+  write_lines(&quot;&quot;, filePath, append=T)
+  write_lines(&quot;@TRNO CWAD DAP DATE&quot;, filePath, append=T)
+  writeOneTrt &lt;- function(trtNo){
+   write_lines(paste0(trtNo, &quot; 0 0 0 &quot;, dt$plntStr), filePath, append=T)
+   toWrite %&gt;% filter(TRNO==trtNo) %&gt;% 
+     write_delim(path=filePath, na=&quot;-99&quot;, append=T)
+  }
+  theTrtNo &lt;- toWrite %&gt;% distinct(TRNO) %&gt;% unlist
+  dummy &lt;- sapply(theTrtNo, writeOneTrt)
+  return(toWrite)
+}</code></pre>
+<p>Now go through and make all the CS_ files NOTE: This fails for 2018 Ibadan because no harvest date was recorded for that trial</p>
+<pre class="r"><code>makeCS_file &lt;- function(yearLoc){
+  print(yearLoc)
+  trial &lt;- uytAll %&gt;% filter(studyYear==yearLoc[1] &amp; locationName==yearLoc[2])
+  culThisTrial &lt;&lt;- makeXfile(trial)
+  toWriteA &lt;- makeAfile(trial)
+  toWriteT &lt;- makeTfile(trial)
+  return(list(culThisTrial, toWriteA, toWriteT))
+}
+makeAllFiles &lt;- apply(trials, 1, makeCS_file)</code></pre>
+<pre><code>   studyYear locationName 
+      &quot;2017&quot;    &quot;Ago-Owu&quot; </code></pre>
+<pre><code>Warning: The `path` argument of `write_delim()` is deprecated as of readr 1.4.0.
+Please use the `file` argument instead.</code></pre>
+<pre><code>   studyYear locationName 
+      &quot;2018&quot;     &quot;Ibadan&quot; </code></pre>
+<pre><code>Warning: All formats failed to parse. No formats found.</code></pre>
+<pre><code>   studyYear locationName 
+      &quot;2017&quot;     &quot;Ikenne&quot; 
+   studyYear locationName 
+      &quot;2017&quot;      &quot;Mokwa&quot; 
+   studyYear locationName 
+      &quot;2018&quot;     &quot;Ikenne&quot; 
+   studyYear locationName 
+      &quot;2018&quot;       &quot;Kano&quot; 
+   studyYear locationName 
+      &quot;2018&quot;      &quot;Mokwa&quot; 
+   studyYear locationName 
+      &quot;2018&quot;       &quot;Onne&quot; 
+   studyYear locationName 
+      &quot;2018&quot;      &quot;Otobi&quot; 
+   studyYear locationName 
+      &quot;2018&quot;    &quot;Umudike&quot; 
+   studyYear locationName 
+      &quot;2018&quot;    &quot;Ago-Owu&quot; 
+   studyYear locationName 
+      &quot;2019&quot;      &quot;Abuja&quot; 
+   studyYear locationName 
+      &quot;2019&quot;    &quot;Ago-Owu&quot; 
+   studyYear locationName 
+      &quot;2019&quot;     &quot;Ibadan&quot; 
+   studyYear locationName 
+      &quot;2019&quot;     &quot;Ikenne&quot; 
+   studyYear locationName 
+      &quot;2019&quot;      &quot;Mokwa&quot; 
+   studyYear locationName 
+      &quot;2019&quot;       &quot;Onne&quot; 
+   studyYear locationName 
+      &quot;2019&quot;     &quot;Ubiaja&quot; 
+   studyYear locationName 
+      &quot;2019&quot;      &quot;Zaria&quot; </code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -684,18 +917,28 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] workflowr_1.6.2
+ [1] forcats_0.5.1   stringr_1.4.0   dplyr_1.0.6     purrr_0.3.4    
+ [5] readr_1.4.0     tidyr_1.1.3     tibble_3.1.1    ggplot2_3.3.3  
+ [9] tidyverse_1.3.1 workflowr_1.6.2
 
 loaded via a namespace (and not attached):
- [1] Rcpp_1.0.6        whisker_0.4       knitr_1.33        magrittr_2.0.1   
- [5] R6_2.5.0          rlang_0.4.11      fansi_0.4.2       stringr_1.4.0    
- [9] tools_4.0.5       xfun_0.22         utf8_1.2.1        git2r_0.28.0     
-[13] jquerylib_0.1.4   htmltools_0.5.1.1 ellipsis_0.3.2    rprojroot_2.0.2  
-[17] yaml_2.2.1        digest_0.6.27     tibble_3.1.1      lifecycle_1.0.0  
-[21] crayon_1.4.1      later_1.2.0       sass_0.4.0        vctrs_0.3.8      
-[25] promises_1.2.0.1  fs_1.5.0          glue_1.4.2        evaluate_0.14    
-[29] rmarkdown_2.8     stringi_1.5.3     bslib_0.2.5.1     compiler_4.0.5   
-[33] pillar_1.6.1      jsonlite_1.7.2    httpuv_1.6.1      pkgconfig_2.0.3  </code></pre>
+ [1] Rcpp_1.0.6        lubridate_1.7.10  here_1.0.1        ps_1.6.0         
+ [5] assertthat_0.2.1  rprojroot_2.0.2   digest_0.6.27     utf8_1.2.1       
+ [9] R6_2.5.0          cellranger_1.1.0  backports_1.2.1   reprex_2.0.0     
+[13] evaluate_0.14     httr_1.4.2        pillar_1.6.1      rlang_0.4.11     
+[17] readxl_1.3.1      rstudioapi_0.13   whisker_0.4       jquerylib_0.1.4  
+[21] R.oo_1.24.0       R.utils_2.10.1    rmarkdown_2.8     munsell_0.5.0    
+[25] broom_0.7.6       compiler_4.0.5    httpuv_1.6.1      modelr_0.1.8     
+[29] xfun_0.22         pkgconfig_2.0.3   htmltools_0.5.1.1 tidyselect_1.1.1 
+[33] fansi_0.4.2       crayon_1.4.1      dbplyr_2.1.1      withr_2.4.2      
+[37] later_1.2.0       R.methodsS3_1.8.1 grid_4.0.5        jsonlite_1.7.2   
+[41] gtable_0.3.0      lifecycle_1.0.0   DBI_1.1.1         git2r_0.28.0     
+[45] magrittr_2.0.1    scales_1.1.1      cli_2.5.0         stringi_1.5.3    
+[49] fs_1.5.0          promises_1.2.0.1  xml2_1.3.2        bslib_0.2.5.1    
+[53] ellipsis_0.3.2    generics_0.1.0    vctrs_0.3.8       tools_4.0.5      
+[57] glue_1.4.2        hms_1.1.0         yaml_2.2.1        colorspace_2.0-1 
+[61] rvest_1.0.0       knitr_1.33        haven_2.4.1       sass_0.4.0       </code></pre>
+</div>
 </div>
 </div>
 
