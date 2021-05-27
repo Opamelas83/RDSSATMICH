@@ -1,0 +1,70 @@
+---
+title: "RDSSAT"
+author: "MichelleCGM"
+date: "2021-05-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+
+```
+
+
+# The DSSAT package source code is hosted in an open-source project on Github 
+# (https://github.com/palderman/DSSAT), it is also compiled in R.4.0.5
+# Install DSSAT package then load the package using the library() function
+library(DSSAT)
+
+# Full use of the DSSAT package requires an installation of DSSAT-CSM, which can be obtained from the  
+# DSSAT Foundation (https://dssat.net/)
+# or by compiling it from source code (https://github.com/DSSAT/dssat-csm-os).
+# When the DSSAT package is loaded, it attempts to locate the local DSSAT-CSM installation and identify # the proper executable name.
+# It then prints a start up message indicating what file path was found
+# (if any) and prompting the user to reset the path (by setting the value of the DSSAT.CSM option variable) if the located file path is incorrect.
+options(DSSAT.CSM="C:\\DSSAT47\\DSCSM047.exe")
+
+#Prepare input data for DSSAT_CSM running
+#Load and read phenotype file (UYT_GXE_phene.csv)
+
+#Making a table of Selected variables to use and make abbreviations for renaming
+    #Year=studyYear
+    #Pltdate=plantingDate
+    #Harvdate=harvestDate
+    #Location=locationName
+    #Cul = germplasmName
+    #Dmat = dry matter content percentage|CO_334:0000092
+    #FTop = fresh shoot weight measurement in kg per plot|CO_334:0000016
+    #FHarv = fresh storage root weight per plot|CO_334:0000012
+    #HIX = harvest index variable|CO_334:0000015
+    #Nplt = plant stands harvested counting|CO_334:0000010
+#Add colonns of parameter with NA = -99
+    #CWAD (Tops weight (kg [dm]/ha)  = (FTopx10000/Nplt)x(Dmat/100)
+    #DAP = Days after planting = Harvdate-Pltdate
+    #DATE = Harvdat = wrote with year index+number of days in this year (15106=106th day of 2015)
+    #B1DAP (Days after planting to the first branch) = 40 days
+    #B5DAP (Days after planting to the fith branch) = 160 days
+    #HWAM  (Tops weight (kg [dm]/ha)  = (FHarvx10000/Nplt)x(Dmat/100)
+    #CWAM (Tops weight (kg [dm]/ha)  = (FTopx10000/Nplt)x(Dmat/100)
+#Filter by location/year
+#from location/year, Write a Tfile (fileName.CST=location+year)
+    #Select the Cul that have at least 2 rows of plot (each row from the same germplasme/location/year=repliate)
+    #Days
+    #DATE
+#TRNO = Cul= each plot of germplasme
+#from location/year, Write a Afile (fileName.CSA=location+year) With
+    #Cul selected for Tfile
+    #TRNO = Cul mean of Cul
+    #B1DAP 
+    #B5DAP
+    #HWAM  
+    #CWAM 
+
+#In Tfile Afile and Xfile,The TRNO = numbers (1 to ....) given to each Cul in the X file.
+#depends of experimental file
+
+#Xfile need to be write in DSSAT interface then can be modify on R
+#Cultivarfile and ecotypefile need to be fill out by hand.
