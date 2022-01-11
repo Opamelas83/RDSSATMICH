@@ -1,0 +1,6 @@
+$PLANT_SUMMARY             
+
+*SUMMARY
+@  RUN EXCODE    TRNO RN TNAME.................... REP  RUNI S O C    CR PYEAR  PDAT B1DAP B2DAP B3DAP B4DAP B5DAP B6DAP B7DAP B8DAP B9DAP B10DP B11DP B12DP B13DP B14DP B15DP B16DP   FLN FLDAP HYEAR  HDAY SDWAP CWAHC  CWAM PARUE  HWAM  HWAH  VWAM  HWUM  H#AM  H#UM SDNAP  CNAM  HNAM  RNAM  TNAM  NUCM  HN%M  VN%M D1INI D2INI D3INI 
+     1 UYAB1901CS   1  0 IITA-TMS-IBA000070          1     1 1 1 1    CS  2019   169    69   100   131   169   212   271   332   371   401   -99   -99   -99   -99   -99   -99   -99   0.0     0  2020   209   450     0 30656   1.7   520   520 30656   -99   -99   -99 -99.0   -99   -99   -99   -99   -99   -99   -99     0     0     0
+     2 UYAB1901CS   2  0 IITA-TMS-IBA30572           1     1 1 1 1    CS  2019   169    99   272   -99   -99   -99   -99   -99   -99   -99   -99   -99   -99   -99   -99   -99   -99   0.0     0  2020   209   450     0 15261   1.7 22914 22914 15261   -99   -99   -99 -99.0   -99   -99   -99   -99   -99   -99   -99     0     0     0

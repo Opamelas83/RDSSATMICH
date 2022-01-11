@@ -1,0 +1,19 @@
+$TIME_COURSE(MEASURED)
+  
+*TIER(1):UYAB1901CS 1 IITA-TMS-IBA000  DAP  DATE                                
+  
+@TRNO   CWAD   DAP  DATE   DAP   DAS                                                                                                                                                
+     1     0     0 19169     0     0                                                                                                                                                
+     1  5688   405 20209   405   405                                                                                                                                                
+     1   -99   405 20209   405   405                                                                                                                                                
+     1  9500   405 20209   405   405                                                                                                                                                
+     1  6094   405 20209   405   405                                                                                                                                                
+  
+*TIER(1):UYAB1901CS 2 IITA-TMS-IBA305  DAP  DATE                                
+  
+@TRNO   CWAD   DAP  DATE   DAP   DAS                                                                                                                                                
+     2     0     0 19169     0     0                                                                                                                                                
+     2  3688   405 20209   405   405                                                                                                                                                
+     2 14156   405 20209   405   405                                                                                                                                                
+     2  5125   405 20209   405   405                                                                                                                                                
+     2  7562   405 20209   405   405                                                                                                                                                

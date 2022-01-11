@@ -1,0 +1,186 @@
+*INFO DETAIL FILE
+
+******************************************************************************
+
+*DSSAT Cropping System Model Ver. 4.8.0.010 -develop  AUG 03, 2021 18:13:11
+
+*RUN   1        : IITA-TMS-IBA000070                 UYAB1901    1
+
+ EXPERIMENT     : UYAB1901 CS UYT_GXE
+ DATA PATH      : C:\DSSAT48\CASSAVA\
+ TREATMENT  1   : IITA-TMS-IBA000070
+  
+
+ MAKEFW  YEAR DOY =    0   0
+ Y4KDOY - Weather file                                                         
+ Not able to find 7-digits first weather date                                  
+ Set simulation to 5-digits first weather date                                 
+
+ CSM     YEAR DOY = 2019 169
+ RNMODE = B                                                                    
+ PATHEX = C:\DSSAT48\CASSAVA\                                                  
+ FILEX  = UYAB1901.CSX                                                         
+ FILEB  = DSSBatch.v48                                                         
+ FILEIO = DSSAT48.INP                                                          
+ MODEL  = CSYCA048                                                             
+ TRTNUM =     1                                                                
+
+ SOILDYN  YEAR DOY = 2019 169
+ The soil file has missing or invalid data.                                    
+ Default values have been used for these variables:                            
+   STONES, ADCOEF                                                              
+ These defaults may or may not be important to your results.                   
+
+ RETC  YEAR DOY = 2019 169
+ Soil RETC parameters:                                                         
+  LYR DS  SWCN   WCR    Hb Lambd  Alpha     m     n Texture                    
+   1   5  0.68 0.087   7.1 0.225  0.007 0.208 1.262 SandClayLoam               
+   2  15  0.68 0.087   8.1 0.231  0.007 0.211 1.268 SandClayLoam               
+   3  20  0.68 0.087   5.4 0.214  0.009 0.201 1.252 SandClayLoam               
+   4  25  0.68 0.087   5.4 0.214  0.009 0.201 1.252 SandClayLoam               
+   5  30  0.66 0.087   3.9 0.203  0.012 0.196 1.243 SandClayLoam               
+   6  35  0.52 0.087   7.1 0.225  0.007 0.208 1.262 SandClayLoam               
+   7  40  0.52 0.087   7.1 0.225  0.007 0.208 1.262 SandClayLoam               
+   8  55  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+   9  70  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+  10  95  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+  11 120  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+
+ SOILDYN  YEAR DOY = 2019 169
+ Soil ID: CBAN840001                                                           
+ SANDY-CLAY LOAM EL NUS: CENICAFE/CORPOICA                                     
+ INCEPTISOLS.                                                                  
+   SALB SWCON    CN  DMOD  SLPF SMPX                                           
+   0.13  0.65  75.0  1.00  1.00 -99                                            
+ Soil layer distribution method: 2                                             
+      DS DLAYR    LL   DUL   SAT  Root    BD    OC  CLAY  SILT  SAND           
+ LYR  cm    cm  frac  frac  frac  Grow g/cm3     %     %     %     %    pH     
+   1   5     5 0.190 0.330 0.430 0.950  1.36  1.40  31.0  23.0  46.0   4.8     
+   2  15    10 0.190 0.335 0.430 0.820  1.36  1.21  31.0  23.0  46.0   4.8     
+   3  20     5 0.190 0.320 0.430 0.700  1.38  1.03  31.0  23.0  46.0   4.8     
+   4  25     5 0.190 0.320 0.430 0.630  1.40  0.93  31.0  16.0  53.0   5.3     
+   5  30     5 0.190 0.310 0.430 0.580  1.41  0.85  31.0  16.0  53.0   5.3     
+   6  35     5 0.190 0.330 0.430 0.520  1.42  0.76  31.0  16.0  53.0   5.3     
+   7  40     5 0.190 0.330 0.430 0.470  1.43  0.70  31.0  16.0  53.0   5.3     
+   8  55    15 0.190 0.320 0.400 0.330  1.44  0.50  31.0  16.0  53.0   5.3     
+   9  70    15 0.190 0.320 0.400 0.330  1.44  0.50  31.0  16.0  53.0   5.3     
+  10  95    25 0.190 0.320 0.400 0.150  1.48  0.22  31.0  16.0  53.0   5.3     
+  11 120    25 0.190 0.320 0.400 0.150  1.48  0.22  31.0  16.0  53.0   5.3     
+
+ SOILDYN  YEAR DOY = 2019 169
+ Additional soil properties                                                    
+                Convert                                                        
+    Cation Adsrp  ppm /  KSAT  SLCF  TOTN  OrgN                                
+   L  Exch  Coef  kg/ha  cm/h     %     % kg/ha                                
+   1   7.5   0.0   1.47   0.7   0.0  0.14   952                                
+   2   7.5   0.0   0.74   0.7   0.0  0.14  1904                                
+   3   7.5   0.0   1.45   0.7   0.0  0.14   966                                
+   4   5.8   0.0   1.43   0.7   0.0  0.06   420                                
+   5   5.8   0.0   1.42   0.7   0.0  0.06   423                                
+   6   5.8   0.0   1.41   0.5   0.0  0.06   426                                
+   7   5.8   0.0   1.40   0.5   0.0  0.06   429                                
+   8   5.8   0.0   0.46   0.5   0.0  0.16  3456                                
+   9   5.8   0.0   0.46   0.5   0.0  0.16  3456                                
+  10   5.8   0.0   0.27   0.5   0.0  0.10  3700                                
+  11   5.8   0.0   0.27   0.5   0.0  0.10  3700                                
+
+ IPWTH   YEAR DOY = 2019 169
+ C:\DSSAT48\Weather\UYAB1704.WTH                                               
+ Found daily weather data headers for:                                         
+   SRAD           Col   7 -  11                                                
+   TMAX           Col  13 -  17                                                
+   TMIN           Col  19 -  23                                                
+   RAIN           Col  25 -  29                                                
+   DEWP           Col  31 -  35                                                
+   WIND           Col  37 -  41                                                
+   PAR            Col  43 -  47                                                
+   RHUM           Col  55 -  59                                                
+
+ CO2VAL  YEAR DOY = 2019 169
+  755 CO2 data points read from file.                                          
+ C:\DSSAT48\StandardData\CO2048.WDA                                            
+
+ ENDRUN  YEAR DOY = 2020 209
+ Normal end of run        1                                                    
+
+******************************************************************************
+
+*DSSAT Cropping System Model Ver. 4.8.0.010 -develop  AUG 03, 2021 18:13:13
+
+*RUN   2        : IITA-TMS-IBA30572         CSYCA048 UYAB1901    2
+ MODEL          : CSYCA048 - Cassava
+ EXPERIMENT     : UYAB1901 CS UYT_GXE
+ DATA PATH      : C:\DSSAT48\CASSAVA\
+ TREATMENT  2   : IITA-TMS-IBA30572         CSYCA048
+  
+
+ CSM     YEAR DOY = 2019 169
+ RNMODE = B                                                                    
+ PATHEX = C:\DSSAT48\CASSAVA\                                                  
+ FILEX  = UYAB1901.CSX                                                         
+ FILEB  = DSSBatch.v48                                                         
+ FILEIO = DSSAT48.INP                                                          
+ MODEL  = CSYCA048                                                             
+ TRTNUM =     2                                                                
+
+ SOILDYN  YEAR DOY = 2019 169
+ The soil file has missing or invalid data.                                    
+ Default values have been used for these variables:                            
+   STONES, ADCOEF                                                              
+ These defaults may or may not be important to your results.                   
+
+ RETC  YEAR DOY = 2019 169
+ Soil RETC parameters:                                                         
+  LYR DS  SWCN   WCR    Hb Lambd  Alpha     m     n Texture                    
+   1   5  0.68 0.087   7.1 0.225  0.007 0.208 1.262 SandClayLoam               
+   2  15  0.68 0.087   8.1 0.231  0.007 0.211 1.268 SandClayLoam               
+   3  20  0.68 0.087   5.4 0.214  0.009 0.201 1.252 SandClayLoam               
+   4  25  0.68 0.087   5.4 0.214  0.009 0.201 1.252 SandClayLoam               
+   5  30  0.66 0.087   3.9 0.203  0.012 0.196 1.243 SandClayLoam               
+   6  35  0.52 0.087   7.1 0.225  0.007 0.208 1.262 SandClayLoam               
+   7  40  0.52 0.087   7.1 0.225  0.007 0.208 1.262 SandClayLoam               
+   8  55  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+   9  70  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+  10  95  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+  11 120  0.52 0.087   8.3 0.214  0.007 0.199 1.248 SandClayLoam               
+
+ SOILDYN  YEAR DOY = 2019 169
+ Soil ID: CBAN840001                                                           
+ SANDY-CLAY LOAM EL NUS: CENICAFE/CORPOICA                                     
+ INCEPTISOLS.                                                                  
+   SALB SWCON    CN  DMOD  SLPF SMPX                                           
+   0.13  0.65  75.0  1.00  1.00 -99                                            
+ Soil layer distribution method: 2                                             
+      DS DLAYR    LL   DUL   SAT  Root    BD    OC  CLAY  SILT  SAND           
+ LYR  cm    cm  frac  frac  frac  Grow g/cm3     %     %     %     %    pH     
+   1   5     5 0.190 0.330 0.430 0.950  1.36  1.40  31.0  23.0  46.0   4.8     
+   2  15    10 0.190 0.335 0.430 0.820  1.36  1.21  31.0  23.0  46.0   4.8     
+   3  20     5 0.190 0.320 0.430 0.700  1.38  1.03  31.0  23.0  46.0   4.8     
+   4  25     5 0.190 0.320 0.430 0.630  1.40  0.93  31.0  16.0  53.0   5.3     
+   5  30     5 0.190 0.310 0.430 0.580  1.41  0.85  31.0  16.0  53.0   5.3     
+   6  35     5 0.190 0.330 0.430 0.520  1.42  0.76  31.0  16.0  53.0   5.3     
+   7  40     5 0.190 0.330 0.430 0.470  1.43  0.70  31.0  16.0  53.0   5.3     
+   8  55    15 0.190 0.320 0.400 0.330  1.44  0.50  31.0  16.0  53.0   5.3     
+   9  70    15 0.190 0.320 0.400 0.330  1.44  0.50  31.0  16.0  53.0   5.3     
+  10  95    25 0.190 0.320 0.400 0.150  1.48  0.22  31.0  16.0  53.0   5.3     
+  11 120    25 0.190 0.320 0.400 0.150  1.48  0.22  31.0  16.0  53.0   5.3     
+
+ SOILDYN  YEAR DOY = 2019 169
+ Additional soil properties                                                    
+                Convert                                                        
+    Cation Adsrp  ppm /  KSAT  SLCF  TOTN  OrgN                                
+   L  Exch  Coef  kg/ha  cm/h     %     % kg/ha                                
+   1   7.5   0.0   1.47   0.7   0.0  0.14   952                                
+   2   7.5   0.0   0.74   0.7   0.0  0.14  1904                                
+   3   7.5   0.0   1.45   0.7   0.0  0.14   966                                
+   4   5.8   0.0   1.43   0.7   0.0  0.06   420                                
+   5   5.8   0.0   1.42   0.7   0.0  0.06   423                                
+   6   5.8   0.0   1.41   0.5   0.0  0.06   426                                
+   7   5.8   0.0   1.40   0.5   0.0  0.06   429                                
+   8   5.8   0.0   0.46   0.5   0.0  0.16  3456                                
+   9   5.8   0.0   0.46   0.5   0.0  0.16  3456                                
+  10   5.8   0.0   0.27   0.5   0.0  0.10  3700                                
+  11   5.8   0.0   0.27   0.5   0.0  0.10  3700                                
+
+ ENDRUN  YEAR DOY = 2020 209
+ Normal end of run        2                                                    

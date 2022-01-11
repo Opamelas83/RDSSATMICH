@@ -1,0 +1,9 @@
+*Soil Carbon Balance Summary
+
+*DSSAT Cropping System Model Ver. 4.8.0.010 -develop  AUG 03, 2021 18:13:11
+!                             <----------- Initial State Variables ----------><------------ Final State Variables -----------><------------ Added -----------><-Lost-><-Balance>
+!                             <-------- SOM-C -------><-------- FOM-C -------><-------- SOM-C -------><-------- FOM-C -------><---OM---><Senesced><--HarvRes-><--CO2->
+!                                     Surf        Soil        Surf        Soil        Surf        Soil        Surf        Soil 
+@Run FILEX               TN CR       SC0Di      SOMCTi       LC0Di       LCTDi        SC0D       SOMCT        LC0D        LCTD      OMAC     SENCC      HRCH     CO2TC    CUMBAL
+   1 UYAB1901.CSX         1 CS        0.00    93798.50        0.00        0.00        0.00    92407.31     6645.23     2066.66      0.00   8711.90      0.00   1391.19      0.00
+   2 UYAB1901.CSX         2 CS        0.00    93798.50        0.00        0.00        0.00    92368.00      774.84      587.18      0.00   1362.01      0.00   1430.51      0.01

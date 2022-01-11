@@ -1,0 +1,63 @@
+*WATER BALANCE OUTPUT FILE
+
+*DSSAT Cropping System Model Ver. 4.8.0.010 -develop  AUG 03, 2021 18:13:11
+
+*RUN   1        : IITA-TMS-IBA000070        CSYCA048 UYAB1901    1
+ MODEL          : CSYCA048 - Cassava
+ EXPERIMENT     : UYAB1901 CS UYT_GXE
+ DATA PATH      : C:\DSSAT48\CASSAVA\
+ TREATMENT  1   : IITA-TMS-IBA000070        CSYCA048
+  
+
+!     WATER BALANCE PARAMETERS
+!     ========================                 --mm--
+
+!     Soil H20 (start) on Year/day 2019/169    386.50
+!     Soil H20 (final) on Year/day 2020/209    369.06
+!     Effective Irrigation                     650.81
+!     Precipitation                           2092.30
+!     Water added with new mulch                 2.21
+!     Drainage                                 665.10
+!     Tiledrain flow                             0.00
+!     Runoff                                   293.05
+!     Mulch evaporation                         55.45
+!     Soil Evaporation                         215.98
+!     Transpiration                           1528.83
+!     Potential ET                            1898.72
+
+!     Initial mulch water content                0.00
+!     Final mulch water content                  4.35
+
+!     Final Balance                            -0.001
+
+
+*DSSAT Cropping System Model Ver. 4.8.0.010 -develop  AUG 03, 2021 18:13:13
+
+*RUN   2        : IITA-TMS-IBA30572         CSYCA048 UYAB1901    2
+ MODEL          : CSYCA048 - Cassava
+ EXPERIMENT     : UYAB1901 CS UYT_GXE
+ DATA PATH      : C:\DSSAT48\CASSAVA\
+ TREATMENT  2   : IITA-TMS-IBA30572         CSYCA048
+  
+
+!     WATER BALANCE PARAMETERS
+!     ========================                 --mm--
+
+!     Soil H20 (start) on Year/day 2019/169    386.50
+!     Soil H20 (final) on Year/day 2020/209    372.08
+!     Effective Irrigation                     508.35
+!     Precipitation                           2092.30
+!     Water added with new mulch                 0.26
+!     Drainage                                 638.68
+!     Tiledrain flow                             0.00
+!     Runoff                                   373.16
+!     Mulch evaporation                         20.25
+!     Soil Evaporation                         554.53
+!     Transpiration                           1028.21
+!     Potential ET                            1927.40
+
+!     Initial mulch water content                0.00
+!     Final mulch water content                  0.49
+
+!     Final Balance                             0.003
+

@@ -1,0 +1,13 @@
+The number of model runs =  10
+GLUE will run for both phenology and growth.
+Crop = CS
+Cultivar ID = UC0024 TMEB419
+Model Name = CSYCA048
+Genotype file name = CSYCA048
+DSSAT batch file = TMEB419.CSC
+Parameter property:
+NA
+@VAR#  VAR-NAME........  EXP#   ECO# B01ND B12ND B23ND B34ND BR1FX BR2FX BR3FX BR4FX  LAXS  SLAS LLIFA LPEFR LNSLP NODWT NODLT
+999991 MINIMA               . 999991 100.0 100.0 100.0 100.0   1.0   1.0   1.0   1.0   300   150   600  0.20  0.70  3.00   1.0
+999992 MAXIMA               . 999992 1800. 1800. 1800. 1800.   4.0   4.0   4.0   4.0   900   280  1800  0.35  1.80 15.00   4.0
+UC0024 TMEB419              . 990016 420.0 600.0 600.0 600.0   4.0   4.0   4.0   3.0   700   200   957  0.33  1.20  8.30   2.0
