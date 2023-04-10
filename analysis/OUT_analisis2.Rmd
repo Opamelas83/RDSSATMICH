@@ -879,14 +879,14 @@ GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
 ####For Prcom
 ```{r}
 #create a new column = environment
-Env <- unique(EVAL2$source) %>% .[order(.)]
+Env <- unique(GLUEVAL2$source) %>% .[order(.)]
 
-HMMM <- EVAL2 %>% filter(source == Env[1]) %>% 
+HMMM <- GLUEVAL2 %>% filter(source == Env[1]) %>% 
             dplyr::select(Clone, HWAMMS) %>% 
              mutate(Ago18 = HWAMMS / 1000, 
                     Ago18 = as.numeric(Ago18), .keep = "unused")
 for(i in Env[-1]) {
-      EVAL2P <- EVAL2 %>% 
+      EVAL2P <- GLUEVAL2 %>% 
           filter(source == i) %>% 
              dplyr::select(Clone, HWAMMS) %>% 
              mutate(HWAMMS = HWAMMS / 1000,
@@ -928,58 +928,155 @@ PRdata <- HMMM %>%
              #Zaria19 = as.numeric(Zaria19))
 ```
 
+```{r}
+OUTweath_UYAB1901C <- OUTweath_UYAB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAB1901),
+                                               ENV = "Abuja19")
+OUTweath_UYAG1701C <- OUTweath_UYAG1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAG1701),
+                                                   ENV = "Ago17")
+OUTweath_UYAG1801C <- OUTweath_UYAG1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAG1801),
+                                                   ENV = "Ago18")
+OUTweath_UYAG1901C <- OUTweath_UYAG1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAG1901),
+                                                   ENV = "Ago19")
+OUTweath_UYIB1701C <- OUTweath_UYIB1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIB1701),
+                                                   ENV = "Ibadan17")
+OUTweath_UYIB1801C <- OUTweath_UYIB1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIB1801),
+                                                   ENV = "Ibadan18")
+OUTweath_UYIB1901C <- OUTweath_UYIB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIB1901),
+                                                   ENV = "Ibadan19")
+OUTweath_UYIK1701C <- OUTweath_UYIK1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIK1701),
+                                                   ENV = "Ikenne17")
+OUTweath_UYIK1801C <- OUTweath_UYIK1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIK1801),
+                                                   ENV = "Ikenne18")
+OUTweath_UYIK1901C <- OUTweath_UYIK1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIK1901),
+                                                   ENV = "Ikenne19")
+#OUTweath_UYKA1801C <- OUTweath_UYKA1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYKA1801),
+  #                                                 ENV = "Kano18")
+OUTweath_UYMO1701C <- OUTweath_UYMO1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYMO1701),
+                                                   ENV = "Mokwa17")
+OUTweath_UYMO1801C <- OUTweath_UYMO1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYMO1801),
+                                                   ENV = "Mokwa18")
+OUTweath_UYMO1901C <- OUTweath_UYMO1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYMO1901),
+                                                   ENV = "Mokwa19")
+OUTweath_UYON1801C <- OUTweath_UYON1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYON1801),
+                                                   ENV = "Onne18")
+#OUTweath_UYOT1801C <- OUTweath_UYOT1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYOT1801),
+  #                                                 ENV = "Otobio18")
+OUTweath_UYUB1901C <- OUTweath_UYUB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYUB1901),
+                                                   ENV = "Ubiaja19")
+OUTweath_UYUM1801C <- OUTweath_UYUM1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYUM1801),
+                                                   ENV = "Umudike18")
+#OUTweath_UYZA1901C <- OUTweath_UYZA1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYZA1901),
+  #                                                 ENV = "Zaria19")
+weather_cycle1 <- bind_rows(OUTweath_UYAB1901C, OUTweath_UYAG1701C, OUTweath_UYAG1801C, OUTweath_UYAG1901C, OUTweath_UYIB1701C, OUTweath_UYIB1801C, OUTweath_UYIB1901C, OUTweath_UYIK1701C, OUTweath_UYIK1801C, OUTweath_UYIK1901C,  OUTweath_UYMO1701C, OUTweath_UYMO1801C,OUTweath_UYMO1901C, OUTweath_UYON1801C,  OUTweath_UYUB1901C, OUTweath_UYUM1801C)#OUTweath_UYKA1801C,OUTweath_UYOT1801C,
+
+weather_cycle <- weather_cycle1 %>%
+      mutate(DayAfPlanting = as.integer(DayAfPlanting),
+         MonthAfPlanting = ifelse(DayAfPlanting <= 90,
+                                  yes = 3,
+                                  no =  ifelse(DayAfPlanting <= 180,
+                                               yes = 6,
+                                               no = ifelse(DayAfPlanting <= 270,
+                                                           yes = 9,
+                                                           no = 12)))) %>%
+           group_by(ENV, MonthAfPlanting) %>%
+             summarise(TMIN = mean(TMIN, na.rm=TRUE), 
+                       TMAX = mean(TMAX, na.rm=TRUE),
+                       SRAD = mean(SRAD, na.rm=TRUE), 
+                       RHUM = mean(RH2M, na.rm=TRUE), 
+                       RAIN = sum(RAIN)) %>%
+             mutate(TMIN1 = case_when(MonthAfPlanting == 3 ~ TMIN),
+                    TMIN2 = case_when(MonthAfPlanting == 6 ~ TMIN),
+                    TMIN3 = case_when(MonthAfPlanting == 9 ~ TMIN),
+                    TMIN4 = case_when(MonthAfPlanting == 12 ~ TMIN),
+                    TMAX1 = case_when(MonthAfPlanting == 3 ~ TMAX),
+                    TMAX2 = case_when(MonthAfPlanting == 6 ~ TMAX),
+                    TMAX3 = case_when(MonthAfPlanting == 9 ~ TMAX),
+                    TMAX4 = case_when(MonthAfPlanting == 12 ~ TMAX),
+                    SRAD1 = case_when(MonthAfPlanting == 3 ~ SRAD),
+                    SRAD2 = case_when(MonthAfPlanting == 6 ~ SRAD),
+                    SRAD3 = case_when(MonthAfPlanting == 9 ~ SRAD),
+                    SRAD4 = case_when(MonthAfPlanting == 12 ~ SRAD),
+                    RHUM1 = case_when(MonthAfPlanting == 3 ~ RHUM),
+                    RHUM2 = case_when(MonthAfPlanting == 6 ~ RHUM),
+                    RHUM3 = case_when(MonthAfPlanting == 9 ~ RHUM),
+                    RHUM4 = case_when(MonthAfPlanting == 12 ~ RHUM),
+                    RAIN1 = case_when(MonthAfPlanting == 3 ~ RAIN),
+                    RAIN2 = case_when(MonthAfPlanting == 6 ~ RAIN),
+                    RAIN3 = case_when(MonthAfPlanting == 9 ~ RAIN),
+                    RAIN4 = case_when(MonthAfPlanting == 12 ~ RAIN)) %>% 
+                dplyr::select(ENV, TMIN1, TMIN2, TMIN3, TMIN4, TMAX1, TMAX2, TMAX3, TMAX4, 
+                       SRAD1, SRAD2, SRAD3, SRAD4, RHUM1, RHUM2, RHUM3, RHUM4,
+                       RAIN1, RAIN2, RAIN3, RAIN4)
+                      
+
+weather_cycleT1 <- weather_cycle %>% filter(!is.na(TMIN1)) %>%
+                                  dplyr::select(ENV, TMIN1, TMAX1, SRAD1, RHUM1, RAIN1)
+weather_cycleT2 <- weather_cycle %>% filter(!is.na(TMIN2)) %>%
+                                  dplyr::select(ENV, TMIN2, TMAX2, SRAD2, RHUM2, RAIN2)
+weather_cycleT3 <- weather_cycle %>% filter(!is.na(TMIN3)) %>%
+                                  dplyr::select(ENV, TMIN3, TMAX3, SRAD3, RHUM3, RAIN3)
+weather_cycleT4 <- weather_cycle %>% filter(!is.na(TMIN4)) %>%
+                                  dplyr::select(ENV, TMIN4, TMAX4, SRAD4, RHUM4, RAIN4)
+ 
+weather_cycleT5 <- left_join(weather_cycleT1, weather_cycleT2)
+weather_cycleT6 <- left_join(weather_cycleT5, weather_cycleT3)
+weather_cycleT <- left_join(weather_cycleT6, weather_cycleT4)
+write.csv(weather_cycleT, "data/weather_cycle.csv", quote = F, row.names = F)
+```
+
+
 #PRcomp using Prcomp to
 ```{r}
-library(FactoMineR, factoextra, corrplot)
+#library(FactoMineR); library(factoextra); library(corrplot); library(stats)
 #PRINpca <- princomp(PRdata, cor = FALSE, scores = TRUE)
 #summary(PRINpca)
-PRpca <- prcomp(PRdata, center = TRUE, scale = TRUE)
-summary(PRpca)
-PRval <- get_eigenvalue(PRpca)
-PRval
-fviz_eig(PRpca, addlabels = TRUE, ylim = c(0, 50))
+#PRpca <- prcomp(PRdata, center = TRUE, scale = TRUE, na.omit=)
+#summary(PRpca)
+#PRval <- get_eigenvalue(PRpca)
+#PRval
+#fviz_eig(PRpca, addlabels = TRUE, ylim = c(0, 50))
 # For variables
-PRvar <- get_pca_var(PRpca)
-PRvar$coord          # coordinates of variables to create a scatter plot
-PRvar$contrib        # contains the contributions (in percentage) of the variables to the principal components. The contribution of a variable (var) to a given principal component is (in percentage) : (var.cos2 * 100) / (total cos2 of the component).
-PRvar$cos2           # represents the quality of representation for variables on the factor map. It’s calculated as the squared coordinates: var.cos2 = var.coord * var.coord. 
-write.csv(PRvar$cos2, "result/PRvarcos.csv")
-corrplot(PRvar$contrib, is.corr=FALSE)
-fviz_pca_var(PRpca, col.var = "contrib",
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"))
+#PRvar <- get_pca_var(PRpca)
+#PRvar$coord          # coordinates of variables to create a scatter plot
+#PRvar$contrib        # contains the contributions (in percentage) of the variables to the principal components. The contribution of a variable (var) to a given principal component is (in percentage) : (var.cos2 * 100) / (total cos2 of the component).
+#PRvar$cos2           # represents the quality of representation for variables on the factor map. It’s calculated as the squared coordinates: var.cos2 = var.coord * var.coord. 
+#write.csv(PRvar$cos2, "result/PRvarcos.csv")
+#corrplot(PRvar$contrib, is.corr=FALSE)
+#fviz_pca_var(PRpca, col.var = "contrib",
+ #            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"))
 
 # Results for individuals
-PRind <- get_pca_ind(PRpca)
-PRind
-PRind$coord   
-PRind$contrib       
-PRind$cos2 
-write.csv(PRind$cos2, "result/PRindcossim.csv")
-fviz_pca_ind(PRpca, col.ind = "contrib", 
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE # Avoid text overlapping (slow if many points)
-             )
+#PRind <- get_pca_ind(PRpca)
+#PRind
+#PRind$coord   
+#PRind$contrib       
+#PRind$cos2 
+#write.csv(PRind$cos2, "result/PRindcossim.csv")
+#fviz_pca_ind(PRpca, col.ind = "contrib", 
+#             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+ #            repel = TRUE # Avoid text overlapping (slow if many points)
+  #           )
 # Total contribution on PC1 and PC2
-fviz_contrib(PRpca, choice = "ind", axes = 1:2, top = 20)
-corrplot(PRind$contrib, is.corr=FALSE)
-corrplot(PRind$cos2, is.corr=FALSE)
+#fviz_contrib(PRpca, choice = "ind", axes = 1:2, top = 20)
+#corrplot(PRind$contrib, is.corr=FALSE)
+#corrplot(PRind$cos2, is.corr=FALSE)
 ```
 
 #For princomp
 ```{r}
-PRinpca <- princomp(PRdata, cor = FALSE, scores = TRUE)
-summary(PRinpca)
-PRval <- get_eigenvalue(PRpca)
-PRval
-fviz_eig(PRpca, addlabels = TRUE, ylim = c(0, 50))
+#PRinpca <- princomp(PRdata, cor = FALSE, scores = TRUE, na.action = na.omit)
+#summary(PRinpca)
+#PRval <- get_eigenvalue(PRpca)
+#PRval
+#fviz_eig(PRpca, addlabels = TRUE, ylim = c(0, 50))
 # For variables
-PRvar <- get_pca_var(PRpca)
-PRvar$coord          # coordinates of variables to create a scatter plot
-PRvar$contrib        # contains the contributions (in percentage) of the variables to the principal components. The contribution of a variable (var) to a given principal component is (in percentage) : (var.cos2 * 100) / (total cos2 of the component).
-PRvar$cos2           # represents the quality of representation for variables on the factor map. It’s calculated as the squared coordinates: var.cos2 = var.coord * var.coord. 
+#PRvar <- get_pca_var(PRpca)
+#PRvar$coord          # coordinates of variables to create a scatter plot
+#PRvar$contrib        # contains the contributions (in percentage) of the variables to the principal components. The contribution of a variable (var) to a given principal component is (in percentage) : (var.cos2 * 100) / (total cos2 of the component).
+#PRvar$cos2           # represents the quality of representation for variables on the factor map. It’s calculated as the squared coordinates: var.cos2 = var.coord * var.coord. 
 
 
-corrplot(PRvar$cos2, is.corr=FALSE)
+#corrplot(PRvar$cos2, is.corr=FALSE)
 
 ```
 

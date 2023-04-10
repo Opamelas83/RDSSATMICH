@@ -11,6 +11,15 @@ editor_options:
 
 ```{r}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(factoextra)
+library(corrplot)
+library(ggpubr)
+library(ade4)
+library(hydroGOF)
+library(magrittr)
+library(rsq)
+library (car)
 ```
 
 ```{r}
@@ -125,12 +134,6 @@ MyFILE <- SETT %>% dplyr::select(accession_name,
 
 ```
 
-  Multivariate Analysis
-```{r}
-install.packages("magrittr")  # for piping %>%
-install.packages("ade4")      # PCA computation
-install.packages("factoextra")# PCA visualization
-```
 
 set as numeric to make calculation
 ```{r}
@@ -218,49 +221,48 @@ Alle <- MyFILEAdssat %>% mutate(germplasmName = accession_name) %>%
 
 
 ```{r}
-#Library ("car")
-scatterplotMatrix(AnalMYFI[2:5])
-scatterplotMatrix(AnalMYFI[17:23])
-scatterplotMatrix(AnalMYFI[24:26])
+#scatterplotMatrix(AnalMYFI[2:5])
+#scatterplotMatrix(AnalMYFI[17:23])
+#scatterplotMatrix(AnalMYFI[24:26])
 ```
 
 
   Multivariate Analysis PCA
 ```{r}
 #For PCA Calcul mean/accession
-AnalMYFI2 <- AnalMYFI  %>% 
-        group_by(accession_name) %>%
-        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
-AnalMYFI2 <- AnalMYFI2  %>% column_to_rownames(var = "accession_name")
-AnalMYFI2[is.na(AnalMYFI2)] = 0
-cor(AnalMYFI2, method = "pearson")
+#AnalMYFI2 <- AnalMYFI  %>% 
+#        group_by(accession_name) %>%
+ #       dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+#AnalMYFI2 <- AnalMYFI2  %>% column_to_rownames(var = "accession_name")
+#AnalMYFI2[is.na(AnalMYFI2)] = 0
+#cor(AnalMYFI2, method = "pearson")
 #head(AnalMYFI[, 1:27])
 #res.pca <- dudi.pca(AnalMYFI2,
                     #scannf = FALSE,   # Hide scree plot
                     #nf = 5            # Number of components kept in the results
                     #)
-PRE <- prcomp(AnalMYFI2, scale = TRUE)
-summary(PRE)
+#PRE <- prcomp(AnalMYFI2, scale = TRUE)
+#summary(PRE)
 #fviz_eig(res.pca) #Show the percentage of variances explained by each principal component
 ```
 
 ```{r}
 #Graph of individuals. Individuals with a similar profile are grouped together.
-fviz_eig(PRE)
-fviz_pca_ind(PRE,
-             col.ind = "cos2", # Color by the quality of representation
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
-             )
+#fviz_eig(PRE)
+#fviz_pca_ind(PRE,
+ #            col.ind = "cos2", # Color by the quality of representation
+ #            gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+  #           repel = TRUE     # Avoid text overlapping
+  #           )
 #Graph of variables. Positive correlated variables point to the same side of the plot. Negative correlated variables point to opposite sides of the graph.
-fviz_pca_var(PRE,
-             col.var = "contrib", # Color by contributions to the PC
-             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
-             repel = TRUE     # Avoid text overlapping
-             )
+#fviz_pca_var(PRE,
+ #            col.var = "contrib", # Color by contributions to the PC
+  #           gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+  #           repel = TRUE     # Avoid text overlapping
+  #           )
 
-PREvar <- get_pca_var(PRE)
-PREvar$contrib
+#PREvar <- get_pca_var(PRE)
+#PREvar$contrib
 
 ```
 

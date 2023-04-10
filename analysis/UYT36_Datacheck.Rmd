@@ -136,9 +136,9 @@ theme(panel.border=border_custom())
 dev.off()
 
 FileName <- paste("Leaf Area Estimating", ".jpeg", sep = "")
-ggsave(plot = Fig, filename = FileName,
-         width = 8, height = 6, units = "in", path = "Leaf Area Estimating",
-       device = "jpeg", dpi = 350) 
+#ggsave(plot = Fig, filename = FileName,
+ #        width = 8, height = 6, units = "in", path = "Leaf Area Estimating",
+  #     device = "jpeg", dpi = 350) 
 #geom_point(aes(x =  Total.Area, y =  LoblenXLobwid)) +
 #geom_smooth(aes(x = Total.Area, y =  LoblenXLobwid), method = "lm") +
 #ggtitle("Leaf Area Estimating (lm function)") +

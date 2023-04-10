@@ -14,6 +14,7 @@ library("data.table")
 library("tidyverse")
 library("hydroGOF")
 library("DSSAT")
+library(corrplot)
 TralList <- dir()[dir()%like%".CSX"]
 ```
 
@@ -643,7 +644,7 @@ write.csv(RESUT, "Result/RESUT.csv", quote = F, row.names = F)
 YIELDP <- YIELD %>% 
        filter(!is.na(HWAMM)) %>%
        dplyr::group_by(Clone) %>%
-    summarise(RSMEROOT = rmse(actual = HWAMM, predicted = HWAMS)) %>%
+    summarise(RSMEROOT = rmse(HWAMS, HWAMM)) %>%
    mutate(RSMEROOT = round(RSMEROOT))
       
 YIELD2 <- YIELD %>% 
@@ -654,32 +655,32 @@ summarise(MeanROOT = mean(HWAMM, na.rm = TRUE)) %>%
 YIELDres <- left_join(YIELD1,YIELD2)
 write.csv(YIELDres, "data/YIELDres.csv", quote = F, row.names = F)
 
-YIELD5 <- YIELD1 %>% 
-      mutate(HWAMM = as.numeric(HWAMM),
-             HWAMS = as.numeric(HWAMS)) %>% 
-            select(Clone, HWAMM,HWAMS) %>%
-             filter(Clone == "TMEB419") #%>%
-          #dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
-YIELD5 <- YIELD5  %>% column_to_rownames(var = "Clone")
+#YIELD5 <- YIELD1 %>% 
+ #     mutate(HWAMM = as.numeric(HWAMM),
+  #           HWAMS = as.numeric(HWAMS)) %>% 
+ #           select(Clone, HWAMM,HWAMS) %>%
+             #filter(Clone == "TMEB419") #%>%
+  #        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+#YIELD5 <- YIELD5  %>% column_to_rownames(var = "Clone")
 #AnalMYFI2[is.na(AnalMYFI2)] = 0
-cor(YIELD5, method = "pearson")
+#cor(YIELD5, method = "pearson")
   
    #filter (Clone == "TMEB419") %>%
   #cor(HWAMM, HWAMS)) #%>%
    #mutate(RSMEROOT = round(RSMEROOT))
 
-CLroot <- YIELD1 %>% 
-  group_by(Clone, Location, Year) %>%
-  summarise(RSMEROOT = rmse(actual = HWAMM, predicted = HWAMS)) 
-CLtop <- YIELD1 %>% 
-  group_by(Clone, Location, Year) %>%
-  summarise(RSMETOP = rmse(actual = CWAMM, predicted = CWAMS))
+#CLroot <- YIELD1 %>% 
+#  group_by(Clone, Location, Year) %>%
+ # summarise(RSMEROOT = rmse(actual = HWAMM, predicted = HWAMS)) 
+#CLtop <- YIELD1 %>% 
+ # group_by(Clone, Location, Year) %>%
+  #summarise(RSMETOP = rmse(actual = CWAMM, predicted = CWAMS))
 
-YIELD1 %>% filter(EXCODE %in% "UYAB*")
-YIELD1[grep(pattern = "UYAB*", x = YIELD1$EXCODE), "EXCODE"]
+#YIELD1 %>% filter(EXCODE %in% "UYAB*")
+#YIELD1[grep(pattern = "UYAB*", x = YIELD1$EXCODE), "EXCODE"]
 
 #dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
-rmse(YIELD1$HWAMM, YIELD1$HWAMS)
+#rmse(YIELD1$HWAMM, YIELD1$HWAMS)
  # mutate(Year = ,
         # HWAMS = as.numeric(is.na(HWAMS)))
 #sqrt(mean((YIELD$HWAMM - YIELD$HWAMS)^2, na.rm = TRUE))

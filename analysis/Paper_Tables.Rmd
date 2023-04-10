@@ -11,6 +11,11 @@ editor_options:
 library(tidyverse)
 library(DSSAT)
 library(corrplot)
+library(ggpubr)
+library(lemon)
+library(hydroGOF)
+library(zoo)
+library(rsq)
 ```
 
 ## Paper1 Tables
@@ -257,33 +262,31 @@ write.csv(MyCUL77a, "Result/Paper_Table22.csv", quote = F, row.names = F)
 
 
 ```{r}
-ggplot(data = REGR_RMSE, aes(x = BeforeGLUE, y = AfterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
-   geom_point(aes()) +
-   geom_smooth(method = "lm", color = "black") +
+#ggplot(data = REGR_RMSE, aes(x = BeforeGLUE, y = AfterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+#   geom_point(aes()) +
+ #  geom_smooth(method = "lm", color = "black") +
    #scale_color_brewer("Performance", palette = "Set1") +
-   ggtitle("RMSE comparison") +
-   geom_hline(data = mediansRMSE, mapping = aes(yintercept = case_when(mediansRMSE$Mean == "AfterGLUE" ~ RMSE), color = "AfterGLUE")) +
-   geom_vline(data = mediansRMSE, mapping = aes(xintercept = case_when(mediansRMSE$Mean == "BeforeGLUE" ~ RMSE), color = "red")) +
+  # ggtitle("RMSE comparison") +
+  # geom_hline(data = mediansRMSE, mapping = aes(yintercept = case_when(mediansRMSE$Mean == "AfterGLUE" ~ RMSE), color = "AfterGLUE")) +
+ #  geom_vline(data = mediansRMSE, mapping = aes(xintercept = case_when(mediansRMSE$Mean == "BeforeGLUE" ~ RMSE), color = "red")) +
   # scale_linetype_manual(name ="Median", values = c("blues9", "green"))
-  annotate(x = 10, y = 10, label = paste0("t.test, ", "p < 0.001"),
-            color = "black", geom = "text") +
-   theme_classic()#+ # for removing grille hjust = 1
-dev.off()
+ # annotate(x = 10, y = 10, label = paste0("t.test, ", "p < 0.001"),
+ #           color = "black", geom = "text") +
+  # theme_classic()#+ # for removing grille hjust = 1
+#dev.off()
 ```
 
 
 ## correlation and RMSE tables represented by boxplot
 ```{r}
-
-
 COMP1 <- read_csv("Result/RESUT.csv")
 ## for R
 REGR_R <- COMP1 %>% 
-  select(Clone, R.Cor, GLUER.Cor) %>% 
+  dplyr::select(Clone, R.Cor, GLUER.Cor) %>% 
            mutate(Clone = c(1:67),
                   BeforeGLUE = R.Cor,
                   AfterGLUE = GLUER.Cor) %>%
-  select(Clone, beforeGLUE, afterGLUE)
+  dplyr::select(Clone, BeforeGLUE, AfterGLUE)
 
 
 #COMP_R <- COMP1 %>% select(R.Cor) %>% 
@@ -296,26 +299,26 @@ REGR_R <- COMP1 %>%
 #ggboxplot(COMP_RR, x = "Statut", y = "R", color = "Statut", add = "jitter")+
 
 ## for R square 
-COMP_Rsq <- COMP1 %>% select(R.sq) %>%
+COMP_Rsq <- COMP1 %>% dplyr::select(R.sq) %>%
                      mutate("R²" = R.sq,
                             Statut = "BeforeGLUE")
-COMP_RsqGLUE <- COMP1 %>% select(GLUER.Rsq) %>% 
+COMP_RsqGLUE <- COMP1 %>% dplyr::select(GLUER.Rsq) %>% 
                      mutate("R²" = GLUER.Rsq,
                             Statut = "afterGLUE") 
-COMP_Rsq <- bind_rows(COMP_Rsq,COMP_RsqGLUE) %>% select(Statut, "R²")
+COMP_Rsq <- bind_rows(COMP_Rsq,COMP_RsqGLUE) %>% dplyr::select(Statut, "R²")
 ggboxplot(COMP_Rsq, x = "Statut", y = "R²", color = "Statut", add = "jitter")+
   stat_compare_means()
 
 
 
 ## for rmse
-COMP_RMSE <- COMP1 %>% select(R.rmse) %>%
+COMP_RMSE <- COMP1 %>% dplyr::select(R.rmse) %>%
                      mutate(RMSE = R.rmse,
                             Statut = "BeforeGLUE")
-COMP_RMSEGLUE <- COMP1 %>% select(GLUER.rmse) %>% 
+COMP_RMSEGLUE <- COMP1 %>% dplyr::select(GLUER.rmse) %>% 
                      mutate(RMSE = GLUER.rmse,
                             Statut = "afterGLUE") 
-COMP_RMSE <- bind_rows(COMP_RMSE,COMP_RMSEGLUE) %>% select(Statut, RMSE)
+COMP_RMSE <- bind_rows(COMP_RMSE,COMP_RMSEGLUE) %>% dplyr::select(Statut, RMSE)
 ggboxplot(COMP_RMSE, x = "Statut", y = "RMSE", color = "Statut", add = "jitter")+
   stat_compare_means()
 
@@ -324,37 +327,37 @@ ggboxplot(COMP_RMSE, x = "Statut", y = "RMSE", color = "Statut", add = "jitter")
 
 ## AMMI Anova summary
 ```{r}
-AMMIanova1 <- AMMIStatGXE$anova #anova table
-AMMIanova2 <- AMMIanova1 
+#AMMIanova1 <- AMMIStatGXE$anova #anova table
+#AMMIanova2 <- AMMIanova1 
 
-AMMIanova2 <- as_tibble(rownames_to_column(AMMIanova1)) %>% 
-                          rename(source = rowname) 
-AMMIanova3 <- AMMIanova2 %>% 
-  mutate("F value" = round(as.numeric(`F value`), digits = 1),
+#AMMIanova2 <- as_tibble(rownames_to_column(AMMIanova1)) %>% 
+  #                        rename(source = rowname) 
+#AMMIanova3 <- AMMIanova2 %>% 
+ # mutate("F value" = round(as.numeric(`F value`), digits = 1),
          #"P value" = round(as.numeric(`Pr(>F)`), digits = 1),
-         "P value" = ifelse(!(is.na(`Pr(>F)`)), paste0("<", `Pr(>F)`, "***"), NA)) %>% 
-           dplyr::select(-(`Pr(>F)`)) %>%
- mutate(source = if_else(source == "Trial", "Environment", source)) %>%
-  mutate(`Mean Sq` = round(`Mean Sq`))
+  #       "P value" = ifelse(!(is.na(`Pr(>F)`)), paste0("<", `Pr(>F)`, "***"), NA)) %>% 
+ #          dplyr::select(-(`Pr(>F)`)) %>%
+# mutate(source = if_else(source == "Trial", "Environment", source)) %>%
+ # mutate(`Mean Sq` = round(`Mean Sq`))
 
-   AMMIanova4 <- AMMIanova3 %>% 
-            filter(source == "Genotype" | source == "Environment" | source == "Interactions") %>% 
+ #  AMMIanova4 <- AMMIanova3 %>% 
+ #           filter(source == "Genotype" | source == "Environment" | source == "Interactions") %>% 
  # mutate(source = if_else(source == "Trial", "Environment", source)) %>%
-  mutate("% of Total SS" = round(`Sum Sq`/sum(`Sum Sq`) * 100, digits = 1)) %>%
-             dplyr::select(-(`Sum Sq`))
+ # mutate("% of Total SS" = round(`Sum Sq`/sum(`Sum Sq`) * 100, digits = 1)) %>%
+ #            dplyr::select(-(`Sum Sq`))
 
-AMMIanova5 <- left_join(AMMIanova3, AMMIanova4) #
+#AMMIanova5 <- left_join(AMMIanova3, AMMIanova4) #
 #IPCA
-AMMIPCA1 <- AMMIStatGXE$importance #anova table
-AMMIPCA2 <- as_tibble(rownames_to_column(AMMIPCA1)) %>% 
-                         rename(source = rowname)
-AMMIPCA3 <-  AMMIPCA2 %>% filter(source == "Cumulative Proportion")
+#AMMIPCA1 <- AMMIStatGXE$importance #anova table
+#AMMIPCA2 <- as_tibble(rownames_to_column(AMMIPCA1)) %>% 
+#                         rename(source = rowname)
+#AMMIPCA3 <-  AMMIPCA2 %>% filter(source == "Cumulative Proportion")
 
-AMMIanova6 <- AMMIanova5 %>% mutate("Cumulative Proportion (%)" = case_when(source == "PC1" ~ round(AMMIPCA3$PC1 * 100, digits = 1),
-           source == "PC2" ~ round(AMMIPCA3$PC2 * 100, digits = 1),
-           source == "PC3" ~ round(AMMIPCA3$PC3 * 100, digits = 1))) %>%
-             dplyr::select(-(`Sum Sq`))
+#AMMIanova6 <- AMMIanova5 %>% mutate("Cumulative Proportion (%)" = case_when(source == "PC1" ~ round(AMMIPCA3$PC1 * 100, digits = 1),
+#           source == "PC2" ~ round(AMMIPCA3$PC2 * 100, digits = 1),
+#           source == "PC3" ~ round(AMMIPCA3$PC3 * 100, digits = 1))) %>%
+ #            dplyr::select(-(`Sum Sq`))
 
-write.csv(AMMIanova6, "Result/Paper_AMMITable3.csv", quote = F, row.names = F) 
+#write.csv(AMMIanova6, "Result/Paper_AMMITable3.csv", quote = F, row.names = F) 
 ```
 
