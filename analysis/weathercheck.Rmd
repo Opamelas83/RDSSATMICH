@@ -1,0 +1,147 @@
+---
+title: "weathercheck"
+author: "Opamelas83"
+date: "2022-03-20"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Weather data checking
+
+```{r}
+library(data.table)
+WeatherdataList <- dir("data/WEATHERdata")[dir("data/WEATHERdata")%like%"WT.csv"] ##reach weather data from NASA and calculate the parameters mean by year
+```
+
+```{r}
+```
+
+#Calculate weather parameters for NASA data download from https://power.larc.nasa.gov/
+```{r}
+ LOCC <- read.csv(here::here("data/WEATHERdata", WeatherdataList[1]), skip = 2, nrows = 1, as.is = TRUE)
+weather <- read.csv(here::here("data/WEATHERdata", WeatherdataList[1]), skip = 18, header = TRUE)#skip the headers
+      weatherm <- weather %>% 
+                    mutate(TMIN = as.numeric(T2M_MIN), TMAX = as.numeric(T2M_MAX), 
+                               RAIN = PRECTOTCORR, RHUM = RH2M, PAR = ALLSKY_SFC_PAR_TOT) %>%
+                    select(YEAR, TMIN, TMAX, RAIN, RHUM, PAR) %>%
+                 mutate(Locat = paste0(str_extract(WeatherdataList[1], "[A-Z]+")),
+                          Latitude = paste0(str_extract(LOCC, "\\d+(.\\d+)")),
+                  Longitude = paste0(str_extract(LOCC, "(^*\\b =?)+(\\d)+(.\\d+)")))#reach the coordinate of location
+weatherme <- weatherm %>% dplyr::group_by(Locat, YEAR, Latitude, Longitude) %>%
+                    dplyr::summarise(across(c(TMIN, TMAX, RHUM, PAR), 
+                                        mean, na.rm=TRUE))
+
+weatherRAIN <- weatherm %>% select(Locat, Latitude, Longitude, YEAR, RAIN) %>% 
+                           dplyr::group_by(Locat, YEAR, Latitude, Longitude) %>%
+                           dplyr::summarise(RAIN = sum(RAIN))
+weathermean <- left_join(weatherme, weatherRAIN)
+
+for(x in WeatherdataList[-1]){
+      LOCC2 <- read.csv(here::here("data/WEATHERdata", x), skip = 2, nrows = 1, as.is = TRUE)
+      weather2 <- read.csv(here::here("data/WEATHERdata", x), skip = 18, header = TRUE)#skip the headers
+      weatherm2 <- weather2 %>% 
+                    mutate(TMIN = as.numeric(T2M_MIN), TMAX = as.numeric(T2M_MAX), 
+                               RAIN = PRECTOTCORR, RHUM = RH2M, 
+                           PAR = ALLSKY_SFC_PAR_TOT) %>%
+                    select(YEAR, TMIN, TMAX, RAIN, RHUM, PAR) %>%
+                   mutate(Locat = paste0(str_extract(x, "[A-Z]+")),
+                                  Latitude = paste0(str_extract(LOCC2, "\\d+(.\\d+)")),
+                  Longitude = paste0(str_extract(LOCC2, "(^*\\b =?)+(\\d)+(.\\d+)")))#reach the coordinate of location
+  weatherme2 <- weatherm2 %>% dplyr::group_by(Locat, YEAR, Latitude, Longitude) %>%
+                    dplyr::summarise(across(c(TMIN, TMAX, RHUM, PAR), 
+                                        mean, na.rm=TRUE))
+  weatherRAIN2 <- weatherm2 %>% select(Locat, Latitude, Longitude, YEAR, RAIN) %>% 
+                           dplyr::group_by(Locat, YEAR, Latitude, Longitude) %>%
+                           dplyr::summarise(RAIN = sum(RAIN))
+  weathermean2 <- left_join(weatherme2, weatherRAIN2)
+  as.data.frame(weathermean2)
+  weathermean <- weathermean %>% bind_rows(weathermean2)
+  weathermean$Locat[grep(pattern = "IBADAN", x = weathermean$Locat)] <- "Ibadan"
+  weathermean$Locat[grep(pattern = "AGO", x = weathermean$Locat)] <- "Ago-Owo"
+  weathermean$Locat[grep(pattern = "IKENNE", x = weathermean$Locat)] <- "Ikenne"
+  weathermean$Locat[grep(pattern = "MOKWA", x = weathermean$Locat)] <- "Mokwa"
+  weathermean$Locat[grep(pattern = "ABUJA", x = weathermean$Locat)] <- "Abuja"
+  weathermean$Locat[grep(pattern = "KANO", x = weathermean$Locat)] <- "Kano"
+  weathermean$Locat[grep(pattern = "ONNE", x = weathermean$Locat)] <- "Onne"
+  weathermean$Locat[grep(pattern = "UBIAJA", x = weathermean$Locat)] <- "Ubiaja"
+  weathermean$Locat[grep(pattern = "UMUDIKE", x = weathermean$Locat)] <- "Umudike"
+  weathermean$Locat[grep(pattern = "OTOBI", x = weathermean$Locat)] <- "Otobi"
+  weathermean$Locat[grep(pattern = "ZARIA", x = weathermean$Locat)] <- "Zaria"
+  write.table(weathermean, "data/WEATHERdata/NASA_NGWeather.csv", quote = F, row.names = F, sep = " ")
+  }
+
+```
+
+##Calculate weather parameters for given by Moshood http://www.awhere.com/
+```{r}
+##weather/location are repeated
+MOCC <- read.csv(here::here("data/WEATHERdata/UYT_GXE_weatherData.csv"))
+countrow <- MOCC %>% count(LOCATION)
+countLOCATIONrepeatition <- countrow %>% mutate(LOCrepeatnumb = n / (365 * 4))
+
+MOCCm <- MOCC %>% mutate(Locat = LOCATION, LatitudeM = LAT, LongitudeM = LON,
+                        YEAR = Year, RHUMM = RH_MEAN, TMINM = TMIN, 
+                        TMAXM = TMAX, RAINM = RAIN) %>% 
+                    select(Locat, LatitudeM, LongitudeM, 
+                             YEAR, RHUMM, TMAXM, TMINM, RAINM, SRAD)
+MOCCme <- MOCCm %>% dplyr::group_by(Locat, YEAR, LatitudeM, LongitudeM) %>%
+                    dplyr::summarise(across(c(TMINM, TMAXM, RHUMM, SRAD), 
+                                        mean, na.rm=TRUE), .groups = NULL)
+MOCCRAIN <- MOCCm %>% select(Locat, LatitudeM, LongitudeM, YEAR, RAINM) %>% 
+                           dplyr::group_by(Locat, YEAR, LatitudeM, LongitudeM) %>%
+                           dplyr::summarise(RAINM = sum(RAINM))
+MOCCmean <- left_join(MOCCme, MOCCRAIN) %>%
+            mutate(Locat = case_when(Locat == "Ago-Owu" ~ "Ago-Owo", TRUE ~ as.character(Locat)))
+#MOCCmean$Locat[grep(pattern = "Ago_Owu", x = MOCCmean$Locat)] <- "Ago-Owo"
+write.table(MOCCmean, "data/WEATHERdata/awhereWeather.csv", quote = F, row.names = F, sep = " ")
+```
+
+```{r}
+Weathercheck <- left_join(weathermean, MOCCmean) %>%
+                    mutate(RRAINM =  case_when(
+                     Locat == "Abuja" ~ RAINM/2,
+                     Locat == "Kano" ~ RAINM/2,
+                     Locat == "Otobi" ~ RAINM/2,
+                     Locat == "Ubiaja" ~ RAINM/2,
+                     Locat == "Umudike" ~ RAINM/2,
+                      Locat == "Zaria" ~ RAINM/2,
+                      Locat == "Ago-Owo" ~ RAINM/6,
+                      Locat == "Mokwa" ~ RAINM/6,
+                      Locat == "Ikenne" ~ RAINM/6,
+                      Locat == "Ibadan" ~ RAINM/5,
+                      Locat == "Onne" ~ RAINM/3)) ##divide location rain mean by the number of year repetition
+Weathercheck <- Weathercheck %>% relocate(Locat, Latitude, LatitudeM, Longitude, LongitudeM,  YEAR, TMIN, TMINM, TMAX, TMAXM, RAIN, RRAINM, RHUM, RHUMM, PAR, SRAD) %>%
+  select(-RAINM)
+write.table(Weathercheck, "data/WEATHERdata/Weathercheck.csv", quote = F, row.names = F, sep = " ")
+```
+
+
+#Convertion of PAR using standard equation 4.6 μmole.m2/s = 1 W/m2
+```{r}
+makeFILENAME <- function(x){
+  NAME <- paste0(str_extract(basename(x), "[A-Z]+"))
+  return(NAME)
+} 
+```
+
+```{r}
+## PAR calculation: 4.6 μmole/m2/s= 1 W/m2 =4.6*10-6 mole/m2/s and 1 day = 86400s
+## Solar radiation calculation: also convert solar irradiance in Kilowatt-hour from NASA to Megajoule IN DSSAT.
+for(x in WeatherdataList){
+   FILENAM <- makeFILENAME(x)
+   weather3 <- read.csv(here::here("data/WEATHERdata", x), skip = 18, header = TRUE)
+  weath1 <- weather3 %>% mutate(TMIN = as.numeric(T2M_MIN), TMAX = as.numeric(T2M_MAX), 
+                             RAIN = PRECTOTCORR, RHUM = RH2M, PAR = (4.6*10^(-6)*86400) *(ALLSKY_SFC_PAR_TOT),
+                             SRAD = ALLSKY_SFC_SW_DWN) %>%
+                    select(YEAR, DOY, TMIN, TMAX, RAIN, RHUM, SRAD, PAR)
+head(weath1)
+ MYfilepath <- here::here("data", "WEATHERdata", paste0(FILENAM, ".csv"))
+ write.csv(weath1, file = MYfilepath, append = FALSE, row.names = F, col.names = T, sep = ' ')
+  }
+ 
+#FILENAM <- makeFILENAME(x)
+#MYfilepath <- here::here("data", "WEATHERdata", paste0(FILENAM, ".csv"))
+# write.table(weath1, file = MYfilepath, quote = F, row.names = F, sep = " ")
+```
+

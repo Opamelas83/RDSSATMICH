@@ -1,0 +1,280 @@
+---
+title:"UYT36_completeDAta"
+author: "Michelle"
+date: "2021-11-18"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#path1 <- "data/IITA2021_datas/CGM_Data/Set_A"
+SET_A1 <- read.csv ("data/IITA2021_Mich/CGM_Data/Set_A/GS.C2.UYT.36.setA1.csv", header = TRUE, na.strings = c(""," "), 
+                     stringsAsFactors = F) %>%
+                 filter(rep_number==1)
+SET_A2 <- read.csv ("data/IITA2021_Mich/CGM_Data/Set_A/GS.C2.UYT.36.setA2.csv", header = TRUE, na.strings = c(""," "), 
+                     stringsAsFactors = F) %>%
+                filter(rep_number==2)
+MylistA <- list(SET_A1, SET_A2)
+SET_A <- do.call("rbind", MylistA) 
+```
+
+
+```{r}
+SET_B1 <- read.csv ("data/IITA2021_Mich/CGM_Data/Set_B/GS.C2.UYT.36.setB1.csv", header = TRUE, na.strings = c(""," "), 
+                     stringsAsFactors = F) %>%
+                 filter(rep_number==1)
+SET_B2 <- read.csv ("data/IITA2021_Mich/CGM_Data/Set_B/GS.C2.UYT.36.setB2.csv", header = TRUE, na.strings = c(""," "), 
+                     stringsAsFactors = F) %>%
+                filter(rep_number==2)
+MylistB <- list(SET_B1, SET_B2)
+SET_B <- do.call("rbind", MylistB) 
+```
+
+
+```{r}
+MylistAB <- list(SET_A, SET_B)
+SET_AB <- do.call("rbind", MylistAB)
+ #mutate_all(.,as.character)
+```
+
+```{r}
+SET21A <- read.csv ("data/IITA2021_Mich/CGM_Data/D21J/GS.C2.UYT.36.setA4.csv", header = TRUE, na.strings = c(""," "), 
+                     stringsAsFactors = F) #%>%
+                 #filter(rep_number==2)
+SET21B <- read.csv ("data/IITA2021_Mich/CGM_Data/D21J/GS.C2.UYT.36.setB3.csv", header = TRUE, na.strings = c(""," "), 
+                     stringsAsFactors = F)
+Mylist21J <- list(SET21A, SET21B)
+SET21 <- do.call("rbind", Mylist21J) 
+```
+
+
+```{r}
+SETT <- left_join(SET_AB, SET21)
+SETT[SETT == 0] <- NA
+```
+
+
+Mydata file
+```{r}
+MyFILE <- SETT %>% dplyr::select(accession_name,
+                        rep_number,
+                        plant_number,
+                        stem.number.counting....CO_334.0000129,
+                      branching.level.counting....CO_334.0000079,
+                      number.of.forks.on.branching.level.1.counting....CO_334.0000522,
+                      number.of.forks.on.branching.level.2.counting....CO_334.0000523,
+                      number.of.forks.on.branching.level.3.counting....CO_334.0000524,
+                      number.of.forks.on.branching.level.4.counting....CO_334.0000524.Copy..0.,
+                      Plant.height.at.first.branching..Level,
+                      Plant.height.at.second.branching..Level,
+                      Plant.height.at.third.branching..Level,
+                      Plant.height.at.fourth.branching..Level,
+                      plant.height.with.leaf.in.cm....CO_334.0000123,
+                      plant.height.with.leaf.after.21.days.in.cm.CO_334.0000123,
+                      number.of.nodes.at.branching.level.1.counting....CO_334.0000352,
+                      number.of.nodes.at.branching.level.2.counting....CO_334.0000363,
+                      number.of.nodes.at.branching.level.3.counting....CO_334.0000368,
+                      number.of.nodes.at.branching.level.4.counting....CO_334.0000383,
+                      Leaf.Lobe.Counting,
+                      leaf_1.lobe.length.measurement.in.cm....CO_334.0000164,
+                      leaf_1.lobe.Width.measurement.in.cm....CO_334.0000164.Copy..0.,
+                      leaf_2.lobe.length.measurement.in.cm....CO_334.0000164.Copy..0.,
+                      leaf_2.lobe.Width.measurement.in.cm....CO_334.0000164.Copy..1.,
+                      leaf_3.lobe.length.measurement.in.cm...Leaf.1...CO_334.0000164.Copy..1.,
+                      leaf_3.lobe.width.measurement.in.cm....CO_334.0000165,
+                      stem.diameter.measurement.in.cm.month.5....COMP.0000129,
+                      Section_1.from.branching_1.2_diameter,
+                      section.from.Branching_2.3_diameter,
+                     section.from.Branching_3.4_diameter,
+                       New.nodes.Counting.after.Tag) %>%
+                dplyr::rename(stem_nu = stem.number.counting....CO_334.0000129,
+                       branching_point = branching.level.counting....CO_334.0000079,
+                        branchpoint1_Fs = number.of.forks.on.branching.level.1.counting....CO_334.0000522,
+                        "branchpoint2_Fs" = number.of.forks.on.branching.level.2.counting....CO_334.0000523,
+                        "branchpoint3_Fs" = number.of.forks.on.branching.level.3.counting....CO_334.0000524,
+                        "branchpoint4_Fs" = number.of.forks.on.branching.level.4.counting....CO_334.0000524.Copy..0.,
+                        "branchpoint1_H" = Plant.height.at.first.branching..Level,
+                        "section1_H" = Plant.height.at.second.branching..Level,
+                        "section2_H" = Plant.height.at.third.branching..Level,
+                        "section3_H" = Plant.height.at.fourth.branching..Level,
+                        "plant_H" = plant.height.with.leaf.in.cm....CO_334.0000123,
+                       "plant_H21" = plant.height.with.leaf.after.21.days.in.cm.CO_334.0000123,
+                        "section1_Nod" = number.of.nodes.at.branching.level.1.counting....CO_334.0000352,
+                        "section2_Nod" = number.of.nodes.at.branching.level.2.counting....CO_334.0000363,
+                        "section3_Nod" = number.of.nodes.at.branching.level.3.counting....CO_334.0000368,
+                        "section4_Nod" = number.of.nodes.at.branching.level.4.counting....CO_334.0000383,
+                        LlobesNo = Leaf.Lobe.Counting,
+                        Lob1L = leaf_1.lobe.length.measurement.in.cm....CO_334.0000164,
+                        Lob1W = leaf_1.lobe.Width.measurement.in.cm....CO_334.0000164.Copy..0.,
+                        Lob2L = leaf_2.lobe.length.measurement.in.cm....CO_334.0000164.Copy..0.,
+                        Lob2W = leaf_2.lobe.Width.measurement.in.cm....CO_334.0000164.Copy..1.,
+                        Lob3L = leaf_3.lobe.length.measurement.in.cm...Leaf.1...CO_334.0000164.Copy..1.,
+                        "Lob3W" = leaf_3.lobe.width.measurement.in.cm....CO_334.0000165,
+                        "stem_D" = stem.diameter.measurement.in.cm.month.5....COMP.0000129,
+                        "section1_D" = Section_1.from.branching_1.2_diameter,
+                        "section2_D" = section.from.Branching_2.3_diameter,
+                        "section3_D" = section.from.Branching_3.4_diameter,
+                       "New_nod" = New.nodes.Counting.after.Tag)
+
+```
+
+  Multivariate Analysis
+```{r}
+install.packages("magrittr")  # for piping %>%
+install.packages("ade4")      # PCA computation
+install.packages("factoextra")# PCA visualization
+```
+
+set as numeric to make calculation
+```{r}
+AnalMYFI <- MyFILE %>% mutate(plant_number = as.numeric(plant_number),
+         rep_number = as.numeric(rep_number),
+        stem_nu = as.numeric(stem_nu),#Transforme NA as numeric
+         branching_point = suppressWarnings(as.numeric(branching_point)),
+         branchpoint1_Fs = as.numeric(branchpoint1_Fs),
+         branchpoint2_Fs = as.numeric(branchpoint2_Fs),
+         branchpoint3_Fs = as.numeric(branchpoint3_Fs),
+        branchpoint4_Fs = as.numeric(branchpoint4_Fs),
+        branchpoint1_H = as.numeric(branchpoint1_H),
+       section1_H = as.numeric(section1_H),
+       section2_H = as.numeric(section2_H),
+       section3_H = as.numeric(section3_H),
+        plant_H = as.numeric(plant_H),
+       plant_H21 = as.numeric(plant_H21),
+       section1_Nod = suppressWarnings(as.numeric(section1_Nod)),
+       section2_Nod = suppressWarnings(as.numeric(section2_Nod)),
+       section3_Nod = suppressWarnings(as.numeric(section3_Nod)),
+       section4_Nod = suppressWarnings(as.numeric(section4_Nod)),
+        LlobesNo = as.numeric(LlobesNo),
+        Lob1L = as.numeric(Lob1L),
+        Lob1W = as.numeric(Lob1W),
+        Lob2L = as.numeric(Lob2L),
+        Lob2W = as.numeric(Lob2W),
+        Lob3L = as.numeric(Lob3L),
+        Lob3W = as.numeric(Lob3W),
+        stem_D = suppressWarnings(as.numeric(stem_D)),
+        section1_D = suppressWarnings(as.numeric(section1_D)),
+       section2_D = suppressWarnings(as.numeric(section2_D)),
+       section3_D = suppressWarnings(as.numeric(section3_D)),
+       New_nod = as.numeric(New_nod))
+write.csv(AnalMYFI, "data/IITA2021_Mich/Phenotyp_Mich2021.csv", row.names = FALSE)
+```
+
+Calculation of the variables I need in DSSAT to estimate the genotype parameters
+```{r}
+MyFILEA <- AnalMYFI %>% rowwise() %>% 
+              mutate(NODLT = sum((section1_H - branchpoint1_H)/section1_Nod, (section2_H-section1_H)/section2_Nod, (section3_H-section2_H)/section3_Nod, na.rm = T),
+                Total_nod = sum(section1_Nod * branchpoint1_Fs, section2_Nod * branchpoint2_Fs, section3_Nod * branchpoint3_Fs, branchpoint1_H/NODLT, na.rm = T) * stem_nu,
+                Total_nod = as.numeric(Total_nod),  
+                LAIm = LlobesNo*0.39*(Lob1L*Lob1W + Lob2L*Lob2W + Lob3L*Lob3W)/3 + 24,
+                LAIm = as.numeric(LAIm),
+                LAIX = LAIm * Total_nod * 0.0001 / 0.8,#0.8 for plant density
+                "BR#S" = stem_nu,
+                "L#SX" = Total_nod/stem_nu,
+                "L#IR" = New_nod/21,
+                   B1D = branchpoint1_H,
+                   B2D = section1_H,
+                   B3D = section2_H,
+                   B4D = section3_H)
+                #DaylyH = (plant_H21 - plant_H)/21,
+                 #  B1DAP = branchpoint1_H/((plant_H21 - plant_H)/21),
+                  # B2DAP = section1_H/((plant_H21 - plant_H)/21),
+                  # B3DAP = section2_H/((plant_H21 - plant_H)/21),
+                   #B4DAP = section3_H/((plant_H21 - plant_H)/21))
+```
+
+Write a csv file with MyFILEA for make dssat input files
+```{r}
+MyFILEA[MyFILEA == 0] <- NA
+MyFILEA[MyFILEA == Inf] <- NA
+MyFILEAdssat <- MyFILEA %>% dplyr::select(accession_name, rep_number, plant_number, stem_nu, NODLT, Total_nod, B1D, B2D, B3D, B4D, LAIm, LAIX, "BR#S", "L#SX", "L#IR")
+write.csv(MyFILEAdssat, "data/IITA2021_Mich/Mich2021.csv", row.names = FALSE)
+```
+
+Locking for a way for BxDAP estimating
+```{r}
+Alle <- MyFILEAdssat %>% mutate(germplasmName = accession_name) %>%
+                      dplyr::select(germplasmName, B1D, B2D, B3D, B4D) %>%
+                       group_by(germplasmName)  %>%
+                        dplyr::summarise(across(c(B1D, B2D, B3D, B4D), 
+                                        mean, na.rm=TRUE)) %>%
+                     mutate(B1DAP = round(if_else(B1D < 60, 60, B1D)),
+                          B2DAP = round(if_else(B2D < 60, 60, B2D)), 
+                          B3DAP = round(if_else(B3D < 60, 60, B3D)),
+                          B4DAP = round(if_else(B4D < 60, 60, B4D)))
+
+#hist(Alle$B1D)
+#Alle <- cut(AnalMYFI$branchpoint1_H, breaks = 9, include.lowest = TRUE)
+#freq(Alle)
+```
+
+
+
+```{r}
+#Library ("car")
+scatterplotMatrix(AnalMYFI[2:5])
+scatterplotMatrix(AnalMYFI[17:23])
+scatterplotMatrix(AnalMYFI[24:26])
+```
+
+
+  Multivariate Analysis PCA
+```{r}
+#For PCA Calcul mean/accession
+AnalMYFI2 <- AnalMYFI  %>% 
+        group_by(accession_name) %>%
+        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+AnalMYFI2 <- AnalMYFI2  %>% column_to_rownames(var = "accession_name")
+AnalMYFI2[is.na(AnalMYFI2)] = 0
+cor(AnalMYFI2, method = "pearson")
+#head(AnalMYFI[, 1:27])
+#res.pca <- dudi.pca(AnalMYFI2,
+                    #scannf = FALSE,   # Hide scree plot
+                    #nf = 5            # Number of components kept in the results
+                    #)
+PRE <- prcomp(AnalMYFI2, scale = TRUE)
+summary(PRE)
+#fviz_eig(res.pca) #Show the percentage of variances explained by each principal component
+```
+
+```{r}
+#Graph of individuals. Individuals with a similar profile are grouped together.
+fviz_eig(PRE)
+fviz_pca_ind(PRE,
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+#Graph of variables. Positive correlated variables point to the same side of the plot. Negative correlated variables point to opposite sides of the graph.
+fviz_pca_var(PRE,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+             )
+
+PREvar <- get_pca_var(PRE)
+PREvar$contrib
+
+```
+
+To complete Cultivarfile
+```{r}
+CultiMYFI <- AnalMYFI2 %>% rownames_to_column(var = "VAR-NAME") %>%
+                         rename(BR1FX = "branchpoint1_Fs",
+                                BR2FX = "branchpoint2_Fs",
+                                BR3FX = "branchpoint3_Fs",
+                                BR4FX = "branchpoint4_Fs") %>% 
+  select("VAR-NAME", "BR1FX", "BR2FX", "BR3FX", "BR4FX")
+        
+```
+
+
+
+

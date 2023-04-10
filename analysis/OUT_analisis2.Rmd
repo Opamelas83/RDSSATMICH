@@ -1,0 +1,985 @@
+---
+title: "OUT_analisis2"
+author: "Opamelas83"
+date: "2022-03-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## use PRcomp function to check the difference between simulated and observed data across environment
+
+```{r}
+library(DSSAT)
+library(tidyverse)
+library(data.table)
+library(corrplot)
+TralList <- dir()[dir()%like%".CSX"]
+```
+
+```{r}
+  for(x in TralList){
+      Tral <- read_lines(x)
+      strtTrt <- grep(pattern = "*TREATMENTS", x = Tral, fixed=T)+2
+      endTrt <- grep(pattern = "*CULTIVARS", x = Tral, fixed=T)-2
+      Tral <- Tral[strtTrt:endTrt]
+      Tral <- substr(Tral, start = 10, stop = 37)
+      write.table(Tral, "test.txt", quote = F, col.names = F, row.names = F)
+      Tral <- read.table("test.txt", header =F)
+      colnames(Tral) <- c("Clone", "TRNO")
+    
+    MYYY <- here::here("data", "ClonTRNO", paste0(substr(x, 1,8), ".csv"))
+    write.csv(x = Tral, file = MYYY, row.names = F)
+}
+
+```
+
+##Run dscsm (next time, Try to run dscsm for all treatment )
+
+```{r}
+write_dssbatch("UYAB1901.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+# From evaluate output file
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAB1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+Gernam <- read_csv("data/ClonTRNO/UYAB1901.csv")
+DUYAB1901 <- left_join(Gernam, OUT_UYAB1901)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYAB1901 <- OUT2 %>% slice(1:406) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYAB1704.WTH"), skip = 903, n_max = 406)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M) 
+OUTweath_UYAB1901 <- left_join(OUTweath_UYAB1901, HUMID2)
+#Merge column
+DUYAB1901$TMIN <- mean(OUTweath_UYAB1901$TMIN, na.rm = TRUE)
+DUYAB1901$TMAX <- mean(OUTweath_UYAB1901$TMAX, na.rm = TRUE)
+DUYAB1901$SRAD <- mean(OUTweath_UYAB1901$SRAD, na.rm = TRUE)
+DUYAB1901$PAR <- mean(OUTweath_UYAB1901$PAR, na.rm = TRUE)
+DUYAB1901$RH2M <- mean(OUTweath_UYAB1901$RH2M, na.rm = TRUE)
+DUYAB1901$WIND <- mean(OUTweath_UYAB1901$WIND, na.rm = TRUE)
+DUYAB1901$RAIN <- sum(OUTweath_UYAB1901$RAIN)
+DUYAB1901$ELEV <- 406.97
+DUYAB1901$LAT <- 9.0738
+DUYAB1901$LONG <- 7.4651
+```
+
+```{r}
+write_dssbatch("UYAG1701.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1701 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAG1701.csv")
+DUYAG1701 <- left_join(Gernam, OUT_UYAG1701)
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYAG1701 <- OUT2 %>% slice(1:317) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYOW1704.WTH"), skip = 246, n_max = 317)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M) 
+OUTweath_UYAG1701 <- left_join(OUTweath_UYAG1701, HUMID2)
+
+#Merge column
+DUYAG1701$TMIN <- mean(OUTweath_UYAG1701$TMIN, na.rm = TRUE)
+DUYAG1701$TMAX <- mean(OUTweath_UYAG1701$TMAX, na.rm = TRUE)
+DUYAG1701$SRAD <- mean(OUTweath_UYAG1701$SRAD, na.rm = TRUE)
+DUYAG1701$PAR <- mean(OUTweath_UYAG1701$PAR, na.rm = TRUE)
+DUYAG1701$RH2M <- mean(OUTweath_UYAG1701$RH2M, na.rm = TRUE)
+DUYAG1701$WIND <- mean(OUTweath_UYAG1701$WIND, na.rm = TRUE)
+DUYAG1701$RAIN <- sum(OUTweath_UYAG1701$RAIN)
+DUYAG1701$ELEV <- 256.41
+DUYAG1701$LAT <- 7.2552
+DUYAG1701$LONG <- 4.3225
+```
+
+
+```{r}
+write_dssbatch("UYAG1801.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAG1801.csv")
+DUYAG1801 <- left_join(Gernam, OUT_UYAG1801)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYAG1801 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYOW1704.WTH"), skip = 541, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYAG1801 <- left_join(OUTweath_UYAG1801, HUMID2)
+
+#Merge column
+DUYAG1801$TMIN <- mean(OUTweath_UYAG1801$TMIN, na.rm = TRUE)
+DUYAG1801$TMAX <- mean(OUTweath_UYAG1801$TMAX, na.rm = TRUE)
+DUYAG1801$SRAD <- mean(OUTweath_UYAG1801$SRAD, na.rm = TRUE)
+DUYAG1801$PAR <- mean(OUTweath_UYAG1801$PAR, na.rm = TRUE)
+DUYAG1801$RH2M <- mean(OUTweath_UYAG1801$RH2M, na.rm = TRUE)
+DUYAG1801$WIND<- mean(OUTweath_UYAG1801$WIND, na.rm = TRUE)
+DUYAG1801$RAIN <- sum(OUTweath_UYAG1801$RAIN)
+DUYAG1801$ELEV <- 256.41
+DUYAG1801$LAT <- 7.2552
+DUYAG1801$LONG <- 4.3225
+```
+
+```{r}
+write_dssbatch("UYAG1901.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAG1901.csv")
+DUYAG1901 <- left_join(Gernam, OUT_UYAG1901)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYAG1901 <- OUT2 %>% slice(1:367) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYOW1704.WTH"), skip = 885, n_max = 367)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYAG1901 <- left_join(OUTweath_UYAG1901, HUMID2)
+
+#Merge column
+DUYAG1901$TMIN <- mean(OUTweath_UYAG1901$TMIN, na.rm = TRUE)
+DUYAG1901$TMAX <- mean(OUTweath_UYAG1901$TMAX, na.rm = TRUE)
+DUYAG1901$SRAD <- mean(OUTweath_UYAG1901$SRAD, na.rm = TRUE)
+DUYAG1901$PAR <- mean(OUTweath_UYAG1901$PAR, na.rm = TRUE)
+DUYAG1901$RAIN <- sum(OUTweath_UYAG1901$RAIN)
+DUYAG1901$RH2M <- mean(OUTweath_UYAG1901$RH2M, na.rm = TRUE)
+DUYAG1901$WIND <- mean(OUTweath_UYAG1901$WIND, na.rm = TRUE)
+DUYAG1901$ELEV <- 256.41
+DUYAG1901$LAT <- 7.2552
+DUYAG1901$LONG <- 4.3225
+```
+
+```{r}
+write_dssbatch("UYIB1701.CSX", trtno = 1:33)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1701 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIB1701.csv")
+DUYIB1701 <- left_join(Gernam, OUT_UYIB1701)
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYIB1701 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYIB1704.WTH"), skip = 255, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYIB1701 <- left_join(OUTweath_UYIB1701, HUMID2)
+
+#Merge column
+DUYIB1701$TMIN <- mean(OUTweath_UYIB1701$TMIN, na.rm = TRUE)
+DUYIB1701$TMAX <- mean(OUTweath_UYIB1701$TMAX, na.rm = TRUE)
+DUYIB1701$SRAD <- mean(OUTweath_UYIB1701$SRAD, na.rm = TRUE)
+DUYIB1701$PAR <- mean(OUTweath_UYIB1701$PAR, na.rm = TRUE)
+DUYIB1701$RH2M <- mean(OUTweath_UYIB1701$RH2M, na.rm = TRUE)
+DUYIB1701$WIND <- mean(OUTweath_UYIB1701$WIND, na.rm = TRUE)
+DUYIB1701$RAIN <- sum(OUTweath_UYIB1701$RAIN)
+DUYIB1701$ELEV <- 189
+DUYIB1701$LAT <- 7.4661
+DUYIB1701$LONG <- 3.9302
+```
+
+```{r}
+write_dssbatch("UYIB1801.CSX", trtno = 1:57)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIB1801.csv")
+DUYIB1801 <- left_join(Gernam, OUT_UYIB1801)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYIB1801 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYIB1704.WTH"), skip = 620, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYIB1801 <- left_join(OUTweath_UYIB1801, HUMID2)
+
+#Merge column
+DUYIB1801$TMIN <- mean(OUTweath_UYIB1801$TMIN, na.rm = TRUE)
+DUYIB1801$TMAX <- mean(OUTweath_UYIB1801$TMAX, na.rm = TRUE)
+DUYIB1801$SRAD <- mean(OUTweath_UYIB1801$SRAD, na.rm = TRUE)
+DUYIB1801$PAR <- mean(OUTweath_UYIB1801$PAR, na.rm = TRUE)
+DUYIB1801$RH2M <- mean(OUTweath_UYIB1801$RH2M, na.rm = TRUE)
+DUYIB1801$WIND <- mean(OUTweath_UYIB1801$WIND, na.rm = TRUE)
+DUYIB1801$RAIN <- sum(OUTweath_UYIB1801$RAIN)
+DUYIB1801$ELEV <- 189
+DUYIB1801$LAT <- 7.4661
+DUYIB1801$LONG <- 3.9302
+```
+
+```{r}
+write_dssbatch("UYIB1901.CSX", trtno = 1:66)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIB1901.csv")
+DUYIB1901 <- left_join(Gernam, OUT_UYIB1901)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYIB1901 <- OUT2 %>% slice(1:341) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYIB1704.WTH"), skip = 869, n_max = 341)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYIB1901 <- left_join(OUTweath_UYIB1901, HUMID2)
+
+#Merge column
+DUYIB1901$TMIN <- mean(OUTweath_UYIB1901$TMIN, na.rm = TRUE)
+DUYIB1901$TMAX <- mean(OUTweath_UYIB1901$TMAX, na.rm = TRUE)
+DUYIB1901$SRAD <- mean(OUTweath_UYIB1901$SRAD, na.rm = TRUE)
+DUYIB1901$PAR <- mean(OUTweath_UYIB1901$PAR, na.rm = TRUE)
+DUYIB1901$RH2M <- mean(OUTweath_UYIB1901$RH2M, na.rm = TRUE)
+DUYIB1901$WIND <- mean(OUTweath_UYIB1901$WIND, na.rm = TRUE)
+DUYIB1901$RAIN <- sum(OUTweath_UYIB1901$RAIN)
+DUYIB1901$ELEV <- 189
+DUYIB1901$LAT <- 7.4661
+DUYIB1901$LONG <- 3.9302
+```
+
+
+```{r}
+write_dssbatch("UYIK1701.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1701 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIK1701.csv")
+DUYIK1701 <- left_join(Gernam, OUT_UYIK1701)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYIK1701 <- OUT2 %>% slice(1:371) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYIK1704.WTH"), skip = 240, n_max = 371)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYIK1701 <- left_join(OUTweath_UYIK1701, HUMID2)
+
+#Merge column
+DUYIK1701$TMIN <- mean(OUTweath_UYIK1701$TMIN, na.rm = TRUE)
+DUYIK1701$TMAX <- mean(OUTweath_UYIK1701$TMAX, na.rm = TRUE)
+DUYIK1701$SRAD <- mean(OUTweath_UYIK1701$SRAD, na.rm = TRUE)
+DUYIK1701$PAR <- mean(OUTweath_UYIK1701$PAR, na.rm = TRUE)
+DUYIK1701$RH2M <- mean(OUTweath_UYIK1701$RH2M, na.rm = TRUE)
+DUYIK1701$WIND <- mean(OUTweath_UYIK1701$WIND, na.rm = TRUE)
+DUYIK1701$RAIN <- sum(OUTweath_UYIK1701$RAIN)
+DUYIK1701$ELEV <- 91
+DUYIK1701$LAT <- 6.8728
+DUYIK1701$LONG <- 3.7108
+```
+
+```{r}
+write_dssbatch("UYIK1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIK1801.csv")
+DUYIK1801 <- left_join(Gernam, OUT_UYIK1801)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYIK1801 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYIK1704.WTH"), skip = 537, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYIK1801 <- left_join(OUTweath_UYIK1801, HUMID2)
+
+#Merge column
+DUYIK1801$TMIN <- mean(OUTweath_UYIK1801$TMIN, na.rm = TRUE)
+DUYIK1801$TMAX <- mean(OUTweath_UYIK1801$TMAX, na.rm = TRUE)
+DUYIK1801$SRAD <- mean(OUTweath_UYIK1801$SRAD, na.rm = TRUE)
+DUYIK1801$PAR <- mean(OUTweath_UYIK1801$PAR, na.rm = TRUE)
+DUYIK1801$RH2M <- mean(OUTweath_UYIK1801$RH2M, na.rm = TRUE)
+DUYIK1801$WIND <- mean(OUTweath_UYIK1801$WIND, na.rm = TRUE)
+DUYIK1801$RAIN <- sum(OUTweath_UYIK1801$RAIN)
+DUYIK1801$ELEV <- 91
+DUYIK1801$LAT <- 6.8728
+DUYIK1801$LONG <- 3.7108
+```
+
+```{r}
+write_dssbatch("UYIK1901.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIK1901.csv")
+DUYIK1901 <- left_join(Gernam, OUT_UYIK1901)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYIK1901 <- OUT2 %>% slice(1:381) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYIK1704.WTH"), skip = 885, n_max = 381)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYIK1901 <- left_join(OUTweath_UYIK1901, HUMID2)
+
+#Merge column
+DUYIK1901$TMIN <- mean(OUTweath_UYIK1901$TMIN, na.rm = TRUE)
+DUYIK1901$TMAX <- mean(OUTweath_UYIK1901$TMAX, na.rm = TRUE)
+DUYIK1901$SRAD <- mean(OUTweath_UYIK1901$SRAD, na.rm = TRUE)
+DUYIK1901$PAR <- mean(OUTweath_UYIK1901$PAR, na.rm = TRUE)
+DUYIK1901$RH2M <- mean(OUTweath_UYIK1901$RH2M, na.rm = TRUE)
+DUYIK1901$WIND <- mean(OUTweath_UYIK1901$WIND, na.rm = TRUE)
+DUYIK1901$RAIN <- sum(OUTweath_UYIK1901$RAIN)
+DUYIK1901$ELEV <- 91
+DUYIK1901$LAT <- 6.8728
+DUYIK1901$LONG <- 3.7108
+```
+
+Not run
+```{r}
+#write_dssbatch("UYKA1801.CSX", trtno = 1:61)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+ #             read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYKA1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYKA1801.csv")
+#DUYKA1801 <- left_join(Gernam, OUT_UYKA1801)
+
+## from weather output file 
+#OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUTweath_UYKA1801 <- OUT2 %>% slice(1:366) %>% 
+ #                mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+ #                       PAR = PARD, WIND = WDSD) %>%
+  #           dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+#HUMID1 <- read_lines(here::here("UYKA1704.WTH"), skip = 565, n_max = 366)
+#write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+#HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+#HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+ #                      dplyr::select(TMAX, TMIN, RH2M)  
+#OUTweath_UYKA1801 <- left_join(OUTweath_UYKA1801, HUMID2)
+
+#Merge column
+#DUYKA1801$TMIN <- mean(OUTweath_UYKA1801$TMIN, na.rm = TRUE)
+#DUYKA1801$TMAX <- mean(OUTweath_UYKA1801$TMAX, na.rm = TRUE)
+#DUYKA1801$SRAD <- mean(OUTweath_UYKA1801$SRAD, na.rm = TRUE)
+#DUYKA1801$PAR <- mean(OUTweath_UYKA1801$PAR, na.rm = TRUE)
+#DUYKA1801$RH2M <- mean(OUTweath_UYKA1801$RH2M, na.rm = TRUE)
+#DUYKA1801$WIND <- mean(OUTweath_UYKA1801$WIND, na.rm = TRUE)
+#DUYKA1801$RAIN <- sum(OUTweath_UYKA1801$RAIN)
+#DUYKA1801$ELEV <- 634
+#DUYKA1801$LAT <- 11.698
+#DUYKA1801$LONG <- 7.704
+```
+
+```{r}
+write_dssbatch("UYMO1701.CSX", trtno = 1:63)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1701 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYMO1701.csv")
+DUYMO1701 <- left_join(Gernam, OUT_UYMO1701)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYMO1701 <- OUT2 %>% slice(1:384) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYMO1704.WTH"), skip = 237, n_max = 384)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYMO1701 <- left_join(OUTweath_UYMO1701, HUMID2)
+
+#Merge column
+DUYMO1701$TMIN <- mean(OUTweath_UYMO1701$TMIN, na.rm = TRUE)
+DUYMO1701$TMAX <- mean(OUTweath_UYMO1701$TMAX, na.rm = TRUE)
+DUYMO1701$SRAD <- mean(OUTweath_UYMO1701$SRAD, na.rm = TRUE)
+DUYMO1701$PAR <- mean(OUTweath_UYMO1701$PAR, na.rm = TRUE)
+DUYMO1701$RH2M <- mean(OUTweath_UYMO1701$RH2M, na.rm = TRUE)
+DUYMO1701$WIND <- mean(OUTweath_UYMO1701$WIND, na.rm = TRUE)
+DUYMO1701$RAIN <- sum(OUTweath_UYMO1701$RAIN)
+DUYMO1701$ELEV <- 181
+DUYMO1701$LAT <- 9.3097
+DUYMO1701$LONG <- 5.0728
+```
+
+```{r}
+write_dssbatch("UYMO1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYMO1801.csv")
+DUYMO1801 <- left_join(Gernam, OUT_UYMO1801)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYMO1801 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYMO1704.WTH"), skip = 534, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYMO1801 <- left_join(OUTweath_UYMO1801, HUMID2)
+
+#Merge column
+DUYMO1801$TMIN <- mean(OUTweath_UYMO1801$TMIN, na.rm = TRUE)
+DUYMO1801$TMAX <- mean(OUTweath_UYMO1801$TMAX, na.rm = TRUE)
+DUYMO1801$SRAD <- mean(OUTweath_UYMO1801$SRAD, na.rm = TRUE)
+DUYMO1801$PAR <- mean(OUTweath_UYMO1801$PAR, na.rm = TRUE)
+DUYMO1801$RH2M <- mean(OUTweath_UYMO1801$RH2M, na.rm = TRUE)
+DUYMO1801$WIND <- mean(OUTweath_UYMO1801$WIND, na.rm = TRUE)
+DUYMO1801$RAIN <- sum(OUTweath_UYMO1801$RAIN)
+DUYMO1801$ELEV <- 181
+DUYMO1801$LAT <- 9.3097
+DUYMO1801$LONG <- 5.0728
+```
+
+```{r}
+write_dssbatch("UYMO1901.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYMO1901.csv")
+DUYMO1901 <- left_join(Gernam, OUT_UYMO1901)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYMO1901 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYMO1704.WTH"), skip = 911, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYMO1901 <- left_join(OUTweath_UYMO1901, HUMID2)
+
+#Merge column
+DUYMO1901$TMIN <- mean(OUTweath_UYMO1901$TMIN, na.rm = TRUE)
+DUYMO1901$TMAX <- mean(OUTweath_UYMO1901$TMAX, na.rm = TRUE)
+DUYMO1901$SRAD <- mean(OUTweath_UYMO1901$SRAD, na.rm = TRUE)
+DUYMO1901$PAR <- mean(OUTweath_UYMO1901$PAR, na.rm = TRUE)
+DUYMO1901$RH2M <- mean(OUTweath_UYMO1901$RH2M, na.rm = TRUE)
+DUYMO1901$WIND <- mean(OUTweath_UYMO1901$WIND, na.rm = TRUE)
+DUYMO1901$RAIN <- sum(OUTweath_UYMO1901$RAIN)
+DUYMO1901$ELEV <- 181
+DUYMO1901$LAT <- 9.3097
+DUYMO1901$LONG <- 5.0728
+```
+
+```{r}
+write_dssbatch("UYON1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                              col_names = NULL, 
+                            left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYON1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYON1801.csv")
+DUYON1801 <- left_join(Gernam, OUT_UYON1801)
+
+# from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYON1801 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYON1704.WTH"), skip = 486, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYON1801 <- left_join(OUTweath_UYON1801, HUMID2)
+
+#Merge column
+DUYON1801$TMIN <- mean(OUTweath_UYON1801$TMIN, na.rm = TRUE)
+DUYON1801$TMAX <- mean(OUTweath_UYON1801$TMAX, na.rm = TRUE)
+DUYON1801$SRAD <- mean(OUTweath_UYON1801$SRAD, na.rm = TRUE)
+DUYON1801$PAR <- mean(OUTweath_UYON1801$PAR, na.rm = TRUE)
+DUYON1801$RH2M <- mean(OUTweath_UYON1801$RH2M, na.rm = TRUE)
+DUYON1801$WIND <- mean(OUTweath_UYON1801$WIND, na.rm = TRUE)
+DUYON1801$RAIN <- sum(OUTweath_UYON1801$RAIN)
+DUYON1801$ELEV <- 27
+DUYON1801$LAT <- 4.7949
+DUYON1801$LONG <- 7.1691
+```
+
+Not run
+```{r}
+#write_dssbatch("UYOT1801.CSX", trtno = 1:55)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYOT1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYOT1801.csv")
+#DUYOT1801 <- left_join(Gernam, OUT_UYOT1801)
+
+# from weather output file 
+#OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+#                               col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUTweath_UYOT1801 <- OUT2 %>% slice(1:366) %>% 
+  #               mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+  #                      PAR = PARD, WIND = WDSD) %>%
+   #          dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+#HUMID1 <- read_lines(here::here("UYOT1704.WTH"), skip = 567, n_max = 366)
+#write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+#HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+#HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+#                       dplyr::select(TMAX, TMIN, RH2M)  
+#OUTweath_UYOT1801 <- left_join(OUTweath_UYOT1801, HUMID2)
+
+#Merge column
+#DUYOT1801$TMIN <- mean(OUTweath_UYOT1801$TMIN, na.rm = TRUE)
+#DUYOT1801$TMAX <- mean(OUTweath_UYOT1801$TMAX, na.rm = TRUE)
+#DUYOT1801$SRAD <- mean(OUTweath_UYOT1801$SRAD, na.rm = TRUE)
+#DUYOT1801$PAR <- mean(OUTweath_UYOT1801$PAR, na.rm = TRUE)
+#DUYOT1801$RH2M <- mean(OUTweath_UYOT1801$RH2M, na.rm = TRUE)
+#DUYOT1801$WIND <- mean(OUTweath_UYOT1801$WIND, na.rm = TRUE)
+#DUYOT1801$RAIN <- sum(OUTweath_UYOT1801$RAIN)
+#DUYOT1801$ELEV <- 139
+#DUYOT1801$LAT <- 7.1528
+#DUYOT1801$LONG <- 8.2857
+```
+
+
+```{r}
+write_dssbatch("UYUB1901.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYUB1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYUB1901.csv")
+DUYUB1901 <- left_join(Gernam, OUT_UYUB1901)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYUB1901 <- OUT2 %>% slice(1:370) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYUB1704.WTH"), skip = 885, n_max = 370)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYUB1901 <- left_join(OUTweath_UYUB1901, HUMID2)
+
+#Merge column
+DUYUB1901$TMIN <- mean(OUTweath_UYUB1901$TMIN, na.rm = TRUE)
+DUYUB1901$TMAX <- mean(OUTweath_UYUB1901$TMAX, na.rm = TRUE)
+DUYUB1901$SRAD <- mean(OUTweath_UYUB1901$SRAD, na.rm = TRUE)
+DUYUB1901$PAR <- mean(OUTweath_UYUB1901$PAR, na.rm = TRUE)
+DUYUB1901$RH2M <- mean(OUTweath_UYUB1901$RH2M, na.rm = TRUE)
+DUYUB1901$WIND <- mean(OUTweath_UYUB1901$WIND, na.rm = TRUE)
+DUYUB1901$RAIN <- sum(OUTweath_UYUB1901$RAIN)
+DUYUB1901$ELEV <- 153.83
+DUYUB1901$LAT <- 6.6702
+DUYUB1901$LONG <- 6.3857
+```
+
+```{r}
+write_dssbatch("UYUM1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYUM1801 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYUM1801.csv")
+DUYUM1801 <- left_join(Gernam, OUT_UYUM1801)
+
+## from weather output file 
+OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUTweath_UYUM1801 <- OUT2 %>% slice(1:366) %>% 
+                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+                        PAR = PARD, WIND = WDSD) %>%
+             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+HUMID1 <- read_lines(here::here("UYUM1704.WTH"), skip = 577, n_max = 366)
+write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+                       dplyr::select(TMAX, TMIN, RH2M)  
+OUTweath_UYUM1801 <- left_join(OUTweath_UYUM1801, HUMID2)
+
+#Merge column
+DUYUM1801$TMIN <- mean(OUTweath_UYUM1801$TMIN, na.rm = TRUE)
+DUYUM1801$TMAX <- mean(OUTweath_UYUM1801$TMAX, na.rm = TRUE)
+DUYUM1801$SRAD <- mean(OUTweath_UYUM1801$SRAD, na.rm = TRUE)
+DUYUM1801$PAR <- mean(OUTweath_UYUM1801$PAR, na.rm = TRUE)
+DUYUM1801$RH2M <- mean(OUTweath_UYUM1801$RH2M, na.rm = TRUE)
+DUYUM1801$WIND <- mean(OUTweath_UYUM1801$WIND, na.rm = TRUE)
+DUYUM1801$RAIN <- sum(OUTweath_UYUM1801$RAIN)
+DUYUM1801$ELEV <- 93
+DUYUM1801$LAT <- 5.4732
+DUYUM1801$LONG <- 7.5512
+```
+
+Not run
+```{r}
+#write_dssbatch("UYZA1901.CSX", trtno = 1:4)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+ #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYZA1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYZA1901.csv")
+#DUYZA1901 <- left_join(Gernam, OUT_UYZA1901)
+
+## from weather output file 
+#OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL, 
+#                               col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUTweath_UYZA1901 <- OUT2 %>% slice(1:408) %>% 
+#                 mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
+ #                       PAR = PARD, WIND = WDSD) %>%
+  #           dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+
+#HUMID1 <- read_lines(here::here("UYZA1704.WTH"), skip = 885, n_max = 370)
+#write_lines(HUMID1, (here::here("HUMIDUS.txt")))
+#HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
+#HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
+ #                      dplyr::select(TMAX, TMIN, RH2M)  
+#OUTweath_UYZA1901 <- left_join(OUTweath_UYZA1901, HUMID2)
+
+#Merge column
+#DUYZA1901$TMIN <- mean(OUTweath_UYZA1901$TMIN, na.rm = TRUE)
+#DUYZA1901$TMAX <- mean(OUTweath_UYZA1901$TMAX, na.rm = TRUE)
+#DUYZA1901$SRAD <- mean(OUTweath_UYZA1901$SRAD, na.rm = TRUE)
+#DUYZA1901$PAR <- mean(OUTweath_UYZA1901$PAR, na.rm = TRUE)
+#DUYZA1901$RH2M <- mean(OUTweath_UYZA1901$RH2M, na.rm = TRUE)
+#DUYZA1901$WIND <- mean(OUTweath_UYZA1901$WIND, na.rm = TRUE)
+#DUYZA1901$RAIN <- sum(OUTweath_UYZA1901$RAIN)
+#DUYZA1901$ELEV <- 647
+#DUYZA1901$LAT <- 11.0506
+#DUYZA1901$LONG <- 7.7315
+```
+
+
+```{r}
+#get all the evaluate Output
+GLUEVAL2 <- bind_rows(Abuja19 = DUYAB1901, Ago17 = DUYAG1701, Ago18 = DUYAG1801, Ago19 = DUYAG1901, Ibadan17 = DUYIB1701, Ibadan18 = DUYIB1801, Ibadan19 = DUYIB1901, Ikenne17 = DUYIK1701, Ikenne18 = DUYIK1801, Ikenne19 = DUYIK1901, Mokwa17 = DUYMO1701, Mokwa18 = DUYMO1801, Mokwa19 = DUYMO1901, Onne18 = DUYON1801, Ubiaja19 = DUYUB1901, Umudike18 = DUYUM1801, .id = "source") %>%
+       mutate(HWAMMS = HWAMM - HWAMS,
+              HWAMMSsq = (HWAMM - HWAMS)^2) #ADD Zaria19 = DUYZA1901 later #for observed-simulated Abuja19 = DUYAB1901, Ago17 = DUYAG1701, Ago18 = DUYAG1801, Ago19 = DUYAG1901, Ibadan17 = DUYIB1701, Ibadan18 = DUYIB1801, Ibadan19 = DUYIB1901, Ikenne17 = DUYIK1701, Ikenne18 = DUYIK1801, Ikenne19 = DUYIK1901, Kano18 = DUYKA1801, Mokwa17 = DUYMO1701, Mokwa18 = DUYMO1801, Mokwa19 = DUYMO1901, Onne18 = DUYON1801, Otobio18 = DUYOT1801, Ubiaja19 = DUYUB1901, Umudike18 = DUYUM1801, Zaria19 = DUYZA1901, .id = "source")
+#colnames()
+colnames(GLUEVAL2)
+GLUEVAL2$year <- as.numeric(paste0("20", str_extract(GLUEVAL2$source, "\\d{2}+")))
+write.csv(GLUEVAL2, "data/GLUEHWAM_VALana.csv", quote = F, row.names = F)# EVALana.csv
+```
+
+
+##create location
+```{r}
+library(data.table)
+GLUEYIELD <- read.csv("data/GLUEHWAM_VALana.csv")
+GLUEYIELD$Location <- GLUEYIELD$EXCODE
+GLUEYIELD$Location[grep(pattern = "^UYAB", x = GLUEYIELD$EXCODE)] <- "ABUJA"
+GLUEYIELD$Location[grep(pattern = "^UYAG", x = GLUEYIELD$EXCODE)] <- "AGO"
+GLUEYIELD$Location[grep(pattern = "^UYIB", x = GLUEYIELD$EXCODE)] <- "IBADAN"
+GLUEYIELD$Location[grep(pattern = "^UYIK", x = GLUEYIELD$EXCODE)] <- "IKENNE"
+#GLUEYIELD$Location[grep(pattern = "^UYKA", x = GLUEYIELD$EXCODE)] <- "KANO"
+GLUEYIELD$Location[grep(pattern = "^UYMO", x = GLUEYIELD$EXCODE)] <- "MOKWA"
+GLUEYIELD$Location[grep(pattern = "^UYON", x = GLUEYIELD$EXCODE)] <- "ONNE"
+#GLUEYIELD$Location[grep(pattern = "^UYOT", x = GLUEYIELD$EXCODE)] <- "OTOBI"
+GLUEYIELD$Location[grep(pattern = "^UYUB", x = GLUEYIELD$EXCODE)] <- "UBIAJA"
+GLUEYIELD$Location[grep(pattern = "^UYUM", x = GLUEYIELD$EXCODE)] <- "UMUDIKE"
+#GLUEYIELD$Location[grep(pattern = "^UYZA", x = GLUEYIELD$EXCODE)] <- "ZARIA"
+
+GLUEYIELD$Year <- GLUEYIELD$EXCODE
+#GLUEYIELD$Year[grep(pattern = "*2001CS", x = GLUEYIELD$EXCODE)] <- "2020"
+GLUEYIELD$Year[grep(pattern = "*1901CS", x = GLUEYIELD$EXCODE)] <- "2019"
+GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
+GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
+```
+
+
+
+####For Prcom
+```{r}
+#create a new column = environment
+Env <- unique(EVAL2$source) %>% .[order(.)]
+
+HMMM <- EVAL2 %>% filter(source == Env[1]) %>% 
+            dplyr::select(Clone, HWAMMS) %>% 
+             mutate(Ago18 = HWAMMS / 1000, 
+                    Ago18 = as.numeric(Ago18), .keep = "unused")
+for(i in Env[-1]) {
+      EVAL2P <- EVAL2 %>% 
+          filter(source == i) %>% 
+             dplyr::select(Clone, HWAMMS) %>% 
+             mutate(HWAMMS = HWAMMS / 1000,
+                    HWAMMS = as.numeric(HWAMMS))
+      colnames(EVAL2P)[2] <- i
+      HMMM <- HMMM %>% left_join(EVAL2P, by = "Clone")
+}
+```
+
+```{r}
+#Calculate the mean of 'observed-simulated
+HMMM$Ibadan17[is.na(HMMM$Ibadan17)] <- mean(HMMM$Ibadan17, na.rm = TRUE)
+HMMM$Ibadan18[is.na(HMMM$Ibadan18)] <- mean(HMMM$Ibadan18, na.rm = TRUE)
+HMMM$Ibadan19[is.na(HMMM$Ibadan19)] <- mean(HMMM$Ibadan19, na.rm = TRUE)
+HMMM$Ikenne17[is.na(HMMM$Ikenne17)] <- mean(HMMM$Ikenne17, na.rm = TRUE)
+HMMM$Ikenne18[is.na(HMMM$Ikenne18)] <- mean(HMMM$Ikenne18, na.rm = TRUE)
+HMMM$Mokwa17[is.na(HMMM$Mokwa17)] <- mean(HMMM$Mokwa17, na.rm = TRUE)
+PRdata <- HMMM %>%
+     remove_rownames() %>%
+     column_to_rownames(var = 'Clone')# %>%
+      #mutate(Abuja19 = as.numeric(Abuja19),
+          #   Ago17 = as.numeric(Ago17),
+            # Ago18 = as.numeric(Ago18),
+            # Ago19 = as.numeric(Ago19),
+            # Ibadan17 = suppressWarnings(as.numeric(Ibadan17)),
+            # Ibadan18 = as.numeric(Ibadan18),
+           # Ibadan19 = suppressWarnings(as.numeric(Ibadan19)),
+            #Ikenne17 = suppressWarnings(as.numeric(Ikenne17)),
+            #Ikenne18 = suppressWarnings(as.numeric(Ikenne18)),
+           # Ikenne19 = suppressWarnings(as.numeric(Ikenne19)),
+           # Kano18 = as.numeric(Kano18),
+           # Mokwa17 = suppressWarnings(as.numeric(Mokwa17)),
+           # Mokwa18 = as.numeric(Mokwa18),
+           # Mokwa19 = as.numeric(Mokwa19),
+          #  Onne18 = as.numeric(Onne18),
+            # Otobio18 = as.numeric(Otobio18),
+            # Ubiaja19 = as.numeric(Ubiaja19),
+            # Umudike18 = as.numeric(Umudike18),
+             #Zaria19 = as.numeric(Zaria19))
+```
+
+#PRcomp using Prcomp to
+```{r}
+library(FactoMineR, factoextra, corrplot)
+#PRINpca <- princomp(PRdata, cor = FALSE, scores = TRUE)
+#summary(PRINpca)
+PRpca <- prcomp(PRdata, center = TRUE, scale = TRUE)
+summary(PRpca)
+PRval <- get_eigenvalue(PRpca)
+PRval
+fviz_eig(PRpca, addlabels = TRUE, ylim = c(0, 50))
+# For variables
+PRvar <- get_pca_var(PRpca)
+PRvar$coord          # coordinates of variables to create a scatter plot
+PRvar$contrib        # contains the contributions (in percentage) of the variables to the principal components. The contribution of a variable (var) to a given principal component is (in percentage) : (var.cos2 * 100) / (total cos2 of the component).
+PRvar$cos2           # represents the quality of representation for variables on the factor map. It’s calculated as the squared coordinates: var.cos2 = var.coord * var.coord. 
+write.csv(PRvar$cos2, "result/PRvarcos.csv")
+corrplot(PRvar$contrib, is.corr=FALSE)
+fviz_pca_var(PRpca, col.var = "contrib",
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"))
+
+# Results for individuals
+PRind <- get_pca_ind(PRpca)
+PRind
+PRind$coord   
+PRind$contrib       
+PRind$cos2 
+write.csv(PRind$cos2, "result/PRindcossim.csv")
+fviz_pca_ind(PRpca, col.ind = "contrib", 
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE # Avoid text overlapping (slow if many points)
+             )
+# Total contribution on PC1 and PC2
+fviz_contrib(PRpca, choice = "ind", axes = 1:2, top = 20)
+corrplot(PRind$contrib, is.corr=FALSE)
+corrplot(PRind$cos2, is.corr=FALSE)
+```
+
+#For princomp
+```{r}
+PRinpca <- princomp(PRdata, cor = FALSE, scores = TRUE)
+summary(PRinpca)
+PRval <- get_eigenvalue(PRpca)
+PRval
+fviz_eig(PRpca, addlabels = TRUE, ylim = c(0, 50))
+# For variables
+PRvar <- get_pca_var(PRpca)
+PRvar$coord          # coordinates of variables to create a scatter plot
+PRvar$contrib        # contains the contributions (in percentage) of the variables to the principal components. The contribution of a variable (var) to a given principal component is (in percentage) : (var.cos2 * 100) / (total cos2 of the component).
+PRvar$cos2           # represents the quality of representation for variables on the factor map. It’s calculated as the squared coordinates: var.cos2 = var.coord * var.coord. 
+
+
+corrplot(PRvar$cos2, is.corr=FALSE)
+
+```
+

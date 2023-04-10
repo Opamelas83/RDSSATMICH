@@ -1,0 +1,154 @@
+---
+title: "UYT36_Datacheck"
+author: "Michelle"
+date: "2021-11-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Load packages 
+```{r load packages, message=FALSE}
+ip <- installed.packages()
+packages_used <- c("workflowr", "tidyverse", "here", "lubridate")
+for (package in packages_used){
+  if (!(package %in% ip[,"Package"])) install.packages(package)
+}
+library(tidyverse, readr)
+
+
+```
+
+Merge setA and setB leaves data csv files in R
+```{r}
+path <- "data/IITA2021_Mich/Leaf/"
+file_list <- list.files(path = path, pattern = "*.csv", full.names = TRUE)
+Data <- lapply(file_list, read.csv, na.strings = c(""," "), stringsAsFactors = F)
+LeafData <- do.call("rbind", Data) 
+File1 <- LeafData %>%
+         filter (leaf_no <= 10) %>%
+       select("accession_name",leaf_no, petiole.length,
+                   leaf.lobe.length,	leaf.lobe.width, lobe.number) %>%
+        mutate_all(.,as.character)
+```
+
+Rename files by removing "Summary of"
+```{r}
+path <- "data/IITA2021_Mich/Leaf/Area"
+Lists <- list.files(path = path, pattern = "*.csv", full.names = TRUE)
+
+```
+
+Create 2 columns in each file with accession name and leaf no, merge all files from Lists  in one file
+```{r}
+AreaDa <- NULL
+for (X in Lists){
+  XFI <- read.csv(X)
+  CultiName1 <- basename(X) # or CultiName <-sub(".*/", "", X)
+  CultiName2 <- gsub(".csv", "", CultiName1)
+  CultiName <- gsub("Summary of ", "", CultiName2)
+  AreaDa1 <- XFI %>% distinct(Slice, Total.Area) %>% 
+    mutate(accession_name = CultiName,
+           leaf_no = gsub("scan_", "", Slice)) %>%
+    select(accession_name,
+           leaf_no,
+           Slice,
+           Total.Area) %>%
+    mutate_all(.,as.character)
+  #AreaDa1 <- gsub("Summary of ", "", AreaDa1)
+  AreaDa <- rbind(AreaDa, AreaDa1)
+
+}
+
+write.csv(AreaDa, "data/IITA2021_Mich/AreaData.csv", quote = F)
+    
+```
+
+Create my file for analysis by joining all leaf data
+```{r}
+MyleafFI <- left_join(AreaDa, File1)
+MyleafFI <- MyleafFI %>% mutate (petiole.length = as.numeric(petiole.length),                                                          leaf.lobe.length = as.numeric(leaf.lobe.length),	
+                          leaf.lobe.width = as.numeric(leaf.lobe.width),
+                          lobe.number = as.numeric(lobe.number))
+MyleafFI <- MyleafFI %>% 
+    filter(!is.na(leaf.lobe.length)) %>%
+    filter(!is.na(Total.Area))
+```
+
+Data analysis
+```{r}
+eq <- function(x,y) {
+  m <- lm(y ~ x)
+  as.character(
+    as.expression(
+      substitute(italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2,
+                list(a = format(unname(coef(m)[1]), digits = 2),
+                     b = format(unname(coef(m)[2]), digits = 2),
+                         r2 = format(summary(m)$r.squared, digits = 2)))
+    )
+  )
+}
+
+border_custom <- function(...){
+  structure(
+    list(...), # this ... information is not used, btw
+    class = c("element_custom","element_blank", "element") # inheritance test workaround
+  ) 
+
+}
+
+#ggplot(MyleafFI) + geom_point(aes(x = Total.Area, y = lobe.number))
+#ggplot(MyleafFI) + geom_point(aes(x = Total.Area, y = leaf.lobe.length))
+MyleafFI <- MyleafFI %>% 
+              mutate(LoblenXLobwid = leaf.lobe.length * leaf.lobe.width, 
+                     Total.Area = as.numeric(Total.Area),
+                    LoblenXLobwid = as.numeric(LoblenXLobwid),
+                    LoblenXLobwidxLobnumb = (leaf.lobe.length * leaf.lobe.width) * lobe.number,
+                    LoblenXLobwid.Lobnumb = (leaf.lobe.length * leaf.lobe.width) / lobe.number)
+#MyleafFIreg <- lm(MyleafFI$LoblenXLobwid ~ MyleafFI$Total.Area)
+#MyleafFIreg <- lm(MyleafFI$Total.Area ~ MyleafFI$LoblenXLobwid)
+MyleafFIreg <- lm(MyleafFI$Total.Area ~ MyleafFI$LoblenXLobwidxLobnumb)
+#cor(MyleafFI$LoblenXLobwid, MyleafFI$Total.Area, method = "pearson", use = "complete.obs")
+#cor(MyleafFI$Total.Area, MyleafFI$LoblenXLobwid, method = "pearson", use = "complete.obs")
+#(LoblenXLobwid, Total.Area    MyleafFI$LoblenXLobwid, MyleafFI$Total.Area, method = c("pearson", "kendall", "spearman")
+summary(MyleafFIreg)
+#plot(MyleafFI$Total.Area, MyleafFI$LoblenXLobwid)
+#abline(MyleafFIreg, col="yellow")
+#ggplot(MyleafFI) + geom_point(aes(x = Total.Area, y = LoblenXLobwid))
+jpeg(filename = "Leaf Area Estimating.jpeg", res = 400, width = 14, height = 8, units = "cm")
+ggplot(MyleafFI) + 
+geom_point(aes(x =  LoblenXLobwidxLobnumb, y =  Total.Area)) +
+geom_smooth(aes(x = LoblenXLobwidxLobnumb, y =  Total.Area), method = "lm") +
+#ggtitle("Leaf Area Estimating (lm function)")+
+xlab("Lob_lengthXwidthxNum (cm²)") +
+ylab("Leaf_Area (cm²)") +
+geom_text(x = 550, #max(MyleafFI$LoblenXLobwidxLobnumb, na.rm = TRUE) - 0.8*sd(MyleafFI$LoblenXLobwidxLobnumb, na.rm = TRUE),
+             y = 300, #max(MyleafFI$Total.Area, na.rm = TRUE) - 0.8*sd(MyleafFI$Total.Area, na.rm = TRUE),
+              label = eq(MyleafFI$LoblenXLobwidxLobnumb, MyleafFI$Total.Area ), parse = TRUE, hjust = 1.5, vjust = 0) +
+theme_classic() +
+theme(panel.border=border_custom())
+dev.off()
+
+FileName <- paste("Leaf Area Estimating", ".jpeg", sep = "")
+ggsave(plot = Fig, filename = FileName,
+         width = 8, height = 6, units = "in", path = "Leaf Area Estimating",
+       device = "jpeg", dpi = 350) 
+#geom_point(aes(x =  Total.Area, y =  LoblenXLobwid)) +
+#geom_smooth(aes(x = Total.Area, y =  LoblenXLobwid), method = "lm") +
+#ggtitle("Leaf Area Estimating (lm function)") +
+#xlab("Leaf_Area (cm2)") +
+#ylab("Lob_lengthXwidth (cm2)")+ 
+#theme_bw()
+#ggsave(plot = Fig, filename = FileName,
+#         width = 8, height = 6, units = "in", path = "Result/Leaf Area Estimating", #device = "jpeg", dpi = 350)
+
+
+```
+
+

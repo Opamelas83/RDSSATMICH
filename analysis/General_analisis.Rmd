@@ -1,0 +1,764 @@
+---
+title: "General_analisis"
+author: "Opamelas83"
+date: "2022-07-19"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
+```
+
+## correlation regressions for storage root
+```{r}
+COMP1 <- read_csv("Result/RESUT.csv")
+## for R
+REGR_R <- COMP1 %>% 
+  dplyr::select(Clone, R.Cor, GLUER.Cor) %>% 
+           mutate(Clone = c(1:67),
+                  beforeGLUE = R.Cor,
+                  afterGLUE = GLUER.Cor) %>%
+  dplyr::select(Clone, beforeGLUE, afterGLUE)
+
+medians <- REGR_R %>%
+  summarise(beforeGLUE = median(beforeGLUE),
+         afterGLUE = median(afterGLUE))# %>% reshape2::melt(value.name = "r", variable.name = "Performance")
+statte <- REGR_R %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE))
+ 
+
+stattest <- REGR_R %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE)) %>%
+  dplyr::select(beforeGLUE, afterGLUE) %>%
+  t.test()
+p.value <- stattest$p.value
+
+#jpeg(filename = "Rcompare.jpeg", res = 400, width = 14, height = 8, units = "cm")
+
+CompFIG1 <- ggplot(data = REGR_R, aes(x = beforeGLUE, y = afterGLUE))+
+  geom_point(aes()) + 
+  xlab("before GSPs estimation") +
+  ylab("after GSPs estimation") +
+  xlim(-0.50,0.60) +
+  ylim(-0.50,0.60) +
+  theme(axis.text.x = element_text(size=4),
+          axis.text.y = element_text(size=4)) +
+  geom_abline(mapping = aes(slope=1, intercept = 0, color = "Identity line"), key_glyph = "dotplot")  +
+  ggtitle("r value comparison") +
+  geom_hline(data = medians, mapping = aes(yintercept = afterGLUE, color = "Median afterGLUE")) +
+  geom_vline(data = medians, mapping = aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
+  scale_color_manual(name = "Legend", 
+                     values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
+  annotate(x = -0.23, y = 0.40, label = paste0("t.test, ", "p = ", round(p.value, 2)),
+           color = "black", geom = "text") +
+  theme_classic() 
+#dev.off()
+
+
+## for RMSE
+REGR_RMSE <- COMP1 %>% 
+  dplyr::select(Clone, R.rmse, GLUER.rmse) %>% 
+           mutate(Clone = c(1:67),
+                  beforeGLUE = R.rmse,
+                  afterGLUE = GLUER.rmse) %>%
+  dplyr::select(Clone, beforeGLUE, afterGLUE)
+
+mediansRMSE <- REGR_RMSE %>%
+  summarise(beforeGLUE = median(beforeGLUE),
+         afterGLUE = median(afterGLUE)) 
+
+stattestRMSE <- REGR_RMSE %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE)) %>%
+  dplyr::select(beforeGLUE, afterGLUE) %>%
+  t.test()
+pRMSE.value <- stattestRMSE$p.value
+
+#jpeg(filename = "RMSEcompare.jpeg", res = 400, width = 14, height = 8, units = "cm")
+CompFIG2 <- ggplot(data = REGR_RMSE, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+   geom_point(aes()) +
+  xlab("before GSPs estimation") +
+  ylab("after GSPs estimation") + 
+  #xlim(8,30) +
+  ylim(0,25) +
+ #scale_y_continuous(limits = c(0, 30), breaks=seq(4, 30, 2)) +
+  theme(axis.text.x = element_text(size=4),
+          axis.text.y = element_text(size=4)) +
+   ggtitle("RMSE value comparison") +
+  geom_abline(mapping = aes(slope=1, intercept = 0, color = "Identity line"), key_glyph = "dotplot") +
+   geom_hline(data = mediansRMSE, aes(yintercept =  afterGLUE, color = "Median afterGLUE")) +
+   geom_vline(data = mediansRMSE, aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
+    scale_color_manual(name = "Legend", 
+                     values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
+   #scale_linetype_manual(name ="Median", values = "solid", colours()) +
+  annotate(x = 12, y = 18, label = paste0("t.test, ", "p < 0.001"),
+            color = "black", geom = "text") +
+  theme_classic() 
+#dev.off()
+
+## for d_index
+REGR_d <- COMP1 %>% 
+  dplyr::select(Clone, R.d, GLUER.d) %>% 
+           mutate(Clone = c(1:67),
+                  beforeGLUE = R.d,
+                  afterGLUE = GLUER.d) %>%
+  dplyr::select(Clone, beforeGLUE, afterGLUE)
+
+mediansd <- REGR_d %>%
+  summarise(beforeGLUE = median(beforeGLUE),
+         afterGLUE = median(afterGLUE))
+
+stattestd <- REGR_d %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE)) %>%
+  dplyr::select(beforeGLUE, afterGLUE) %>%
+  t.test()
+pd.value <- stattestd$p.value
+
+#jpeg(filename = "dcompare.jpeg")#, res = 400, width = 14, height = 8, units = "cm")
+CompFIG3 <- ggplot(data = REGR_d, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+   geom_point(aes()) +
+  xlab("before GSPs estimation") +
+  ylab("after GSPs estimation") +
+  xlim(0.1,0.75) +
+  ylim(0.1,0.75) +
+  theme(axis.text.x = element_text(size=3),
+          axis.text.y = element_text(size=4)) +
+   #scale_color_brewer("Performance", palette = "Set1") +E
+   ggtitle("d comparison") +
+  geom_abline(mapping = aes(slope=1, intercept = 0, color = "Identity line"), key_glyph = "dotplot") +
+   geom_hline(data = mediansd, aes(yintercept =  afterGLUE, color = "Median afterGLUE")) +
+   geom_vline(data = mediansd, aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
+    scale_color_manual(name = "Legend", 
+                     values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
+  #scale_linetype_manual(name ="Median", values = "solid", colours()) +
+   annotate(x = 0.15, y = 0.7, label = paste0("t.test, ", "p < 0.001"),
+            color = "black", geom = "text") +
+  theme_classic() #+ # for removing grille hjust = 1
+
+
+nt <- theme(legend.position='none')
+p = list(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt) %>% map(~.x + labs(x=NULL, y=NULL))
+#jpeg(filename = "Result/Rcomparison.jpeg")
+grid_arrange_shared_legend(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt, ncol = 2, nrow = 2)
+#dev.off() 
+```
+
+## correlation regressions for above ground TOP weight
+```{r}
+COMP1 <- read_csv("Result/RESUT.csv")
+## for R
+REGR_R <- COMP1 %>% 
+  dplyr::select(Clone, T.Cor, GLUET.Cor) %>% 
+           mutate(Clone = c(1:67),
+                  beforeGLUE = T.Cor,
+                  afterGLUE = GLUET.Cor) %>%
+  dplyr::select(Clone, beforeGLUE, afterGLUE)
+
+medians <- REGR_R %>%
+  summarise(beforeGLUE = median(beforeGLUE),
+         afterGLUE = median(afterGLUE))# %>% reshape2::melt(value.name = "r", variable.name = "Performance")
+#statte <- REGR_R %>%
+ # mutate(beforeGLUE = as.numeric(beforeGLUE),
+  #       afterGLUE = as.numeric(afterGLUE))
+ 
+
+stattest <- REGR_R %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE)) %>%
+  dplyr::select(beforeGLUE, afterGLUE) %>%
+  t.test()
+p.value <- stattest$p.value
+
+#jpeg(filename = "Rcompare.jpeg", res = 400, width = 14, height = 8, units = "cm")
+
+CompFIG1 <- ggplot(data = REGR_R, aes(x = beforeGLUE, y = afterGLUE))+
+  geom_point(aes()) + 
+  xlab("before GSPs estimation") +
+  ylab("after GSPs estimation") +
+  theme(axis.text.x = element_text(size=4),
+          axis.text.y = element_text(size=4)) +
+  geom_abline(mapping = aes(slope=1, intercept = 0, color = "Identity line"), key_glyph = "dotplot")  +
+  ggtitle("r value comparison") +
+  geom_hline(data = medians, mapping = aes(yintercept = afterGLUE, color = "Median afterGLUE")) +
+  geom_vline(data = medians, mapping = aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
+  scale_color_manual(name = "Legend", 
+                     values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
+  annotate(x = -0.23, y = 0.40, label = paste0("t.test, ", "p = ", round(p.value, 2)),
+           color = "black", geom = "text") +
+  theme_classic() 
+#dev.off()
+
+
+## for RMSE
+REGR_RMSE <- COMP1 %>% 
+  dplyr::select(Clone, T.rmse, GLUET.rmse) %>% 
+           mutate(Clone = c(1:67),
+                  beforeGLUE = T.rmse,
+                  afterGLUE = GLUET.rmse) %>%
+  dplyr::select(Clone, beforeGLUE, afterGLUE)
+
+mediansRMSE <- REGR_RMSE %>%
+  summarise(beforeGLUE = median(beforeGLUE),
+         afterGLUE = median(afterGLUE)) 
+
+stattestRMSE <- REGR_RMSE %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE)) %>%
+  dplyr::select(beforeGLUE, afterGLUE) %>%
+  t.test()
+pRMSE.value <- stattestRMSE$p.value
+
+#jpeg(filename = "RMSEcompare.jpeg", res = 400, width = 14, height = 8, units = "cm")
+CompFIG2 <- ggplot(data = REGR_RMSE, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+   geom_point(aes()) +
+  xlab("before GSPs estimation") +
+  ylab("after GSPs estimation") +
+  theme(axis.text.x = element_text(size=4),
+          axis.text.y = element_text(size=4)) +
+   ggtitle("RMSE value comparison") +
+  geom_abline(mapping = aes(slope=1, intercept = 0, color = "Identity line"), key_glyph = "dotplot") +
+   geom_hline(data = mediansRMSE, aes(yintercept =  afterGLUE, color = "Median afterGLUE")) +
+   geom_vline(data = mediansRMSE, aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
+    scale_color_manual(name = "Legend", 
+                     values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
+   #scale_linetype_manual(name ="Median", values = "solid", colours()) +
+  annotate(x = 10.5, y = 11, label = paste0("t.test, ", "p < 0.001"),
+            color = "black", geom = "text") +
+  theme_classic() 
+#dev.off()
+
+## for d_index
+REGR_d <- COMP1 %>% 
+  dplyr::select(Clone, T.d, GLUET.d) %>% 
+           mutate(Clone = c(1:67),
+                  beforeGLUE = T.d,
+                  afterGLUE = GLUET.d) %>%
+  dplyr::select(Clone, beforeGLUE, afterGLUE)
+
+mediansd <- REGR_d %>%
+  summarise(beforeGLUE = median(beforeGLUE),
+         afterGLUE = median(afterGLUE))
+
+stattestd <- REGR_d %>%
+  mutate(beforeGLUE = as.numeric(beforeGLUE),
+         afterGLUE = as.numeric(afterGLUE)) %>%
+  dplyr::select(beforeGLUE, afterGLUE) %>%
+  t.test()
+pd.value <- stattestd$p.value
+
+#jpeg(filename = "dcompare.jpeg")#, res = 400, width = 14, height = 8, units = "cm")
+CompFIG3 <- ggplot(data = REGR_d, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+   geom_point(aes()) +
+  xlab("before GSPs estimation") +
+  ylab("after GSPs estimation") +
+  theme(axis.text.x = element_text(size=4),
+          axis.text.y = element_text(size=4)) +
+   #scale_color_brewer("Performance", palette = "Set1") +E
+   ggtitle("d comparison") +
+  geom_abline(mapping = aes(slope=1, intercept = 0, color = "Identity line"), key_glyph = "dotplot") +
+   geom_hline(data = mediansd, aes(yintercept =  afterGLUE, color = "Median afterGLUE")) +
+   geom_vline(data = mediansd, aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
+    scale_color_manual(name = "Legend", 
+                     values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
+  #scale_linetype_manual(name ="Median", values = "solid", colours()) +
+   annotate(x = 0.24, y = 0.7, label = paste0("t.test, ", "p < 0.001"),
+            color = "black", geom = "text") +
+  theme_classic() #+ # for removing grille hjust = 1
+
+
+nt <- theme(legend.position='none')
+p = list(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt) %>% map(~.x + labs(x=NULL, y=NULL))
+#jpeg(filename = "Result/Rcomparison_TOP.jpeg")
+grid_arrange_shared_legend(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt, ncol = 2, nrow = 2)
+#dev.off() 
+```
+
+
+
+###General Figure root yield
+```{r}
+library(data.table)
+GLUEYIELD <- read.csv("data/GLUEHWAM_VALana.csv") #EVALana2.csv
+GLUEYIELD$Location <- GLUEYIELD$EXCODE
+GLUEYIELD$Location[grep(pattern = "^UYAB", x = GLUEYIELD$EXCODE)] <- "ABUJA"
+GLUEYIELD$Location[grep(pattern = "^UYAG", x = GLUEYIELD$EXCODE)] <- "AGO"
+GLUEYIELD$Location[grep(pattern = "^UYIB", x = GLUEYIELD$EXCODE)] <- "IBADAN"
+GLUEYIELD$Location[grep(pattern = "^UYIK", x = GLUEYIELD$EXCODE)] <- "IKENNE"
+#GLUEYIELD$Location[grep(pattern = "^UYKA", x = GLUEYIELD$EXCODE)] <- "KANO"
+GLUEYIELD$Location[grep(pattern = "^UYMO", x = GLUEYIELD$EXCODE)] <- "MOKWA"
+GLUEYIELD$Location[grep(pattern = "^UYON", x = GLUEYIELD$EXCODE)] <- "ONNE"
+#GLUEYIELD$Location[grep(pattern = "^UYOT", x = GLUEYIELD$EXCODE)] <- "OTOBI"
+GLUEYIELD$Location[grep(pattern = "^UYUB", x = GLUEYIELD$EXCODE)] <- "UBIAJA"
+GLUEYIELD$Location[grep(pattern = "^UYUM", x = GLUEYIELD$EXCODE)] <- "UMUDIKE"
+#GLUEYIELD$Location[grep(pattern = "^UYZA", x = GLUEYIELD$EXCODE)] <- "ZARIA"
+
+GLUEYIELD$Year <- GLUEYIELD$EXCODE
+#GLUEYIELD$Year[grep(pattern = "*2001CS", x = GLUEYIELD$EXCODE)] <- "2020"
+GLUEYIELD$Year[grep(pattern = "*1901CS", x = GLUEYIELD$EXCODE)] <- "2019"
+GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
+GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
+
+GLUEADANA <-  GLUEYIELD %>%
+dplyr::select(Clone, EXCODE, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, Year, Location) %>%
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         CWAMM = CWAMM / 1000,
+         CWAMS = CWAMS / 1000,
+         Environment = paste0(Location, 20, str_sub(EXCODE, 5, 6)))
+
+#eq <- function(x,y) {
+ # m <- lm(y ~ x)
+  #as.character(
+   # as.expression(
+    #  substitute(italic(r)^2~"="~r2,
+     #            list(r2 = format(summary(m)$r.squared, digits = 2)))
+    #)
+  #)
+#}
+
+#jpeg(filename = "Result/Totalroot.jpeg", res = 400, width = 14, height = 8, units = "cm")
+ggplot(data = GLUEADANA,aes(x = HWAMS, y = HWAMM)) +
+  geom_point(aes(color = Location)) +
+  scale_color_brewer(palette = "Dark2") +  
+ geom_smooth(aes(fill='lm smooth'), method = "lm", se=F, colour = "black") + 
+  
+ geom_abline(mapping = aes(slope=1, intercept = 0, fill='Identity line'), colour = "green") +#
+ scale_fill_manual(values = c('Identity line' = "green", 'smooth line' = "black"),
+                      name = 'Lines', 
+                   guide=guide_legend(override.aes = list(linetype=c(1,2), color=c('green', 'black')))) + 
+  ggtitle(Storage~root~dry~weight)+
+  xlab(expression(Simulated~root~weight~(t~ha^{-1}))) +
+  ylab(Observed~root~weight~(t~ha^{-1})) +
+  ylim(0,25) +
+  geom_text(x = 6,
+            y = 24, size = 4, 
+            label = paste0("r = ", round(cor(GLUEADANA$HWAMS, GLUEADANA$HWAMM, use = "complete.obs"), 2))) + #eq(GLUEADANA$HWAMM, GLUEADANA$HWAMS), parse = TRUE) +
+   geom_text(x = 6.2, y = 23, size = 4,
+            label = paste0("RMSE = ", round(rmse(GLUEADANA$HWAMS, GLUEADANA$HWAMM), 1))) +
+  geom_text(x = 6, y = 22, size = 4,
+            label = paste0("d = ", round(d(GLUEADANA$HWAMS, GLUEADANA$HWAMM, na.rm = TRUE), 2))) + 
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+#dev.off()
+ 
+```
+
+
+###General Figure TOP YIELD
+```{r}
+library(data.table)
+GLUEYIELD <- read.csv("data/GLUEHWAM_VALana.csv") #EVALana2.csv
+
+GLUEYIELD$Location <- GLUEYIELD$EXCODE
+GLUEYIELD$Location[grep(pattern = "^UYAB", x = GLUEYIELD$EXCODE)] <- "ABUJA"
+GLUEYIELD$Location[grep(pattern = "^UYAG", x = GLUEYIELD$EXCODE)] <- "AGO"
+GLUEYIELD$Location[grep(pattern = "^UYIB", x = GLUEYIELD$EXCODE)] <- "IBADAN"
+GLUEYIELD$Location[grep(pattern = "^UYIK", x = GLUEYIELD$EXCODE)] <- "IKENNE"
+#GLUEYIELD$Location[grep(pattern = "^UYKA", x = GLUEYIELD$EXCODE)] <- "KANO"
+GLUEYIELD$Location[grep(pattern = "^UYMO", x = GLUEYIELD$EXCODE)] <- "MOKWA"
+GLUEYIELD$Location[grep(pattern = "^UYON", x = GLUEYIELD$EXCODE)] <- "ONNE"
+#GLUEYIELD$Location[grep(pattern = "^UYOT", x = GLUEYIELD$EXCODE)] <- "OTOBI"
+GLUEYIELD$Location[grep(pattern = "^UYUB", x = GLUEYIELD$EXCODE)] <- "UBIAJA"
+GLUEYIELD$Location[grep(pattern = "^UYUM", x = GLUEYIELD$EXCODE)] <- "UMUDIKE"
+#GLUEYIELD$Location[grep(pattern = "^UYZA", x = GLUEYIELD$EXCODE)] <- "ZARIA"
+
+GLUEYIELD$Year <- GLUEYIELD$EXCODE
+#GLUEYIELD$Year[grep(pattern = "*2001CS", x = GLUEYIELD$EXCODE)] <- "2020"
+GLUEYIELD$Year[grep(pattern = "*1901CS", x = GLUEYIELD$EXCODE)] <- "2019"
+GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
+GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
+
+GLUEADANA <-  GLUEYIELD %>%
+ dplyr::select(Clone, EXCODE, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, year, Location) %>%
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         CWAMM = CWAMM / 1000,
+         CWAMS = CWAMS / 1000,
+         Environment = paste0(Location, 20, str_sub(EXCODE, 5, 6))) 
+
+#Get off 1 abberage data
+GLUEADANA <- GLUEADANA %>% filter(CWAMM < 40)#
+
+GLUEADANA
+#eq <- function(x,y) {
+ # m <- lm(y ~ x)
+  #as.character(
+   # as.expression(
+    #  substitute(italic(r)^2~"="~r2,
+     #            list(r2 = format(summary(m)$r.squared, digits = 2)))
+    #)
+  #)
+#}
+
+#jpeg(filename = "Result/Totalroot.jpeg", res = 400, width = 14, height = 8, units = "cm")
+ggplot(data = GLUEADANA,aes(x = CWAMS, y = CWAMM)) +
+  geom_point(aes(color = Location)) +
+  geom_smooth(method = "lm") + 
+  ggtitle(Aboveground~dry~weight) +
+  geom_abline(mapping = aes(slope=1, intercept = 0), color = "black") + #, key_glyph = "dotplot") +
+  xlab(expression(Simulated~top~weight~(t~ha^{-1}))) +
+  ylab(Observed~top~weight~(t~ha^{-1})) +
+  geom_text(x = 6,#max(GLUEADANA$HWAMM, na.rm = TRUE) - 0.8*sd(GLUEADANA$HWAMM, na.rm = TRUE),
+            y = 24, size = 3.5, #max(GLUEADANA$HWAMS, na.rm = TRUE) - 0.8*sd(GLUEADANA$HWAMS, na.rm = TRUE),
+            label = paste0("r = ", round(cor(GLUEADANA$CWAMS, GLUEADANA$CWAMM, use = "complete.obs"), 2))) + #eq(GLUEADANA$HWAMM, GLUEADANA$HWAMS), parse = TRUE) +
+   geom_text(x = 6.6, y = 22, size = 3.5,
+            label = paste0("RMSE = ", round(rmse(GLUEADANA$CWAMS, GLUEADANA$CWAMM), 1))) +
+  geom_text(x = 6, y = 20, size = 3.5,
+            label = paste0("d = ", round(d(GLUEADANA$CWAMS, GLUEADANA$CWAMM, na.rm = TRUE), 2))) +
+  
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+#dev.off()
+ 
+```
+
+# for LAIX
+```{r}
+GLUEADANAL <-  GLUEADANA %>%
+  #filter(!is.na(LAIXM)) %>%
+   filter(LAIXM < 10 & Location == "IBADAN")
+#jpeg(filename = "Result/LAIXplotN.jpeg", res = 400, width = 14, height = 8, units = "cm")
+ggplot(data = GLUEADANAL,aes(x = LAIXS, y = LAIXM)) +
+  geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm", color = "black") + ggtitle("LAI") +
+  xlab("Simulated LAI") +
+  ylab("Observed LAI") +
+  geom_text(x = 1.2,
+            y = 7.9, size = 3.5,
+            label = paste0("r = ", round(cor(GLUEADANAL$LAIXS, GLUEADANAL$LAIXM, use = "complete.obs"), 2))) +
+  geom_text(x = 1.4, y = 7.4, size = 3.5,
+            label = paste0("RMSE = ", round(rmse(GLUEADANAL$LAIXS, GLUEADANAL$LAIXM), 1))) + 
+  geom_text(x = 1.2, y = 6.9, size = 3.5,
+            label = paste0("d = ", round(d(GLUEADANAL$LAIXS, GLUEADANAL$LAIXM, na.rm = TRUE), 2))) +
+ 
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+#dev.off()
+```
+
+## for root yield with filtrered environ
+```{r}
+
+GLUEADANAfiltrered <-  GLUEYIELD %>%
+  dplyr::select(Clone, EXCODE, HWAMM, HWAMS, Year, Location) %>% #CWAMM, CWAMS, LAIXM,LAIXS
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         Environment = paste0(Location, 20, str_sub(EXCODE, 5, 6))) %>%
+  filter(Environment %in% c("ABUJA2019", "AGO2017", "IBADAN2017", "IBADAN2018", "IBADAN2019", "IKENNE2019", "MOKWA2018", "UMUDIKE2018"))
+
+jpeg(filename = "Result/filtreredENV.jpeg", res = 400, width = 14, height = 8, units = "cm")
+ggplot2::ggplot(data = GLUEADANAfiltrered,aes(x = HWAMS, y = HWAMM)) +
+   ggtitle(Root~Yield) +
+  geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = 4, y = 25, size = 3.5,
+            label = paste0("r = ", round(cor(GLUEADANAfiltrered$HWAMS, GLUEADANAfiltrered$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = 5, y = 23, size = 3.5,
+            label = paste0("RMSE = ", round(rmse(GLUEADANAfiltrered$HWAMS, GLUEADANAfiltrered$HWAMM), 1))) +
+  geom_text(x = 4, y = 21, size = 3.5,
+            label = paste0("d = ", round(d(GLUEADANAfiltrered$HWAMS, GLUEADANAfiltrered$HWAMM, na.rm = TRUE), 2))) +
+  
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+ 
+dev.off()
+
+```
+
+##For all clones individually
+```{r}
+
+ClonesID <- unique(GLUEADANAfiltrered$Clone) %>% .[order(.)]
+
+
+for(i in 1:length(ClonesID)) {
+  FileNamef <- paste("flt_", ClonesID[i], ".jpeg", sep = "")
+  dataf <- GLUEADANAfiltrered %>% filter(Clone == ClonesID[i])
+  
+  
+  Figf <- ggplot(data = dataf,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle(ClonesID[i]) +
+  
+    xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(dataf$HWAMS, na.rm = TRUE) - 0.4*max(dataf$HWAMS, na.rm = TRUE), y = max(dataf$HWAMM, na.rm = TRUE) - 0.1*max(dataf$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0("r = ", round(cor(dataf$HWAMS, dataf$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(dataf$HWAMS, na.rm = TRUE) - 0.4*max(dataf$HWAMS, na.rm = TRUE), y = max(dataf$HWAMM, na.rm = TRUE) - 0.2*max(dataf$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0("RMSE = ", round(rmse(dataf$HWAMS, dataf$HWAMM), 1))) +
+  geom_text(x = max(dataf$HWAMS, na.rm = TRUE) - 0.4*max(dataf$HWAMS, na.rm = TRUE), y = max(dataf$HWAMM, na.rm = TRUE) - 0.3*max(dataf$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0("d = ", round(d(dataf$HWAMS, dataf$HWAMM, na.rm = TRUE), 2))) +
+  
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+ggsave(plot = Figf, filename = FileNamef,
+      path = "Result/PlotGLUEfiltred", device = "jpeg", dpi = 250)
+}#width = 8, height = 6, units = "in"
+#gsave(plot = Fig, filename = FileNamef,
+ #        width = 8, height = 6, units = "in", path = #"Result/PlotGLUEHWAM", device = "jpeg", dpi = 250)
+```
+
+
+```{r}
+data1 <- GLUEADANAfiltrered %>% filter(Clone == "IITA-TMS-IBA000070")
+data2 <- GLUEADANAfiltrered %>% filter(Clone == "TMS13F1021P0008")
+data3 <- GLUEADANAfiltrered %>% filter(Clone == "TMS14F1049P0001")
+data4 <- GLUEADANAfiltrered %>% filter(Clone == "IITA-TMS-IBA982101")
+data5 <- GLUEADANAfiltrered %>% filter(Clone == "TMS13F1461P0002")
+data6 <- GLUEADANAfiltrered %>% filter(Clone == "TMS14F1285P0017")
+data7 <- GLUEADANAfiltrered %>% filter(Clone == "TMEB419")
+data8 <- GLUEADANAfiltrered %>% filter(Clone == "TMS13F1376P0018")
+data9 <- GLUEADANAfiltrered %>% filter(Clone == "TMS14F1297P0019")
+
+66
+
+FIG1 <- 
+ggplot(data = data1,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("IITA-TMS-IBA30570") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data1$HWAMS, na.rm = TRUE) - 0.50*max(data1$HWAMS, na.rm = TRUE), y = max(data1$HWAMM, na.rm = TRUE) - 0.01*max(data1$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data1$HWAMS, data1$HWAMM, use = "complete.obs"), 2))) + 
+  geom_text(x = max(data1$HWAMS, na.rm = TRUE) - 0.478*max(data1$HWAMS, na.rm = TRUE), y = max(data1$HWAMM, na.rm = TRUE) - 0.07*max(data1$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data1$HWAMS, data1$HWAMM), 1))) + 
+  geom_text(x = max(data1$HWAMS, na.rm = TRUE) - 0.50*max(data1$HWAMS, na.rm = TRUE), y = max(data1$HWAMM, na.rm = TRUE) - 0.13*max(data1$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data1$HWAMS, data1$HWAMM, na.rm = TRUE), 2))) + 
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG1 <- FIG1 + theme(plot.title = element_text(size=7, face = "italic")) +
+  theme(legend.text = element_text(size = 5), legend.key.size = unit(0.3, units = "cm"), legend.title = element_text(size = 7))#
+  #theme(legend.key.size = unit(0.3, units = "cm"), element_text(size = 5))
+
+## 2
+FIG2 <- 
+ggplot(data = data2,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMS13F1021P0008") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data2$HWAMS, na.rm = TRUE) - 0.50*max(data2$HWAMS, na.rm = TRUE), y = max(data2$HWAMM, na.rm = TRUE) + 0.1*max(data2$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data2$HWAMS, data2$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data2$HWAMS, na.rm = TRUE) - 0.465*max(data2$HWAMS, na.rm = TRUE), y = max(data2$HWAMM, na.rm = TRUE) - 0.007*max(data2$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data2$HWAMS, data2$HWAMM), 1))) +
+  geom_text(x = max(data2$HWAMS, na.rm = TRUE) - 0.5*max(data2$HWAMS, na.rm = TRUE), y = max(data2$HWAMM, na.rm = TRUE) - 0.1*max(data2$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data2$HWAMS, data2$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG2 <- FIG2 + theme(plot.title = element_text(size=7, face = "italic")) 
+
+##3
+FIG3 <- 
+ggplot(data = data3,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMS14F1049P0001") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data3$HWAMS, na.rm = TRUE) - 0.50*max(data3$HWAMS, na.rm = TRUE), y = max(data3$HWAMM, na.rm = TRUE) + 0.07*max(data3$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data3$HWAMS, data3$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data3$HWAMS, na.rm = TRUE) - 0.479*max(data3$HWAMS, na.rm = TRUE), y = max(data3$HWAMM, na.rm = TRUE) - 0.01*max(data3$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data3$HWAMS, data3$HWAMM), 1))) +
+  geom_text(x = max(data3$HWAMS, na.rm = TRUE) - 0.50*max(data3$HWAMS, na.rm = TRUE), y = max(data3$HWAMM, na.rm = TRUE) - 0.09*max(data3$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data3$HWAMS, data3$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG3 <- FIG3 + theme(plot.title = element_text(size=5, face = "italic")) 
+#4
+FIG4 <- 
+ggplot(data = data4,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("IITA-TMS-IBA982101") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data4$HWAMS, na.rm = TRUE) - 0.57*max(data4$HWAMS, na.rm = TRUE), y = max(data4$HWAMM, na.rm = TRUE) + 0.2*max(data4$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data4$HWAMS, data4$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data4$HWAMS, na.rm = TRUE) - 0.528*max(data4$HWAMS, na.rm = TRUE), y = max(data4$HWAMM, na.rm = TRUE) + 0.11*max(data4$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data4$HWAMS, data4$HWAMM), 1))) +
+  geom_text(x = max(data4$HWAMS, na.rm = TRUE) - 0.57*max(data4$HWAMS, na.rm = TRUE), y = max(data4$HWAMM, na.rm = TRUE) + 0.02*max(data4$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data4$HWAMS, data4$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG4 <- FIG4 + theme(plot.title = element_text(size=5, face = "italic")) 
+
+##5
+FIG5 <- 
+ggplot(data = data5,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMS13F1461P0002") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data5$HWAMS, na.rm = TRUE) - 0.71*max(data5$HWAMS, na.rm = TRUE), y = max(data5$HWAMM, na.rm = TRUE) + 0.01*max(data5$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data1$HWAMS, data1$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data5$HWAMS, na.rm = TRUE) - 0.67*max(data5$HWAMS, na.rm = TRUE), y = max(data5$HWAMM, na.rm = TRUE) - 0.07*max(data5$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data5$HWAMS, data5$HWAMM), 1))) +
+  geom_text(x = max(data5$HWAMS, na.rm = TRUE) - 0.71*max(data5$HWAMS, na.rm = TRUE), y = max(data5$HWAMM, na.rm = TRUE) - 0.15*max(data5$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data5$HWAMS, data5$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG5 <- FIG5 + theme(plot.title = element_text(size=5, face = "italic")) 
+
+##6
+FIG6 <- 
+ggplot(data = data6,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMS14F1285P0017") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data6$HWAMS, na.rm = TRUE) - 0.50*max(data6$HWAMS, na.rm = TRUE), y = max(data6$HWAMM, na.rm = TRUE) + 0.15*max(data6$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data6$HWAMS, data6$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data6$HWAMS, na.rm = TRUE) - 0.45*max(data6$HWAMS, na.rm = TRUE), y = max(data6$HWAMM, na.rm = TRUE) + 0.06*max(data6$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data6$HWAMS, data6$HWAMM), 1))) +
+  geom_text(x = max(data6$HWAMS, na.rm = TRUE) - 0.50*max(data6$HWAMS, na.rm = TRUE), y = max(data6$HWAMM, na.rm = TRUE) - 0.01*max(data6$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data6$HWAMS, data6$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG6 <- FIG6 + theme(plot.title = element_text(size=5, face = "italic")) 
+
+##7
+FIG7 <- 
+ggplot(data = data7,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMEB419") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data7$HWAMS, na.rm = TRUE) - 0.35*max(data7$HWAMS, na.rm = TRUE), y = max(data7$HWAMM, na.rm = TRUE) - 0.01*max(data7$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data7$HWAMS, data7$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data7$HWAMS, na.rm = TRUE) - 0.31*max(data7$HWAMS, na.rm = TRUE), y = max(data7$HWAMM, na.rm = TRUE) - 0.07*max(data7$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data7$HWAMS, data7$HWAMM), 1))) +
+  geom_text(x = max(data7$HWAMS, na.rm = TRUE) - 0.35*max(data7$HWAMS, na.rm = TRUE), y = max(data7$HWAMM, na.rm = TRUE) - 0.13*max(data7$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data7$HWAMS, data7$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG7 <- FIG7 + theme(plot.title = element_text(size=5, face = "italic")) 
+
+##8
+FIG8 <- 
+ggplot(data = data8,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMS13F1376P0018") +
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data8$HWAMS, na.rm = TRUE) - 0.43*max(data8$HWAMS, na.rm = TRUE), y = max(data8$HWAMM, na.rm = TRUE) + 0.13*max(data8$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data8$HWAMS, data8$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data8$HWAMS, na.rm = TRUE) - 0.38*max(data8$HWAMS, na.rm = TRUE), y = max(data8$HWAMM, na.rm = TRUE) + 0.05*max(data8$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data8$HWAMS, data8$HWAMM), 1))) +
+  geom_text(x = max(data8$HWAMS, na.rm = TRUE) - 0.425*max(data8$HWAMS, na.rm = TRUE), y = max(data8$HWAMM, na.rm = TRUE) - 0.02*max(data8$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data8$HWAMS, data8$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG8 <- FIG8 + theme(plot.title = element_text(size=5, face = "italic")) 
+
+##9
+FIG9 <- 
+ggplot(data = data9,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Environment)) +
+  geom_smooth(method = "lm") + ggtitle("TMS14F1297P0019") + 
+  xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+  ylab(Observed~Root~weight~(t~ha^{-1})) +
+  geom_text(x = max(data9$HWAMS, na.rm = TRUE) - 0.68*max(data9$HWAMS, na.rm = TRUE), y = max(data9$HWAMM, na.rm = TRUE) + 0.13*max(data9$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("r = ", round(cor(data9$HWAMS, data9$HWAMM, use = "complete.obs"), 2))) +
+  geom_text(x = max(data9$HWAMS, na.rm = TRUE) - 0.63*max(data9$HWAMS, na.rm = TRUE), y = max(data9$HWAMM, na.rm = TRUE) + 0.05*max(data9$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("RMSE = ", round(rmse(data9$HWAMS, data9$HWAMM), 1))) +
+  geom_text(x = max(data9$HWAMS, na.rm = TRUE) - 0.67*max(data9$HWAMS, na.rm = TRUE), y = max(data9$HWAMM, na.rm = TRUE) - 0.02*max(data9$HWAMM, na.rm = TRUE), size = 2,
+            label = paste0("d = ", round(d(data9$HWAMS, data9$HWAMM, na.rm = TRUE), 2))) +
+  theme_bw() + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+FIGG9 <- FIG9 + theme(plot.title = element_text(size=5, face = "italic")) 
+```
+
+
+```{r}
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
+#jpeg(filename = "PAM.jpeg")
+nt <- theme(legend.position='none')
+p = list(FIGG1+nt, FIGG2+nt, FIGG3+nt, FIGG4+nt, FIGG5+nt, FIGG6+nt, FIGG7+nt, FIGG8+nt, FIGG9+nt) %>% map(~.x + labs(x=NULL, y=NULL))
+
+#plotmath expressions
+
+yleft <- textGrob(expression(Observed~Root~weight~(t~ha^{-1})), 
+                  rot = 90, gp = gpar(fontsize = 10))
+
+bottom <- textGrob(expression(Simulated~Root~weight~(t~ha^{-1})), gp = gpar(fontsize = 10))
+
+# gridtext
+#yleft = richtext_grob(expression(Observed~dry~Root~weight(t~ha^{-1})), rot=90)
+#bottom = richtext_grob(expression(Simulated~Root~weight~(t~ha^{-1})))
+
+mylegend<-g_legend(FIGG1)
+grid.arrange(arrangeGrob(grobs=p, ncol = 3, nrow = 3,
+                         left = yleft, bottom = bottom), mylegend, ncol = 2, heights=c(15, 0.5), widths = c(8, 1.5))
+             
+#grid.arrange(grobs=p, ncol = 3, nrow = 3, 
+                           #left = yleft, bottom = bottom)
+
+#dev.off()
+#ggarrange(FIG1, FIG2, FIG3 + FIG4, FIG5, FIG6, FIG7, FIG8, FIG9,   rremove("x.text"), 
+      #    labels = c("A", "B", "C"),
+         # ncol = 2, nrow = 2) res = 400, width = 14, height = 8, units = "cm"
+```
+
+
+Check the rain and tha Temperature
+```{r}
+library(plotly)
+library(magick)
+library(rgl)
+EVAL2 <- read_csv("data/GLUEVALana2.csv")
+EVAL2$Location <- EVAL2$EXCODE
+EVAL2$Location[grep(pattern = "^UYAB", x = EVAL2$EXCODE)] <- "ABUJA"
+EVAL2$Location[grep(pattern = "^UYAG", x = EVAL2$EXCODE)] <- "AGO"
+EVAL2$Location[grep(pattern = "^UYIB", x = EVAL2$EXCODE)] <- "IBADAN"
+EVAL2$Location[grep(pattern = "^UYIK", x = EVAL2$EXCODE)] <- "IKENNE"
+EVAL2$Location[grep(pattern = "^UYMO", x = EVAL2$EXCODE)] <- "MOKWA"
+EVAL2$Location[grep(pattern = "^UYON", x = EVAL2$EXCODE)] <- "ONNE"
+EVAL2$Location[grep(pattern = "^UYUB", x = EVAL2$EXCODE)] <- "UBIAJA"
+EVAL2$Location[grep(pattern = "^UYUM", x = EVAL2$EXCODE)] <- "UMUDIKE"
+
+
+ggplot(EVAL2, aes(RAIN, HWAMMS)) +
+  geom_point(aes(color = Location)) +
+  scale_color_brewer(palette="Dark2") +
+  ylab("Obs - Sim") +
+  ggtitle("Model deviation vs RAIN")
+  
+#stat_summary(aes(y = HWAMMS,group=1), fun.y=mean, colour="black", geom="line",group=1)
+
+#EVAL2test <- EVAL2 %>% filter(Location %in% c("IBADAN", "IKENNE", "AGO", "MOKWA"))
+
+ggplot(EVAL2, aes(TMAX, HWAMMS)) +
+  geom_point(aes(color = Location)) +
+  scale_color_brewer(palette="Dark2") +
+  ylab("Obs - Sim") +
+  ggtitle("Model deviation vs TMAX")
+  #stat_summary(aes(y = HWAMMS,group=1), fun.y=mean, colour="black", geom="line",group=1)
+ 
+#OMP <- EVAL2 %>% dplyr::select(Lorgl::plot3d( EVAL2$HWAMMS, EVAL2$TMAX, EVAL2$RAIN, col=EVAL2$colour)cation, HWAMMS, RAIN, TMAX) %>% as.data.frame()
+#, type = "p", radius = .2, col=as.character(c("UBIAJA", "UMUDIKE", "MOKWA", "ONNE", "IBADAN",  "IKENNE", "ABUJA", "AGO")))
+
+#colors <- c('#FF5233', '#FFA533', '#7E9B23', '#C7DC18', "#16B8B1", "#2F78F0", "#9E2FF0", "#F02FB2")
+
+EVAL2 <- EVAL2 %>% mutate(colour = case_when(Location == "UBIAJA" ~ "#FF5233", Location == "AGO" ~ '#FFA533', Location == "MOKWA" ~ '#7E9B23', Location == "UMUDIKE" ~ '#C7DC18', Location == "ONNE" ~ "#16B8B1", Location == "IBADAN" ~ "#2F78F0", Location == "IKENNE" ~ "#9E2FF0", Location == "ABUJA" ~ "#F02FB2"))
+
+MICHE3D <- scatterplot3d(EVAL2$HWAMMS, EVAL2$TMAX, EVAL2$RAIN, main="Model deviation vs TMAX and RAIN", cex.main = 0.5,
+              xlab = "Obs - Sim",
+              ylab = "TMAX (c/year)",
+              zlab = "RAIN (mm/year)", pch = 16, cex.axis = 0.5, cex.lab = 0.5, box=FALSE, color = EVAL2$colour,  angle= 20)#y.margin.add,
+legend("bottom", legend = c("UBIAJA", "AGO", "MOKWA", "UMUDIKE", "ONNE", "IBADAN", "IKENNE" , "ABUJA"),
+      col =  c("#FF5233", '#FFA533', '#7E9B23', '#C7DC18', "#16B8B1", "#2F78F0", "#9E2FF0", "#F02FB2"), pch = 16, inset=c(-2.2), cex=.4)
+```
+

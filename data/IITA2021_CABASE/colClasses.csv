@@ -1,0 +1,104 @@
+colName,colClass
+studyYear,numeric
+programDbId,numeric
+programName,character
+programDescription,character
+studyDbId,numeric
+studyName,character
+studyDescription,character
+studyDesign,character
+plotWidth,numeric
+plotLength,numeric
+fieldSize,numeric
+fieldTrialIsPlannedToBeGenotyped,character
+fieldTrialIsPlannedToCross,character
+plantingDate,character
+harvestDate,character
+locationDbId,numeric
+locationName,character
+germplasmDbId,numeric
+germplasmName,character
+germplasmSynonyms,character
+observationLevel,character
+observationUnitDbId,numeric
+observationUnitName,character
+replicate,numeric
+blockNumber,numeric
+plotNumber,numeric
+rowNumber,numeric
+colNumber,numeric
+entryType,character
+plantNumber,numeric
+plantedSeedlotStockDbId,numeric
+plantedSeedlotStockUniquename,character
+plantedSeedlotCurrentCount,numeric
+plantedSeedlotCurrentWeightGram,numeric
+plantedSeedlotBoxName,character
+plantedSeedlotTransactionCount,numeric
+plantedSeedlotTransactionWeight,numeric
+plantedSeedlotTransactionDescription,character
+availableGermplasmSeedlotUniquenames,character
+L chromometer value|CO_334:0002065,numeric
+a chromometer value|CO_334:0002066,numeric
+apical pubescence visual rating 0-2|CO_334:0000309,numeric
+b chromometer value|CO_334:0002064,numeric
+branching level counting|CO_334:0000079,numeric
+cassava bacterial blight incidence 3-month evaluation|CO_334:0000178,numeric
+cassava bacterial blight severity 3-month evaluation|CO_334:0000175,numeric
+cassava green mite severity first evaluation|CO_334:0000189,numeric
+cassava green mite severity second evaluation|CO_334:0000190,numeric
+cassava mosaic disease incidence 1-month evaluation|CO_334:0000195,numeric
+cassava mosaic disease incidence 3-month evaluation|CO_334:0000196,numeric
+cassava mosaic disease severity 1-month evaluation|CO_334:0000191,numeric
+cassava mosaic disease severity 3-month evaluation|CO_334:0000192,numeric
+central leaf shape visual rating 1-10|CO_334:0000119,numeric
+dry matter content by specific gravity method|CO_334:0000160,numeric
+dry matter content percentage|CO_334:0000092,numeric
+dry yield|CO_334:0000014,numeric
+ease of peeling root cortex visual rating 1-3|CO_334:0000308,numeric
+first apical branch height measurement in cm|CO_334:0000106,numeric
+first fully expanded leaf color visual rating 1-9|CO_334:0000102,numeric
+fresh root yield|CO_334:0000013,numeric
+fresh shoot weight measurement in kg per plot|CO_334:0000016,numeric
+fresh storage root weight per plot|CO_334:0000012,numeric
+fufu dry weight in kg|CO_334:0002019,numeric
+fufu fibre weight in g|CO_334:0002016,numeric
+fufu initial weight in kg|CO_334:0002013,numeric
+fufu peel weight in kg|CO_334:0002014,numeric
+fufu peeled root weight in kg|CO_334:0002015,numeric
+fufu pressed weight in kg|CO_334:0002018,numeric
+gari fried weight in kg|CO_334:0002026,numeric
+gari initial weight in kg|CO_334:0002020,numeric
+gari mash weight in kg|CO_334:0002023,numeric
+gari peel weight in kg|CO_334:0002021,numeric
+gari peeled root weight in kg|CO_334:0002022,numeric
+gari pressed weight in kg|CO_334:0002024,numeric
+gari pulverised weight in kg|CO_334:0002025,numeric
+gari shaft coarse weight in g|CO_334:0002027,numeric
+gari shaft medium weight in g|CO_334:0002028,numeric
+harvest index variable|CO_334:0000015,numeric
+initial vigor assessment 1-7|CO_334:0000009,numeric
+petiole color visual rating 1-9|CO_334:0000023,numeric
+plant architecture visual rating 1-5|CO_334:0000099,numeric
+plant height measurement in cm|CO_334:0000018,numeric
+plant stands harvested counting|CO_334:0000010,numeric
+root evaluation scaled 1-5|CO_334:0000228,numeric
+root neck length visual rating 0-7|CO_334:0000022,numeric
+root number counting|CO_334:0000011,numeric
+root weight in air|CO_334:0000157,numeric
+root weight in water|CO_334:0000158,numeric
+rotted storage root counting|CO_334:0000084,numeric
+specific gravity|CO_334:0000163,numeric
+sprout count at one-month|CO_334:0000213,numeric
+sprout count at three-month|CO_334:0000214,numeric
+sprouting proportion|CO_334:0000008,numeric
+starch content percentage|CO_334:0000071,numeric
+staygreen visual scale 1-9|CO_334:0000224,numeric
+storage root cortex color visual rating 1-4|CO_334:0000115,numeric
+storage root periderm color visual rating 1-4|CO_334:0000064,numeric
+storage root pulp color visual rating 1-3|CO_334:0000021,numeric
+storage root shape visual rating 1-6|CO_334:0000020,numeric
+storage root size visual rating 1-7|CO_334:0000019,numeric
+total carotenoid by chart 1-8|CO_334:0000161,numeric
+unexpanded apical leaf color visual rating 1-9|CO_334:0000101,numeric
+notes,character

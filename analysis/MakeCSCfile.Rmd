@@ -1,0 +1,103 @@
+---
+title: "MakeCSCfile"
+author: ""
+date: "2021-10-17"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+ 1- I would like to write 67 new .CSC file with "TMEB419.CSC like template and named with the cultivar name Culf$"CNAME"
+ 2- Then in each new file, replace "CSUC0024 TMEB419" by the cultivar ID = Culf$"INGENO""+ Culf$"CNAME"
+ 3- Also write the colum "TRTNO" the corresponding numbe "@C" from Culf 
+ 
+ 
+ ### Load packages 
+```{r load packages, message=FALSE}
+ip <- installed.packages()
+packages_used <- c("workflowr", "tidyverse", "DSSAT", "here", "lubridate")
+for (package in packages_used){
+  if (!(package %in% ip[,"Package"])) install.packages(package)
+}
+library(tidyverse)
+```
+
+ 
+Make my Culf a part of the original "UYAB1901.CSX" file.
+```{r}
+Culf <- read.table("UYUB1901.CSX", skip = 81, header = T, nrows = 67, sep = "")
+#Varieties <- Varieties$CNAME
+#head(Varieties)
+#CulfTest <- read_lines(Varieties)
+#Culf <- CulfTest
+```
+
+Obtain the Trial names
+```{r}
+library(data.table)
+TrialList <- dir()[dir()%like%".CSX"]
+```
+
+Make file name with the colum "CNAME" Cul. file
+```{r}
+makeFileName <- function(X){
+  Name <- X$"CNAME"
+  #CulName <- paste0(Name)
+  #return(list(Name, CulName))
+  return(Name)
+} 
+```
+
+Make the cultivar ID with the first+the second colum from the CUL. file 
+```{r}
+makeCulID <- function(X){
+  ID1 <- X$"INGENO"
+  Name <- X$"CNAME"
+  CulID <- paste0(ID1," ", Name)
+  return(CulID)
+} 
+```
+
+Make traitement rows
+```{r}
+makeTrtRow <- function(culNum, x){
+    rowEnd <- "     0      0      0      0"
+    cn <- paste0(ifelse(culNum > 9, "", " "), culNum)
+    pad <- paste0(rep(" ", 85), collapse="")
+    return(paste0(x, pad, cn, rowEnd))
+  }
+  
+```
+
+Write file.CSC, 
+```{r}
+#rowEnd <- "  1  0  0  1  0  0  0  0  0  0  1  1"
+#varNameSpace <- 26
+for(i in Culf$CNAME) {
+    Variety <- i
+    template <- "TMEB419.CSC"
+    CSCFile <- read_lines(here::here("data/DSSATtempfile", template))
+    fileName <- makeFileName(Culf[Culf$CNAME%in%Variety, ])
+    FileID <- makeCulID (Culf[Culf$CNAME%in%Variety, ])
+    CSCFile <- gsub("CSUC0024 TMEB419", paste0("CS", FileID), CSCFile, fixed=T)#write the new cultivar ID in my CSC File
+    CSCTrialInfo <- CSCFile[1:2]
+    for(x in TrialList){
+      Trial <- read_lines(x)
+      strtTrt <- grep(pattern = "*TREATMENTS", x = Trial, fixed=T)+2
+      endTrt <- grep(pattern = "*CULTIVARS", x = Trial, fixed=T)-2
+      Trial <- Trial[strtTrt:endTrt]
+      Trial <- substr(Trial, start = 10, stop = 37)
+      write.table(Trial, "test.txt", quote = F, col.names = F, row.names = F)
+      Trial <- read.table("test.txt", header =F)
+      colnames(Trial) <- c("Clone", "Treatment")
+      Trial <- Trial[Trial$Clone%in%Variety,]
+      head(Trial)
+      CSCTrialInfo <- c(CSCTrialInfo, makeTrtRow(Trial$Treatment, x))
+    
+    }
+    
+    myfile <- here::here("data", "CSfile", paste0(fileName, ".CSC"))
+    write_lines(x = CSCTrialInfo, file = myfile, append=F)
+}
+```

@@ -1,0 +1,264 @@
+---
+title: "fieldtrialcheck"
+author: "Opamelas83"
+date: "2022-08-27"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+Sources of variability
+Fixed Factors:
+blockNumber: fixed-effect for block replicate effects with levels uniquely nested within trials combination
+Plantharvested: cov  
+
+Random Factors: germplasmName: random genetic effect, primary aim is to compute BLUPs for this term
+
+Error Variance:
+studyName: heterogeneous error variances for each trial
+
+```{r}
+library(workflowr); library(tidyverse); library(here); library(lubridate);  library(lme4); library(magrittr)
+colClasses <- readr::read_csv(here::here("data/IITA2021_CABASE", "colClasses.csv"))
+colString <- paste0(substring(colClasses$colClass, 1, 1), collapse="")
+Trialcheck1 <- readr::read_csv(here::here("data/IITA2021_CABASE", "UYT_GXE_pheno.csv"), col_types=colString)
+Trialcheck1 <- Trialcheck1 %>% filter(!(studyYear == 2020))
+```
+
+#create explicitly nested design variables (yearInLoc, trialInLocYr, repInTrial, blockInRep).
+```{r}
+#Trialcheck1 %<>% 
+ #    group_by(studyName) %>% 
+   #  summarize(N_replicate=length(unique(replicate)),
+        #       N_blockNumber=length(unique(blockNumber)),
+         #      doRepsEqualBlocks=all(replicate==blockNumber)) %>% 
+    # ungroup() %>% 
+     #mutate(CompleteBlocks=ifelse(N_replicate>1,TRUE,FALSE),
+      #      IncompleteBlocks=ifelse(N_blockNumber>1 & !doRepsEqualBlocks,TRUE,FALSE)) %>% 
+     #left_join(Trialcheck1) %>% 
+    # mutate(yearInLoc=paste0(programName,"_",locationName,"_",studyYear),
+          #  trialInLocYr=paste0(yearInLoc,"_",studyName),
+           # repInTrial=paste0(trialInLocYr,"_",replicate))
+```
+
+Cassavabase downloads use very long column-names corresponding to the full trait-ontology name. For convenience, I replace these names with abbreviations, documented here.
+I also use this opportunity to subselect traits.
+```{r}
+Trialcheck2 <- Trialcheck1 %>%
+  rename(CMD1S ="cassava mosaic disease severity 1-month evaluation|CO_334:0000191",
+        CMD3S = "cassava mosaic disease severity 3-month evaluation|CO_334:0000192",
+        DMC = "dry matter content percentage|CO_334:0000092",
+        FRWT = "fresh storage root weight per plot|CO_334:0000012",
+        PHar = "plant stands harvested counting|CO_334:0000010",
+        FTWT = "fresh shoot weight measurement in kg per plot|CO_334:0000016") %>% 
+  mutate(yearInLoc = paste0(locationName,"_",studyYear),
+         PlantsPerPlot = max(PHar, na.rm=TRUE),
+         PropPHar = PHar/PlantsPerPlot,
+         repInTrial = paste0(studyYear,"_",replicate),
+         blockInRep = paste0(repInTrial,"_",blockNumber)) %>%
+  dplyr::select(studyName,
+         yearInLoc ,
+         repInTrial,
+         blockInRep,
+         germplasmName,
+         CMD1S,
+         CMD3S,
+         DMC,
+         FRWT,
+         PropPHar, 
+         PHar,
+         PlantsPerPlot,
+         FTWT)
+```
+
+
+Variance component estimates
+```{r}
+TRaits <- c("FRWT", "FTWT")#, "CMD1S", "CMD3S") 
+PHenos <-Trialcheck2 %>% 
+      # Convert the data to "long format" 
+      pivot_longer(cols = all_of(TRaits), 
+                   names_to = "TRait", values_to = "Value") %>%
+      # Remove missing values
+      filter(!is.na(Value))
+
+PHenos <- PHenos %>% mutate(studyName = as.factor(studyName),
+                            yearInLoc = as.factor(yearInLoc),
+                            repInTrial = as.factor(repInTrial),
+                            blockInRep = as.factor(blockInRep),
+                            germplasmName = as.factor(germplasmName),
+                            PropPHar = as.factor(PropPHar)) 
+WW <- PHenos %>% group_by(studyName) %>% summarise(n=length(unique(PropPHar))) %>% filter(n==1)
+WWs <- droplevels(WW$studyName) %>% table %>% names
+TRials <- PHenos$studyName %>% table %>% .[order(.)] %>% names
+
+j <- TRaits[1]
+i <- TRials[1]
+results <- tibble()
+
+for(j in TRaits){
+  for(i in TRials){
+    DataM <- PHenos %>% filter(studyName == i, TRait == j)
+    meanNreps <- DataM %>%
+     count(germplasmName) %$% mean(n)
+    Formula1 <- "Value ~ (1|repInTrial) + (1|blockInRep ) + (1|germplasmName)" 
+Formula <- ifelse(unique(DataM$studyName) %in% WWs, Formula1, paste0(Formula1," + PropPHar"))
+    if(nrow(DataM) != 0){
+          try(MixedModels <-lmer(as.formula(Formula), data = DataM))
+     # try(MixedModelsrd <- lm(Value ~ PropPHar + repInTrial, data = DataM))
+    try(result <- tibble(Trait = j,
+                         Trial = i,
+                         VarG = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[1,2],
+                         VarE = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[4,2],
+                         H2 = VarG/(VarG + VarE/meanNreps),
+                         Rel =  suppressWarnings(MuMIn::r.squaredGLMM(MixedModels)[2]),
+                         model = Formula))
+                         #DvPrb = anova(MixedModels, MixedModelsrd) %>% as.data.frame() %>% .[2,"Pr(>Chisq)"] %>% as.numeric))
+    try(results <- bind_rows(results, result))
+    #rm(MixedModels); rm(result); rm(MixedModelsrd)
+    }
+    }
+}
+results
+
+
+write.table(results, file = "Result/MixedModelResults.csv", quote = F, sep =",",
+            row.names = F)
+
+#results %>% group_by(Trial) %>%
+  #summarise(Ntraits = n(),
+  #          VarGmean = mean(VarG, na.rm = F),
+   #         VarEmean = mean(VarE, na.rm = F),
+    #        H2mean = mean(H2, na.rm = F),
+     #       Real = mean(Real, na.rm = F),
+      #      DvPrb = mean(DvPrb, na.rm = F)) -> results2
+
+#write.table(results2, file = "Result/MeansVarCompMixedModels.csv", quote = F,
+        #    sep = ",", row.names = F)
+```
+
+
+```{r}
+library(reactable)
+reactable::reactable(results, groupBy = "Trial",
+                     columns = list(VarG = colDef(format = colFormat(digits = 3, locales = "en-US")),
+                                    VarE = colDef(format = colFormat(digits = 3, locales = "en-US")),
+                                    H2 = colDef(format = colFormat(digits = 3, locales = "en-US")),
+                                    Real = colDef(format = colFormat(digits = 3, locales = "en-US")),
+                                    DvPrb = colDef(format = colFormat(digits = 3, locales = "en-US"))))
+```
+
+Work with only two traits (without disease)
+```{r}
+results <- read_csv("Result/MixedModelResults.csv")
+results$Location <- results$Trial
+results$Location[grep(pattern = "AB", x = results$Trial)] <- "ABUJA"
+results$Location[grep(pattern = "AG", x = results$Trial)] <- "AGO"
+results$Location[grep(pattern = "IB", x = results$Trial)] <- "IBADAN"
+results$Location[grep(pattern = "IK", x = results$Trial)] <- "IKENNE"
+results$Location[grep(pattern = "KN", x = results$Trial)] <- "KANO"
+results$Location[grep(pattern = "MK", x = results$Trial)] <- "MOKWA"
+results$Location[grep(pattern = "ON", x = results$Trial)] <- "ONNE"
+results$Location[grep(pattern = "OT", x = results$Trial)] <- "OTOBI"
+results$Location[grep(pattern = "UB", x = results$Trial)] <- "UBIAJA"
+results$Location[grep(pattern = "UM", x = results$Trial)] <- "UMUDIKE"
+results$Location[grep(pattern = "ZA", x = results$Trial)] <- "ZARIA"
+
+resultsW <- results %>% mutate(Mtrial = if_else((str_detect(results$Trial, "^*19") | (str_detect(results$Trial, "^*18") & Location == "AGO")), paste0(str_extract(Trial, "\\d{2}+"),"_",substr(Trial, 17, 20),"_",Location), paste0(str_extract(Trial, "\\d{2}+"),"_",substr(Trial, 10, 13),"_",Location)))
+
+ 
+
+ggplot(resultsW) + 
+  geom_text(aes(x = H2, y = Rel, label = Mtrial), size = 2) + 
+  xlab("Heritability") +
+  ylab("Reliability")
+```
+
+#Filter my database to eliminate the trials with H2 < 0.25 and Reliability < 40% 
+```{r}
+resultstrial <- results %>% 
+  filter(H2 > 0.25 & Rel > 0.4) %>%
+  dplyr::select(Trial)
+undesiredtrials <- results%>%
+  filter(H2 < 0.25 | Rel < 0.4)  %>%
+  dplyr::select(Trial)
+#I should remove also trials common to both groups that means:  if a  trial has a bad genetic value for any of the trait, it will not be considered. If set A trial has bee removed, the set B should be too because I would keep the same rep for the 67 clones. 
+undesired <- undesiredtrials$Trial
+Trialcheckfiltered <- Trialcheck1 %>% filter(!studyName %in% undesired) #This should be my final trial I used to run the model.
+write.table(Trialcheckfiltered, file = "data/IITA2021_CABASE/UYT_GXE_phenofiltered.csv")#, quote = F, sep = ",", row.names = F)
+undesired_2022 <- c("17.GS.C2.setB.UYT.36.AG",
+  "18.GS.C2.setA.UYT.36.KN",
+  "18.GS.C2.setB.UYT.36.KN",
+  "18.GS.C2.setB.UYT.36.OT",
+  "18.GS.C2.UYT.36.setA.AG",
+  "19.GS.C2.UYT.36.setA.MK",
+  "19.GS.C2.UYT.36.setA.ZA",
+  "19.GS.C2.UYT.36.setB.AG",
+  "19.GS.C2.UYT.36.setB.ON",
+ "19.GS.C2.UYT.36.setB.ZA",
+ "20.GS.C2.UYT.36.setB.IB") 
+# I extracted my 28 trials I used to run the model. 
+Trialcheckfiltered_2022 <- resultsW %>% 
+  filter(!Trial %in% undesired_2022) %>%  
+  filter(H2 > 0.25 & Rel > 0.4)                                      
+
+ggplot(Trialcheckfiltered_2022) + 
+  geom_text(aes(x = H2, y = Rel, label = Mtrial, color = Trait), size = 2) +
+  xlab("Heritability") +
+  ylab("Reliability")
+```
+
+
+Luc
+```{r}
+
+Trialcheck1 <- readr::read_csv(here::here("data/IITA2021_CABASE", "UYT_GXE_pheno.csv"), col_types=colString)
+
+Trials <- Trialcheck1$studyName %>% table %>% .[order(.)] 
+
+Trialcheck2 <- Trialcheck1 %>% filter(studyName == Trials[1]) %>% 
+  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+         PHar = "plant stands harvested counting|CO_334:0000010",
+         FTY = "fresh shoot weight measurement in kg per plot|CO_334:0000016") %>% 
+  mutate(blockNumber = as.factor(blockNumber)) %>% 
+  lmer(formula = FRY ~ blockNumber + (1|germplasmName), data = .)
+visualize ()
+anova(Trialcheck2)
+
+Trialcheck2rd <- Trialcheck1 %>% filter(studyName == Trials[1]) %>% 
+  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+         PHar = "plant stands harvested counting|CO_334:0000010") %>% 
+  mutate(blockNumber = as.factor(blockNumber)) %>% 
+    lmer(formula =  FRY ~ PHar, data = .)#blockNumber
+anova(Trialcheck2, Trialcheck2rd)
+results <- tibble()
+
+for(i in Trials){
+  try(MixedModels <- Trialcheck1 %>% filter(studyName == i) %>% 
+  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+         PHar = "plant stands harvested counting|CO_334:0000010") %>% 
+  mutate(blockNumber = as.factor(blockNumber)) %>% 
+    lmer(formula =  FRY ~ PHar + (1|germplasmName), data = .))#blockNumber#
+  try(MixedModelsrd <- Trialcheck1 %>% filter(studyName == i) %>% 
+  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+         PHar = "plant stands harvested counting|CO_334:0000010") %>% 
+  mutate(blockNumber = as.factor(blockNumber)) %>% 
+    lm(formula =  FRY ~ PHar, data = .))#blockNumber
+  
+  try(result <- tibble(Trial = i,
+                       VarG = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[1,2],
+                       VarE = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[2,2],
+                       H2 = VarG/(VarG + VarE),
+                       Real = suppressWarnings(MuMIn::r.squaredGLMM(MixedModels)[2]),
+      DvPrb = anova(MixedModels, MixedModelsrd) %>% as.data.frame() %>% 
+        .[2,"Pr(>Chisq)"] %>% as.numeric))
+  try(results <- rbind(results, result))
+ rm(MixedModels); rm(result); rm(MixedModelsrd)
+}
+results
+
+```
+
+

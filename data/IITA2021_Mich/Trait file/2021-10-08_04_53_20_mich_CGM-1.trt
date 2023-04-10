@@ -1,0 +1,10 @@
+trait,format,defaultValue,minimum,maximum,details,categories,isVisible,realPosition
+"leaf life span in days			|CO_334:0000049","numeric","","","","estimate by counting the number of days or weeks for leaf life","","TRUE","1"
+"number of nodes at branching level 1 counting			|CO_334:0000352","numeric","","","","number of nodes at branching level 1 counting","","TRUE","2"
+"number of nodes at branching level 2 counting			|CO_334:0000363","numeric","","","","number of nodes at branching level 2 counting","","TRUE","3"
+"number of nodes at branching level 3 counting			|CO_334:0000368","numeric","","","","number of nodes at branching level 3 counting","","TRUE","4"
+"number of nodes at branching level 4 counting			|CO_334:0000383","numeric","","","","number of nodes at branching level 4 counting","","TRUE","5"
+"plant height with leaf in cm			|CO_334:0000123","numeric","","","","plant height with leaf in cm","","TRUE","6"
+"stem diameter measurement in cm|month 5			|COMP:0000129","numeric","","","","stem diameter measurement in cm|month 5","","TRUE","7"
+"stem number counting			|CO_334:0000129","numeric","","","","stem number counting","","TRUE","8"
+"notes","text","","","","Additional observations for future reference","","TRUE","9"

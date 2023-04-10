@@ -1,0 +1,12 @@
+$BATCH(CASSAVA)
+!
+! Directory    : C:\DSSAT48\CASSAVA
+! Command Line : C:\DSSAT48\DSCSM048.EXE CSYCA048 B DSSBatch.v48
+! Crop         : Cassava         
+! Experiment   : UYAB1901.CSX
+! ExpNo        : 1
+! Debug        : C:\DSSAT48\DSCSM048.EXE CSYCA048 " B DSSBatch.v48"
+!
+@FILEX                                                                                        TRTNO     RP     SQ     OP     CO
+C:\DSSAT48\CASSAVA\UYAB1901.CSX                                                                   1      1      0      1      0
+C:\DSSAT48\CASSAVA\UYAB1901.CSX                                                                   2      1      0      1      0

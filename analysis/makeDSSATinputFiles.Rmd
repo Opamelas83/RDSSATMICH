@@ -1,0 +1,249 @@
+---
+title: "makeDSSATinputFiles"
+author: "Michelle"
+date: "2021-11-16"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Load packages 
+```{r load packages, message=FALSE}
+ip <- installed.packages()
+packages_used <- c("workflowr", "tidyverse", "here", "lubridate")
+for (package in packages_used){
+  if (!(package %in% ip[,"Package"])) install.packages(package)
+}
+library(tidyverse)
+here::i_am("analysis/makeDSSATinputFiles.Rmd")
+```
+
+### Read the GxE trials file  
+```{r Read GxE trials}
+colClasses <- readr::read_csv(here::here("data/IITA2021_CABASE", "colClasses.csv"))
+# colClasses[14, 2] <- colClasses[15, 2] <- "Date"
+colString <- paste0(substring(colClasses$colClass, 1, 1), collapse="")
+uytAll <- readr::read_csv(here::here("data/IITA2021_CABASE", "UYT_GXE_pheno.csv"), 
+                                     col_types=colString)
+trials <- uytAll %>% distinct(studyYear, locationName)
+```
+
+The input files to DSSAT need formatted dates and number of days after planting
+```{r Planting Harvest Dates}
+makeDateStrings <- function(trial){
+  plant <- parse_date(trial$plantingDate[1], format="%Y-%B-%d")
+  harvest <- parse_date(trial$harvestDate[1], format="%Y-%B-%d")
+  yearPlant <- lubridate::year(plant)
+  yearHarv <- lubridate::year(harvest)
+  DAP <- julian(harvest) - julian(plant)
+  plantString <- paste0(substring(lubridate::year(plant), 3, 4),
+    julian(plant, 
+    origin=lubridate::as_date(paste0(lubridate::year(plant), "-01-01"))))
+  harvestString <- paste0(substring(lubridate::year(harvest), 3, 4),
+    julian(harvest, 
+    origin=lubridate::as_date(paste0(lubridate::year(harvest), "-01-01"))))
+  return(list(plntStr=plantString, harvStr=harvestString, DAP=DAP))
+}
+
+# Uniform trial name based on trial data
+makeTrialName <- function(trial){
+  loc <- trial$locationName[1]
+  year <- trial$studyYear[1]
+  # Put in EXP.DETAILS
+  trialName <- paste0("UY", substring(toupper(loc), 1, 2), year%%100, 
+                   "01")
+  return(trialName)
+}
+```
+
+The .CUL file for DSSAT has plant architecture parameters for each cultivar. 
+It also defines the cultivar number (UC prefix) linked to the cultivar names. 
+This function defines a cultivar number for all accessions in the 
+`UYT_GXE_pheno.csv` file. It will set all the ecotypes to 990029 which is 
+WestAfricaWhite.
+```{r Make Cultivar File}
+template <- "CSYCA048.CUL"
+ucStart <- 50 # What UC number should the file start at?
+varNameSpace <- 21 # How many spaces are available for the cultivar name?
+# What to end the row with once you have defined the UC and culitvar name
+# NOTE: this row end includes the ecotype, 990029 in this case
+rowEnd <- ". 990029 420.0 600.0 600.0 600.0   4.0   4.0   4.0   3.0   700   200   957  0.33  1.20  8.30   2.0"
+uniCul <- uytAll %>% distinct(germplasmName)
+
+makeUCstring <- function(ucNum){
+  pad <- paste0(rep("0", 3-floor(log10(ucNum))), collapse="")
+  return(paste0("UC", pad, ucNum))
+}
+padCulName <- function(culName){
+  pad <- paste0(rep(" ", varNameSpace-nchar(culName)), collapse="")
+  return(paste0(culName, pad))
+}
+
+curCUL <- read_lines(here::here("data/DSSATtempfile", template))
+ucss <- makeUCstring(ucStart)
+lineStart <- grep(ucss, curCUL)
+curCUL <- curCUL[1:(lineStart-1)]
+
+for (i in 1:nrow(uniCul)){
+  ucString <- makeUCstring(ucStart - 1 + i)
+  curCUL <- c(curCUL, paste0(ucString, " ", padCulName(uniCul[i,1]), rowEnd))
+}
+
+newCULname <- paste0(template, "_", lubridate::today())
+write_lines(curCUL, here::here("data", newCULname))
+
+# Add the ucNames to the germplasmNames: they will be needed later
+uniCul <- uniCul %>% mutate(
+  ucName=sapply(ucStart - 1 + 1:nrow(uniCul), makeUCstring))
+```
+
+Function to take data from a trial extracted from `uytAll` and make a new 
+.CSX file with it
+```{r Make Xfile}
+makeXfile <- function(trial){
+  template <- "UYAB1901.CSX"
+  xFile <- read_lines(here::here("data/DSSATtempfile", template))
+  # Put in new file name
+  fileName <- makeTrialName(trial)
+  xFile <- gsub("UYAB1901CS", paste0(fileName, "CS"), xFile, fixed=T)
+  xFile <- gsub("UYAB1901", fileName, xFile, fixed=T)
+  # Put in new location
+  xFile <- gsub("ABUJA", toupper(trial$locationName[1]), xFile, fixed=T)
+  # Figure out number of TNAME
+  culThisTrial <- trial %>% distinct(germplasmName)
+  culThisTrial <- culThisTrial[order(culThisTrial$germplasmName),]
+  nCul <- nrow(culThisTrial)
+  culThisTrial <- culThisTrial %>% mutate(culNum=1:nCul)
+  varNameSpace <- 26 # How many spaces are available for the cultivar name?
+  makeTrtRow <- function(culNum, culName){
+    rowEnd <- "  1  0  0  1  0  0  0  0  0  0  1  1"
+    cn <- paste0(ifelse(culNum > 9, "", " "), culNum)
+    pad <- paste0(rep(" ", varNameSpace-nchar(culName)), collapse="")
+    return(paste0(cn, " 1 1 0 ", culName, pad, cn, rowEnd))
+  }
+  makeCulRow <- function(culNum, culName){
+    cn <- paste0(ifelse(culNum > 9, "", " "), culNum)
+    inGeno <- uniCul %>% filter(germplasmName==culName) %>% pull(ucName)
+    return(paste0(cn, " CS ", inGeno, " ", culName))
+  }
+  # WARNING this is specific to this template
+  strtTrt <- grep("*TREATMENTS", xFile, fixed=T)+2
+  endTrt <- grep("*CULTIVARS", xFile, fixed=T)-2
+  xFile <- xFile[-(strtTrt:endTrt)]
+  trtInsert <- mapply(makeTrtRow, culNum=culThisTrial$culNum,
+                      culName=culThisTrial$germplasmName)
+  xFile <- R.utils::insert(xFile, ats=strtTrt, value=trtInsert)
+  
+  strtCul <- grep("*CULTIVARS", xFile, fixed=T)+2
+  endCul <- grep("*FIELDS", xFile, fixed=T)-2
+  xFile <- xFile[-(strtCul:endCul)]
+  culInsert <- mapply(makeCulRow, culNum=culThisTrial$culNum,
+                      culName=culThisTrial$germplasmName)
+  xFile <- R.utils::insert(xFile, ats=strtCul, value=culInsert)
+                
+  write_lines(xFile, here::here("data", "CSfiles", paste0(fileName, ".CSX")))
+  return(culThisTrial)
+}
+```
+
+Function to take data from a trial extracted from `uytAll` and make a new 
+.CSA file with it
+```{r Make Afile}
+makeAfile <- function(trial){
+  template <- "UYAB1901.CSA"
+  aFile <- read_lines(here::here("data/DSSATtempfile", template))
+  # Put in new file name
+  fileName <- makeTrialName(trial)
+  aFile <- gsub("UYAB1901CS", fileName, aFile, fixed=T)
+  # Take the mean of DMC and the mean of FYLD and multiply
+  # For the tops, I'm just going to take the weight and divide by two
+  cloneMeans <- trial %>% group_by(germplasmName) %>% summarise(across(
+    c('dry matter content percentage|CO_334:0000092',
+      'fresh shoot weight measurement in kg per plot|CO_334:0000016',
+      'fresh storage root weight per plot|CO_334:0000012'
+      ), 
+    mean, na.rm=T))
+  cloneMeans <- cloneMeans[order(cloneMeans$germplasmName),]
+  cloneMeans <- cloneMeans %>% rename(
+    dmc='dry matter content percentage|CO_334:0000092',
+    fyld='fresh storage root weight per plot|CO_334:0000012',
+    shtwt='fresh shoot weight measurement in kg per plot|CO_334:0000016')
+  cloneMeans <- cloneMeans %>% mutate(HWAM=round(dmc/100*fyld*10000/16),
+                                      CWAM=round(shtwt*10000/16/3),
+                                      "@TRNO"=1:nrow(cloneMeans),
+                                      B1DAP=40,
+                                      B5DAP=160)
+  toWrite <- cloneMeans %>% select("@TRNO", HWAM, CWAM, B1DAP, B5DAP)
+  filePath <- here::here("data", "CSfiles", paste0(fileName, ".CSA"))
+  write_lines(aFile[1:2], filePath)
+  dateComment <- paste0("! File last edited on ", date())
+  write_lines(dateComment, filePath, append=T)
+  write_lines("", filePath, append=T)
+  write_delim(toWrite, filePath, append=T, col_names=T, na="-99")
+  return(toWrite)
+}
+```
+
+Function to take data from a trial extracted from `uytAll` and make a new 
+.CST file with it
+```{r Make Tfile}
+makeTfile <- function(trial){
+  template <- "UYAB1901.CST"
+  tFile <- read_lines(here::here("data/DSSATtempfile", template))
+  # Put in new file name
+  fileName <- makeTrialName(trial)
+  tFile <- gsub("UYAB1901CS", fileName, tFile, fixed=T)
+  dt <- makeDateStrings(trial)
+  trial <- trial[order(trial$germplasmName),]
+  trial <- trial %>% rename(
+    dmc='dry matter content percentage|CO_334:0000092',
+    fyld='fresh storage root weight per plot|CO_334:0000012',
+    shtwt='fresh shoot weight measurement in kg per plot|CO_334:0000016')
+
+  gNmToTrtNo <- function(gNm){
+    return(culThisTrial %>% filter(germplasmName==gNm) %>% pull(culNum))
+  }
+  trtNo <- sapply(trial$germplasmName, gNmToTrtNo)
+  trial <- trial %>% mutate(TRNO=trtNo, CWAD=round(shtwt*10000/16/2),
+                            DAP=dt$DAP, DATE=dt$harvStr)
+  
+  toWrite <- trial %>% select(TRNO, CWAD, DAP, DATE)
+  filePath <- here::here("data", "CSfiles", paste0(fileName, ".CST"))
+  write_lines(tFile[1:2], filePath)
+  dateComment <- paste0("! File last edited on ", date())
+  write_lines(dateComment, filePath, append=T)
+  write_lines("", filePath, append=T)
+  write_lines("@TRNO CWAD DAP DATE", filePath, append=T)
+  writeOneTrt <- function(trtNo){
+   write_lines(paste0(trtNo, " 0 0 0 ", dt$plntStr), filePath, append=T)
+   toWrite %>% filter(TRNO==trtNo) %>% 
+     write_delim(path=filePath, na="-99", append=T)
+  }
+  theTrtNo <- toWrite %>% distinct(TRNO) %>% unlist
+  dummy <- sapply(theTrtNo, writeOneTrt)
+  return(toWrite)
+}
+```
+
+Now go through and make all the CS_ files
+NOTE: This fails for 2018 Ibadan because no harvest date was recorded for
+that trial
+```{r Make all CS_ files}
+makeCS_file <- function(yearLoc){
+  print(yearLoc)
+  trial <- uytAll %>% filter(studyYear==yearLoc[1] & locationName==yearLoc[2])
+  culThisTrial <<- makeXfile(trial)
+  toWriteA <- makeAfile(trial)
+  toWriteT <- makeTfile(trial)
+  return(list(culThisTrial, toWriteA, toWriteT))
+}
+makeAllFiles <- apply(trials, 1, makeCS_file)
+```
+
+

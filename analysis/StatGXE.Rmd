@@ -1,0 +1,509 @@
+---
+title: "StatGXE"
+author: "Opamelas83"
+date: "2022-04-27"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## This analysis is to analyse the difference beteewn observed and simulated data from DSSAT OUTPUT. I try to see how the difference variation is going with statistical method
+#Data preparation for Statistical analysis
+
+```{r}
+library(tidyverse)
+library(statgenGxE)
+library(corrplot)
+library(gridExtra)
+library(grid)
+library(gridtext)
+library(lemon)
+GLUEVAL2 <- read_csv("data/GLUEVALana2.csv")
+EVAL2StatGXE1 <- GLUEVAL2 %>% select(source, Clone, HWAMMS, HWAMMSsq, ELEV, LAT, LONG, RAIN, RAIN_6, RAIN_9, RAIN_12, RH2M, RH2M_6, RH2M_9, RH2M_12, WIND, WIND_6, WIND_9, WIND_12, SRAD, SRAD_6, SRAD_9, SRAD_12, TMIN, TMIN_6, TMIN_9, TMIN_12, TMAX, TMAX_6, TMAX_9, TMAX_12, PAR, PAR_6, PAR_9, PAR_12, year)
+#EVAL2StatGXE1$HWAMMS <- multMissing(EVAL2StatGXE1$HWAMMS, maxIter = 10, naStrings = NULL)
+#EVAL2StatGXE1$HWAMMSsq <- multMissing(EVAL2StatGXE1$HWAMMSsq, maxIter = 10, naStrings = NULL)
+
+EVAL2StatGXE2 <- EVAL2StatGXE1 %>%
+  filter(source %in% names(table(EVAL2StatGXE1$source))[table(EVAL2StatGXE1$source) > 20])## AMMI functions do not accept more than 30 % missing data. 
+
+EVAL2StatGXE <- statgenSTA::createTD(data = EVAL2StatGXE2, genotype = "Clone", trial = "source")
+
+```
+
+
+# AMMI(Additive Main Effects and Multiplicative Interaction) analysis fits a model which involves the Additive Main effects (i.e. genotype and environment) along with Multiplicative Interaction
+effects.
+```{r}
+AMMIStatGXE <- gxeAmmi(TD = EVAL2StatGXE, trait = "HWAMMS", nPC = 3)#byYear = 2019
+summary(AMMIStatGXE)
+write.csv(AMMIStatGXE$anova, "Result/AMMIStatGXEanova.csv", quote = F, row.names = F)
+write.csv(AMMIStatGXE$importance, "Result/AMMIStatGXEimportance.csv", quote = F, row.names = F)
+
+## Create an AMMI1 plot.
+#genotype scaling, with emphasis on approximation of relations between genotypes (scale = 0)
+#environment scaling, with emphasis on approximation of relations between environments (scale = 1)
+#symmetric scaling, a compromise (scale = 0.5)
+#jpeg(filename = "AMMI2env.jpeg", res = 400, width = 14, height = 8, units = "cm")
+CFIG1 <- plot(AMMIStatGXE, plotType = "AMMI1", scale = 1, title = "Interactive PC1 vs main effects") + theme_classic() 
+#dev.off()
+CFIG2 <- plot(AMMIStatGXE, plotType = "AMMI2", scale = 0.5, title = "PC1 vs PC2")  + theme_classic
+#dev.off()
+nt <- theme(legend.position='none')
+#p = list(CFIG1+nt, CFIG2+nt) %>% map(~.x + labs(x=NULL, y=NULL))
+
+#jpeg(filename = "Result/Rcomparison.jpeg")
+grid_arrange_shared_legend(CFIG1+nt, CFIG2+nt)#ncol = 2, nrow = 1
+#dev.off() 
+```
+
+##I use the AMMI envScores to look for a link  with env parameters
+```{r}
+# weather data check
+AMMIenvscores1 <- AMMIStatGXE$envScores # using for environ scores
+AMMIenvscores2 <- as.data.frame(AMMIenvscores1) 
+AMMIenvscores3 <- as_tibble(rownames_to_column(AMMIenvscores2)) %>% 
+                          mutate(ENV = rowname) %>%
+                                 #envScPC1 = PC1,
+                                 #envScPC2 = PC2) %>%
+                         select(-rowname)
+
+AMMIenvMean1 <- AMMIStatGXE$envMean #using for environ mean (mean of root harvested by envi)n
+AMMIenvMean2 <- as.data.frame(AMMIenvMean1) 
+AMMIenvMean3 <- as_tibble(rownames_to_column(AMMIenvMean2)) %>% 
+                          mutate(ENV = rowname,
+                                envMean = AMMIenvMean1) %>% 
+                         select(-rowname, -AMMIenvMean1)
+
+EVAL2StatGXEenv <- EVAL2StatGXE1 %>% 
+                     select(-Clone, -HWAMMS, -HWAMMSsq) %>%
+                      mutate(ENV = source) %>%
+                        dplyr::group_by(ENV) %>%
+                         dplyr::summarise(ELEV = unique(ELEV), 
+                                          LAT = unique(LAT), 
+                                          LONG = unique(LONG), 
+                                          RAIN = unique(RAIN),
+                                          RAIN_6 = unique(RAIN_6), 
+                                          RAIN_9 = unique(RAIN_9),
+                                          RAIN_12 = unique(RAIN_12), 
+                                          SRAD = unique(SRAD),
+                                          SRAD_6 = unique(SRAD_6), 
+                                          SRAD_9 = unique(SRAD_9), 
+                                          SRAD_12 = unique(SRAD_12),  
+                                          TMIN = unique(TMIN),
+                                          TMIN_6 = unique(TMIN_6), 
+                                          TMIN_9 = unique(TMIN_9), 
+                                          TMIN_12 = unique(TMIN_12), 
+                                          TMAX = unique(TMAX),
+                                          TMAX_6 = unique(TMAX_6), 
+                                          TMAX_9 = unique(TMAX_9), 
+                                          TMAX_12 = unique(TMAX_12),
+                                          RH2M = unique(RH2M),
+                                          RH2M_6 = unique(RH2M_6), 
+                                          RH2M_9 = unique(RH2M_9), 
+                                          RH2M_12 = unique(RH2M_12), 
+                                          WIND = unique(WIND),
+                                          WIND_6 = unique(WIND_6), 
+                                          WIND_9 = unique(WIND_9), 
+                                          WIND_12 = unique(WIND_12),  
+                                          PAR = unique(PAR),
+                                          PAR_6 = unique(PAR_6), 
+                                          PAR_9 = unique(PAR_9), 
+                                          PAR_12 = unique(PAR_12))
+
+StatGXEenv1 <- left_join(AMMIenvMean3, AMMIenvscores3)
+StatGXEenv11 <- left_join(StatGXEenv1, EVAL2StatGXEenv)
+StatGXEenv2 <- as_tibble(StatGXEenv11) %>% select(-ENV)
+#corrplot(cor(StatGXEenv2[,-2]))
+#corrplot(cor(StatGXEenv2[,-1]))
+#jpeg(filename = "correlationEX.jpeg", res = 400, width = 14, height = 8, units = "cm")
+StatGXEenv2_cor <- cor(StatGXEenv2)
+StatGXEenv2_cor <- StatGXEenv2_cor[1:4,]
+Figplot1 <- corrplot(StatGXEenv2_cor, tl.cex = 0.5, number.cex=0.5, method = "number", sig.level = 0.01, insig = "blank")
+#dev.off()
+```
+
+
+#soil profile check
+```{r}
+Tral0 <- read_lines(here::here("SOIL.SOL"))
+strtTrt01 <- grep(pattern = "*NG04041467", x = Tral0, fixed=T)
+
+Tral01 <- read_lines(here::here("SOIL.SOL"), skip = 1953, n_max = 6 )#NG04365455 UMUDIKE
+write_lines(Tral01, "test0.txt")
+Tral01 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+Tral02 <- read_lines(here::here("SOIL.SOL"), skip = 1966, n_max = 6 )#NG04408648 ONNE
+write_lines(Tral02, "test0.txt")
+Tral02 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".") 
+
+Tral03 <- read_lines(here::here("SOIL.SOL"), skip = 1979, n_max = 6 )#NG04309279 UBIAJA
+write_lines(Tral03, "test0.txt")
+Tral03 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")      
+
+Tral04 <- read_lines(here::here("SOIL.SOL"), skip = 1992, n_max = 6 )#NG04304916 IKENNE
+write_lines(Tral04, "test0.txt")
+Tral04 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")      
+
+Tral05 <- read_lines(here::here("SOIL.SOL"), skip = 2005, n_max = 6 )#NG04292017 OTOBI
+write_lines(Tral05, "test0.txt")
+Tral05 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")   
+
+Tral06 <- read_lines(here::here("SOIL.SOL"), skip = 2018, n_max = 6 )#NG04283331 AGO-OWO
+write_lines(Tral06, "test0.txt")
+Tral06 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+Tral07 <- read_lines(here::here("SOIL.SOL"), skip = 2031, n_max = 6 )#NG04261714 IBADAN
+write_lines(Tral07, "test0.txt")
+Tral07 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+Tral08 <- read_lines(here::here("SOIL.SOL"), skip = 2044, n_max = 6 )#NG04171020 MOKWA 
+write_lines(Tral08, "test0.txt")
+Tral08 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+Tral09 <- read_lines(here::here("SOIL.SOL"), skip = 2057, n_max = 6 )#NG04184010 ABUJA 
+write_lines(Tral09, "test0.txt")
+Tral09 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+Tral10 <- read_lines(here::here("SOIL.SOL"), skip = 2070, n_max = 6 )#NG04088975 ZARIA 
+write_lines(Tral10, "test0.txt")
+Tral10 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+Tral11 <- read_lines(here::here("SOIL.SOL"), skip = 2083, n_max = 6 )#NG04041467 KANO 
+write_lines(Tral11, "test0.txt")
+Tral11 <- read.table("test0.txt", header = FALSE, sep = "", dec = ".")
+
+TRAL <- bind_rows(Tral01, Tral02, Tral03, Tral04, Tral05, Tral06, Tral07, Tral08, Tral09, Tral10, Tral11, .id = "source")    
+TRALA <- TRAL %>% mutate(Location = case_when(source == 1 ~ "UMUDIKE",
+                                              source == 2 ~ "ONNE",
+                                              source == 3 ~ "UBIAJA",
+                                              source == 4 ~ "IKENNE",
+                                              source == 5 ~ "OTOBI",
+                                              source == 6 ~ "AGO-OWO",
+                                              source == 7 ~ "IBADAN",
+                                              source == 8 ~ "MOKWA",
+                                              source == 9 ~ "ABUJA",
+                                              source == 10 ~ "ZARIA",
+                                              source == 11 ~ "KANO"),
+                         Deth = V1,
+                         SLLL_15 = case_when(V1 == 15 ~ V3),
+                         SLLL_100 = case_when(V1 == 100 ~ V3),
+                         SDUL_15 = case_when(V1 == 15 ~ V4),
+                         SDUL_100 = case_when(V1 == 100 ~ V4),
+                         SSAT_15 = case_when(V1 == 15 ~ V5),
+                         SSAT_100 = case_when(V1 == 100 ~ V5),
+                         SRGF_15 = case_when(V1 == 15 ~ V6),
+                         SRGF_100 = case_when(V1 == 100 ~ V6),
+                         SSKS_15 = case_when(V1 == 15 ~ V7),
+                         SSKS_100 = case_when(V1 == 100 ~ V7),
+                         SBDM_15 = case_when(V1 == 15 ~ V8),
+                         SBDM_100 = case_when(V1 == 100 ~ V8),
+                         SLOC_15 = case_when(V1 == 15 ~ V9),
+                         SLOC_100 = case_when(V1 == 100 ~ V9),
+                         SLCL_15 = case_when(V1 == 15 ~ V10),
+                         SLCL_100 = case_when(V1 == 100 ~ V10),
+                         SLSI_15 = case_when(V1 == 15 ~ V11),
+                         SLSI_100 = case_when(V1 == 100 ~ V11),  
+                         SLNI_15 = case_when(V1 == 15 ~ V13),
+                         SLNI_100 = case_when(V1 == 100 ~ V13), 
+                         SLHW_15 = case_when(V1 == 15 ~ V14),
+                         SLHW_100 = case_when(V1 == 100 ~ V14),
+                         SCEC_15 = case_when(V1 == 15 ~ V16),
+                         SCEC_100 = case_when(V1 == 100 ~ V16)) %>%
+  filter(V1 == 15 | V1 == 100) %>%
+  select(-V1, -V2, -V3, -V4, -V5, -V6, -V7, -V8, -V9, -V10, -V11, -V12, -V13, -V14, -V15, -V16, -V17, -source)
+  
+ StatGXEenv1 <- left_join(AMMIenvMean3, AMMIenvscores3)
+ StatGXEenvsol1 <- StatGXEenv1 %>% 
+   mutate(Location = case_when(ENV == "Abuja19" ~ "ABUJA",
+                               ENV == "Ago17" ~ "AGO-OWO",
+                               ENV == "Ago18" ~  "AGO-OWO",
+                               ENV == "Ago19" ~ "AGO-OWO",
+                               ENV == "Ibadan17" ~ "IBADAN",
+                               ENV == "Ibadan18" ~ "IBADAN", 
+                               ENV == "Ibadan19" ~ "IBADAN",
+                               ENV == "Ikenne17" ~ "IKENNE",
+                               ENV == "Ikenne18" ~ "IKENNE",
+                               ENV == "Ikenne19" ~ "IKENNE",
+                               ENV == "Kano18" ~ "KANO",
+                               ENV == "Mokwa17" ~ "MOKWA",
+                               ENV == "Mokwa18" ~ "MOKWA",
+                               ENV == "Mokwa19" ~ "MOKWA",
+                               ENV == "Onne18" ~ "ONNE",
+                               ENV == "Otobi18" ~ "OTOBI",
+                               ENV == "Ubiaja19" ~ "UBIAJA", 
+                              ENV == "Umudike18" ~ "UMUDIKE"))
+                               
+StatGXEenvsol2 <- left_join(StatGXEenvsol1 , TRALA) %>%
+  select(-ENV, Deth)#-Location
+StatGXEenvsol3 <- StatGXEenvsol2 %>% filter(!is.na(SLNI_15)) %>% 
+  select(envMean, Location, PC1, PC2, PC3, SLLL_15, SDUL_15, SSAT_15, SSKS_15, SBDM_15, SLOC_15, SLCL_15, SLSI_15, SLHW_15, SCEC_15)#SRGF_15, SLNI_15,
+
+StatGXEenvsol4 <- StatGXEenvsol2 %>% filter(!is.na(SLNI_100)) %>% 
+  select(envMean, Location, PC1, PC2, PC3, SLLL_100, SSAT_100, SDUL_100, SSKS_100, SBDM_100, SLOC_100, SLCL_100, SLSI_100, SLHW_100, SCEC_100) #SLNI_100, SRGF_100,
+
+StatGXEenvsol5 <- left_join(StatGXEenvsol3 , StatGXEenvsol4) %>% select(-Location) 
+#jpeg(filename = "correlationENsol.jpeg", res = 400, width = 14, height = 8, units = "cm")
+#Run only for 15cm of soil profile
+StatGXEenvsol3 <- StatGXEenvsol3 %>% select(-Location)
+StatGXEenvsol3_cor <- cor(StatGXEenvsol3)
+StatGXEenvsol3_cor <- StatGXEenvsol3_cor[1:4, ]
+Figplot2 <- corrplot(StatGXEenvsol3_cor, tl.cex = 0.5, number.cex=0.6, method = "number", sig.level = 0.01, insig = "blank")
+#jpeg(filename = "Result/Rcomparison.jpeg")
+#dev.off()
+```
+
+#plot all environments parameter in the same plot
+```{r}
+StatGXEenvT <- left_join(StatGXEenv2,StatGXEenvsol3)
+StatGXEenvT_cor <- cor(StatGXEenvT)
+StatGXEenvT_cor <- StatGXEenvT_cor[1:4,]
+corrplot(StatGXEenvT_cor, tl.cex = 0.5, method = "number", sig.level = 0.01, insig = "blank")
+```
+
+No longer important   ##filter environ with total dry root mean between 1st and 3rd quantile to continue Model calibration
+```{r}
+#envMeanFiltered <- AMMIenvMean3 %>% filter(envMean > quantile(envMean, 0.25) & envMean < quantile(envMean, 0.75))
+#genoMeanFiltered <- AMMIgenoMean3 %>% filter(genoMean > quantile(genoMean, 0.25) & genoMean < quantile(genoMean, 0.75))
+```
+
+
+# I use the AMMI genoScores to look for a link  with penotype  parameters
+
+```{r}
+PhenoDIS <- read_csv("data/IITA2021_CABASE/UYT_GXE_pheno.csv")
+spec(PhenoDIS)
+PhenoDISE <- PhenoDIS %>% rename(Year = studyYear,
+               Clone = germplasmName,
+               Location = locationName,
+               CB_3Min = "cassava bacterial blight incidence 3-month evaluation|CO_334:0000178",
+               CB_3Msev = "cassava bacterial blight severity 3-month evaluation|CO_334:0000175",
+               CGM_1sev = "cassava green mite severity first evaluation|CO_334:0000189",
+               CGM_2sev = "cassava green mite severity second evaluation|CO_334:0000190",
+               CMO_1Min = "cassava mosaic disease incidence 1-month evaluation|CO_334:0000195",
+               CMO_3Min = "cassava mosaic disease incidence 3-month evaluation|CO_334:0000196",
+               CMO_1Msev = "cassava mosaic disease severity 1-month evaluation|CO_334:0000191",
+               CMO_3Msev = "cassava mosaic disease severity 3-month evaluation|CO_334:0000192",
+               HWAM = "fresh storage root weight per plot|CO_334:0000012",
+               CWAM = "fresh shoot weight measurement in kg per plot|CO_334:0000016") %>%
+            select(Clone, CB_3Min, CB_3Msev, CGM_1sev, CGM_2sev, CMO_1Min, CMO_3Min,                         CMO_1Msev, CMO_3Msev)# year, Location, HWAM, CWAM
+write.csv(PhenoDISE, "data/IITA2021_Mich/PhenoDisea.csv", quote = F, row.names = F)
+```
+
+```{r}
+#phenotype data measured from Ibadan 2021.
+Phenocomp1 <- read_csv("data/IITA2021_Mich/Phenotyp_Mich2021.csv")
+Phenocomp2 <- Phenocomp1  %>% 
+        group_by(accession_name) %>%
+        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+Phenocomp3 <- Phenocomp2 %>% mutate(Clone = accession_name,
+                                    branchP = branching_point) %>%
+            select(Clone, stem_nu, stem_D, branchP, plant_H)
+
+#complete with leaf area data
+Phenoleaf1 <- read_csv("data/IITA2021_Mich/AreaData.csv")
+spec(Phenoleaf1)
+#To solve Clone name issue
+#Phenoleaf1$accession_name <- Phenoleaf1$accession_name %>%
+ # gsub(pattern = "IITA_TMS_IB", replacement = "IITA-TMS-") %>% 
+ # gsub(pattern = "TMS14F1159P00", replacement = "TMS14F1159P000")
+Phenoleaf1$accession_name <- Phenoleaf1$accession_name %>% str_replace_all( c("IITA_TMS_IBA00070"="IITA-TMS-IBA000070",
+                                             "IITA_TMS_IBA30572"="IITA-TMS-IBA30572",
+                                             "IITA_TMS_IBA980581"="IITA-TMS-IBA980581",
+                                             "IITA_TMS_IBA982101"="IITA-TMS-IBA982101",
+                                             "TMS14F1159P003"="TMS14F1159P0003"))
+Phenoleaf2 <- Phenoleaf1  %>% 
+        group_by(accession_name) %>%
+        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+Phenoleaf3 <- Phenoleaf2 %>%
+               mutate(Clone = accession_name,
+                      LeafArea = Total.Area) %>%
+              select(Clone, LeafArea)
+
+#complete with disease
+PhenoDisea1 <- read_csv("data/IITA2021_Mich/PhenoDisea.csv")
+spec(PhenoDisea1)
+PhenoDisea2 <- PhenoDisea1 %>% 
+           group_by(Clone) %>%
+            dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+
+#Phenocolen <- unique(Phenocol)
+
+Phenosum1 <- left_join( PhenoDisea2, Phenocomp3)
+Phenosum <- left_join(Phenosum1, Phenoleaf3)         
+```
+
+```{r}
+AMMIgenoScores1 <- AMMIStatGXE$genoScores #using for genotype score
+AMMIgenoScores2 <- as.data.frame(AMMIgenoScores1) 
+AMMIgenoScores3 <- as_tibble(rownames_to_column(AMMIgenoScores2)) %>% 
+                          mutate(Clone = rowname) %>%
+                                 #genoScPC1 = PC1,
+                                  #genoScPC2 = PC2) %>%
+                         select(-rowname)
+
+AMMIgenoMean1 <- AMMIStatGXE$genoMean #using for genotype mean (mean of root harvested by clone across all environment)
+AMMIgenoMean2 <- as.data.frame(AMMIgenoMean1) 
+AMMIgenoMean3 <- as_tibble(rownames_to_column(AMMIgenoMean2)) %>% 
+                          mutate(Clone = rowname,
+                                genoMean = AMMIgenoMean1) %>% 
+                         select(-rowname, -AMMIgenoMean1)
+
+StatGXEgeno1 <- left_join(AMMIgenoMean3, AMMIgenoScores3)
+StatGXEgeno11 <- left_join(StatGXEgeno1, Phenosum)
+StatGXEgeno11$branchP <- multMissing(StatGXEgeno11$branchP, maxIter = 10, naStrings = NULL)
+StatGXEgeno11$LeafArea <- multMissing(StatGXEgeno11$LeafArea, maxIter = 10, naStrings = NULL)
+StatGXEgeno2 <- as_tibble(StatGXEgeno11) %>% select(-Clone)
+#jpeg(filename = "corrplogenocheck.jpeg", res = 400, width = 14, height = 8, units = "cm")
+StatGXEgeno2_cor <- cor(StatGXEgeno2)
+StatGXEgeno2_cor <- StatGXEgeno2_cor[1:4, ]
+Figplot2 <- corrplot(StatGXEgeno2_cor, tl.cex = 0.5, number.cex=0.6, method = "number", sig.level = 0.01, insig = "blank")
+#dev.off()  
+```
+
+
+##For the weather data by cycle time "old"
+```{r}
+StatGXEenv3 <- left_join(StatGXEenv1, weather_cycleT)
+StatGXEenv4 <- as_tibble(StatGXEenv3) %>% select(-ENV, -ELEV, -LAT, -LONG, -RAIN, -SRAD, -TMIN, -TMAX, -RHUM, -PAR)
+#corrplot(cor(StatGXEenv4), type = "upper")
+StatGXEenvCOR <- StatGXEenv4 %>% summarise(TMIN1cor = cor(AMMIenvmean, TMIN1),
+                    TMIN2cor = cor(AMMIenvmean, TMIN2),
+                    TMIN3cor = cor(AMMIenvmean, TMIN3),
+                    TMIN4cor = cor(AMMIenvmean, TMIN4),
+                    TMAX1cor = cor(AMMIenvmean, TMAX1),
+                    TMAX2cor = cor(AMMIenvmean, TMAX2),
+                    TMAX3cor = cor(AMMIenvmean, TMAX3),
+                    TMAX4cor = cor(AMMIenvmean, TMAX4),
+                    SRAD1cor = cor(AMMIenvmean, SRAD1),
+                    SRAD2cor = cor(AMMIenvmean, SRAD2),
+                    SRAD3cor = cor(AMMIenvmean, SRAD3),
+                    SRAD4cor = cor(AMMIenvmean, SRAD4),
+                    RHUM1cor = cor(AMMIenvmean, RHUM1),
+                    RHUM2cor = cor(AMMIenvmean, RHUM2),
+                    RHUM3cor = cor(AMMIenvmean, RHUM3),
+                    RHUM4cor = cor(AMMIenvmean, RHUM4),
+                    RAIN1cor = cor(AMMIenvmean, RAIN1),
+                    RAIN2cor = cor(AMMIenvmean, RAIN2),
+                    RAIN3cor = cor(AMMIenvmean, RAIN3),
+                    RAIN4cor = cor(AMMIenvmean, RAIN4))# %>% 
+                
+```
+
+
+
+##For year 2017 specially with more than 30% missing values for 2017.
+```{r}
+#checks the number of clones (genotype) per environmeent then try to set the error message = "More than 30% missing values for 2017" Year 2017skipped.
+EVAL2StatGXE12017 <- EVAL2StatGXE1 %>% dplyr::filter(year == 2017)
+EVAL2StatGXE12017Ago <- EVAL2StatGXE12017 %>% filter(source == "Ago17")# 65 clones
+EVAL2StatGXE12017Ibadan <- EVAL2StatGXE12017 %>% filter(source == "Ibadan17")#28
+EVAL2StatGXE12017Ikenne <- EVAL2StatGXE12017 %>% filter(source == "Ikenne17")#34
+EVAL2StatGXE12017Mokwa <- EVAL2StatGXE12017 %>% filter(source == "Mokwa17")#11
+#filter EVAL2StatGXE12017Ag to use only the clones commons clones with the others locations
+COL1 <- EVAL2StatGXE12017Ago$Clone
+COL2 <- EVAL2StatGXE12017Ibadan$Clone
+COL3 <- EVAL2StatGXE12017Ikenne$Clone
+COL4 <- EVAL2StatGXE12017Mokwa$Clone
+COL <- c(COL1 = COL3, COL1 = COL2, COL1 = COL4)
+COLEN <- unique(COL)
+COLENen <- data_frame(Clone = COLEN)
+EVAL2StatGXE12017AgoFiltered <- left_join(COLENen, EVAL2StatGXE12017Ago)
+EVAL2StatGXE22017 <- bind_rows(EVAL2StatGXE12017AgoFiltered, EVAL2StatGXE12017Ibadan, EVAL2StatGXE12017Ikenne, EVAL2StatGXE12017Mokwa)
+EVAL2StatGXE2017 <- statgenSTA::createTD(data = EVAL2StatGXE22017, genotype = "Clone", trial = "source")
+AMMIStatGXE2017 <- gxeAmmi(TD = EVAL2StatGXE2017, trait = "HWAMMS")
+summary(AMMIStatGXE2017 )
+
+
+AMMIenvscores1 <- AMMIStatGXE2017$envScores  
+AMMIenvscores2 <- as.data.frame(AMMIenvscores1) 
+AMMIenvscores3 <- as_tibble(rownames_to_column(AMMIenvscores2)) %>% 
+                          mutate(env = rowname,
+                                 envScoresPC1 = PC1,
+                                  envScoresPC2 = PC2) %>%
+                         select(-PC1, -PC2, -rowname)
+
+EVAL2StatGXEenv <- EVAL2StatGXE1 %>% 
+                     select(-Clone, -HWAMMS, -HWAMMSsq) %>%
+                      mutate(env = source) %>%
+                        dplyr::group_by(env) %>%
+                         dplyr::summarise(ELEV = unique(ELEV), 
+                                          LAT = unique(LAT), 
+                                          LONG = unique(LONG), 
+                                          RAIN = unique(RAIN), 
+                                          SRAD = unique(SRAD), 
+                                          TMIN = unique(TMIN), 
+                                          TMAX = unique(TMAX),
+                                          RHUM = unique(RHUM),
+                                          PAR = unique(PAR))
+StatGXEenv1 <- left_join(AMMIenvscores3, EVAL2StatGXEenv)
+StatGXEenv2 <- as_tibble(StatGXEenv1) %>% select(-env)
+corrplot(cor(StatGXEenv2[,-2]))
+corrplot(cor(StatGXEenv2[,-1]))
+corrplot(cor(StatGXEenv2))
+```
+
+
+
+
+## Perform a Finlay-Wilkinson analysis for all trials.
+```{r}
+MICHFW <- gxeFw(TD = EVAL2StatGXE, trait = "HWAMMS")
+summary(MICHFW)
+```
+
+
+```{r}
+#FWenvscores1 <- MICHFW$envEffs
+FWenvscores1 <- MICHFW$envEffs %>%
+            mutate(ENV = trial) %>%
+                   select(ENV, envMean) 
+#FWenvscores2 <- as_tibble(rownames_to_column(FWenvscores2)) %>% 
+                       #   mutate(ENV = rowname,
+                                 #envScoresPC1 = PC1,
+                                  #envScoresPC2 = PC2) %>%
+                              #  FWenvmean = FWenvscores1) %>% 
+                         #select(-rowname, -FWenvscores1) #-PC1, -PC2, -rowname)
+EVAL2StatGXEenv <- EVAL2StatGXE1 %>% 
+                     select(-Clone, -HWAMMS, -HWAMMSsq) %>%
+                      mutate(ENV = source) %>%
+                        dplyr::group_by(ENV) %>%
+                         dplyr::summarise(ELEV = unique(ELEV), 
+                                          LAT = unique(LAT), 
+                                          LONG = unique(LONG), 
+                                          RAIN = unique(RAIN), 
+                                          SRAD = unique(SRAD), 
+                                          TMIN = unique(TMIN), 
+                                          TMAX = unique(TMAX),
+                                          RH2M = unique(RH2M),
+                                          WIND = unique(WIND),
+                                          PAR = unique(PAR))
+StatGXEenv1 <- left_join(FWenvscores1, EVAL2StatGXEenv)
+StatGXEenv2 <- as_tibble(StatGXEenv1) %>% select(-ENV)
+#corrplot(cor(StatGXEenv2[,-2]))
+#corrplot(cor(StatGXEenv2[,-1]))
+corrplot(cor(StatGXEenv2))
+```
+
+
+```{r}
+FWgenoScores1 <- MICHFW$estimates %>%
+            mutate(Clone = genotype) %>%
+                   select(Clone, genMean)
+#AMMIgenoScores2 <- as.data.frame(AMMIgenoScores1) 
+#AMMIgenoScores3 <- as_tibble(rownames_to_column(AMMIgenoScores2)) %>% 
+                         # mutate(Clone = rowname,
+                              #   genoScPC1 = PC1,
+                              #    genoScPC2 = PC2) %>%
+                         #select(-PC1, -PC2, -rowname)
+
+StatGXEgeno1 <- left_join(FWgenoScores1, Phenosum)
+StatGXEgeno1$branchP <- multMissing(StatGXEgeno1$branchP, maxIter = 10, naStrings = NULL)
+StatGXEgeno1$LeafArea <- multMissing(StatGXEgeno1$LeafArea, maxIter = 10, naStrings = NULL)
+StatGXEgeno2 <- as_tibble(StatGXEgeno1) %>% select(-Clone)
+corrplot(cor(StatGXEgeno2))#, method = "number", type = "upper")
+#corrplot(cor(StatGXEgeno2[,-2]))
+#corrplot(cor(StatGXEgeno2[,-1]))
+
+```
+
+

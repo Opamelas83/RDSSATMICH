@@ -1,0 +1,108 @@
+---
+title: "weather_param_check"
+author: "Opamelas83"
+date: "2022-05-09"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## check weather parameter variation accross cassava cycle time: 4 main cycle time for cassava
+
+```{r}
+OUTweath_UYAB1901C <- OUTweath_UYAB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAB1901),
+                                               ENV = "Abuja19")
+OUTweath_UYAG1701C <- OUTweath_UYAG1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAG1701),
+                                                   ENV = "Ago17")
+OUTweath_UYAG1801C <- OUTweath_UYAG1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAG1801),
+                                                   ENV = "Ago18")
+OUTweath_UYAG1901C <- OUTweath_UYAG1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAG1901),
+                                                   ENV = "Ago19")
+OUTweath_UYIB1701C <- OUTweath_UYIB1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIB1701),
+                                                   ENV = "Ibadan17")
+OUTweath_UYIB1801C <- OUTweath_UYIB1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIB1801),
+                                                   ENV = "Ibadan18")
+OUTweath_UYIB1901C <- OUTweath_UYIB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIB1901),
+                                                   ENV = "Ibadan19")
+OUTweath_UYIK1701C <- OUTweath_UYIK1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIK1701),
+                                                   ENV = "Ikenne17")
+OUTweath_UYIK1801C <- OUTweath_UYIK1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIK1801),
+                                                   ENV = "Ikenne18")
+OUTweath_UYIK1901C <- OUTweath_UYIK1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYIK1901),
+                                                   ENV = "Ikenne19")
+#OUTweath_UYKA1801C <- OUTweath_UYKA1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYKA1801),
+  #                                                 ENV = "Kano18")
+OUTweath_UYMO1701C <- OUTweath_UYMO1701 %>% mutate(DayAfPlanting = rownames(OUTweath_UYMO1701),
+                                                   ENV = "Mokwa17")
+OUTweath_UYMO1801C <- OUTweath_UYMO1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYMO1801),
+                                                   ENV = "Mokwa18")
+OUTweath_UYMO1901C <- OUTweath_UYMO1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYMO1901),
+                                                   ENV = "Mokwa19")
+OUTweath_UYON1801C <- OUTweath_UYON1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYON1801),
+                                                   ENV = "Onne18")
+#OUTweath_UYOT1801C <- OUTweath_UYOT1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYOT1801),
+  #                                                 ENV = "Otobio18")
+OUTweath_UYUB1901C <- OUTweath_UYUB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYUB1901),
+                                                   ENV = "Ubiaja19")
+OUTweath_UYUM1801C <- OUTweath_UYUM1801 %>% mutate(DayAfPlanting = rownames(OUTweath_UYUM1801),
+                                                   ENV = "Umudike18")
+#OUTweath_UYZA1901C <- OUTweath_UYZA1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYZA1901),
+  #                                                 ENV = "Zaria19")
+weather_cycle1 <- bind_rows(OUTweath_UYAB1901C, OUTweath_UYAG1701C, OUTweath_UYAG1801C, OUTweath_UYAG1901C, OUTweath_UYIB1701C, OUTweath_UYIB1801C, OUTweath_UYIB1901C, OUTweath_UYIK1701C, OUTweath_UYIK1801C, OUTweath_UYIK1901C,  OUTweath_UYMO1701C, OUTweath_UYMO1801C,OUTweath_UYMO1901C, OUTweath_UYON1801C,  OUTweath_UYUB1901C, OUTweath_UYUM1801C)#OUTweath_UYKA1801C,OUTweath_UYOT1801C,
+
+weather_cycle <- weather_cycle1 %>%
+      mutate(DayAfPlanting = as.integer(DayAfPlanting),
+         MonthAfPlanting = ifelse(DayAfPlanting <= 90,
+                                  yes = 3,
+                                  no =  ifelse(DayAfPlanting <= 180,
+                                               yes = 6,
+                                               no = ifelse(DayAfPlanting <= 270,
+                                                           yes = 9,
+                                                           no = 12)))) %>%
+           group_by(ENV, MonthAfPlanting) %>%
+             summarise(TMIN = mean(TMIN, na.rm=TRUE), 
+                       TMAX = mean(TMAX, na.rm=TRUE),
+                       SRAD = mean(SRAD, na.rm=TRUE), 
+                       RHUM = mean(RHUM, na.rm=TRUE), 
+                       RAIN = sum(RAIN)) %>%
+             mutate(TMIN1 = case_when(MonthAfPlanting == 3 ~ TMIN),
+                    TMIN2 = case_when(MonthAfPlanting == 6 ~ TMIN),
+                    TMIN3 = case_when(MonthAfPlanting == 9 ~ TMIN),
+                    TMIN4 = case_when(MonthAfPlanting == 12 ~ TMIN),
+                    TMAX1 = case_when(MonthAfPlanting == 3 ~ TMAX),
+                    TMAX2 = case_when(MonthAfPlanting == 6 ~ TMAX),
+                    TMAX3 = case_when(MonthAfPlanting == 9 ~ TMAX),
+                    TMAX4 = case_when(MonthAfPlanting == 12 ~ TMAX),
+                    SRAD1 = case_when(MonthAfPlanting == 3 ~ SRAD),
+                    SRAD2 = case_when(MonthAfPlanting == 6 ~ SRAD),
+                    SRAD3 = case_when(MonthAfPlanting == 9 ~ SRAD),
+                    SRAD4 = case_when(MonthAfPlanting == 12 ~ SRAD),
+                    RHUM1 = case_when(MonthAfPlanting == 3 ~ RHUM),
+                    RHUM2 = case_when(MonthAfPlanting == 6 ~ RHUM),
+                    RHUM3 = case_when(MonthAfPlanting == 9 ~ RHUM),
+                    RHUM4 = case_when(MonthAfPlanting == 12 ~ RHUM),
+                    RAIN1 = case_when(MonthAfPlanting == 3 ~ RAIN),
+                    RAIN2 = case_when(MonthAfPlanting == 6 ~ RAIN),
+                    RAIN3 = case_when(MonthAfPlanting == 9 ~ RAIN),
+                    RAIN4 = case_when(MonthAfPlanting == 12 ~ RAIN)) %>% 
+                select(ENV, TMIN1, TMIN2, TMIN3, TMIN4, TMAX1, TMAX2, TMAX3, TMAX4, 
+                       SRAD1, SRAD2, SRAD3, SRAD4, RHUM1, RHUM2, RHUM3, RHUM4,
+                       RAIN1, RAIN2, RAIN3, RAIN4)
+                      
+
+weather_cycleT1 <- weather_cycle %>% filter(!is.na(TMIN1)) %>%
+                                  select(ENV, TMIN1, TMAX1, SRAD1, RHUM1, RAIN1)
+weather_cycleT2 <- weather_cycle %>% filter(!is.na(TMIN2)) %>%
+                                  select(ENV, TMIN2, TMAX2, SRAD2, RHUM2, RAIN2)
+weather_cycleT3 <- weather_cycle %>% filter(!is.na(TMIN3)) %>%
+                                  select(ENV, TMIN3, TMAX3, SRAD3, RHUM3, RAIN3)
+weather_cycleT4 <- weather_cycle %>% filter(!is.na(TMIN4)) %>%
+                                  select(ENV, TMIN4, TMAX4, SRAD4, RHUM4, RAIN4)
+ 
+weather_cycleT5 <- left_join(weather_cycleT1, weather_cycleT2)
+weather_cycleT6 <- left_join(weather_cycleT5, weather_cycleT3)
+weather_cycleT <- left_join(weather_cycleT6, weather_cycleT4)
+
+```
+
+

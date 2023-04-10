@@ -1,0 +1,18 @@
+Coefficient,definition,Ecotype 1,Ecotype 2,Ecotype 3,Ecotype 4,Ecotype 5,Ecotype 6,Ecotype 7,Ecotype 8,Ecotype 9,Ecotype 10,Ecotype 11
+B01ND,Duration from planting to first forking (thermal units),211 - 370,211 - 488,211 - 581,211 - 794,211 - 803,211 - 371,211 - 423,211 - 211,371 - 371,211 - 211,211 - 211
+B12ND,Duration from first forking to second forking (thermal units),211 - 404,211 - 344,211 - 368,211 - 341,211 - 340,211 - 390,211 - 280,211 - 218,371 - 235,211 - 218,211 - 218
+B23ND,Duration from second forking to third forking (thermal units),216 - 250,101 - 250,151 - 338,139 - 250,216 - 374,186 - 256,101 - 216,216 - 216,136 - 136,216 - 216,216 - 216
+B34ND,Duration from second forking to third forking (thermal units),250 - 250,100 - 250,250 - 250,250 - 250,250 - 250,180 - 250,100 - 250,250 - 250,190 - 190,250 - 250,250 - 250
+BR1FX,Branch number per fork at fork 1 (no.),2.2 - 3,2 - 3,2 - 3.1,2 - 2.9,2.2 - 2.8,2.3 - 3,2.1 - 2.8,2.6 - 2.6,2.9 - 2.9,2.8 - 2.8,2.3 - 2.3
+BR2FX,Branch number per fork at fork 2 (no.),2.7 - 4,2 - 3.2,2 - 4,2 - 3,2 - 2.8,2 - 3,2.2 - 3,3 - 3,2.8 - 2.8,2 - 2,3 - 3
+BR3FX,Branch number per fork at fork 3 (no.),2 - 2,2 - 3,2 - 3,2 - 3,1 - 2,2 - 3,2 - 2,3 - 3,3 - 3,2 - 2,2 - 2
+BR4FX,Branch number per fork at fork 4 (no.),1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5,1.5 - 1.5
+LAXS,Area/leaf at maximum area/leaf, cm2,581 - 823,500 - 900,477 - 900,371 - 999,347 - 900,634 - 998,556 - 900,800 - 800,888 - 888,889 - 889,824 - 824
+SLAS,Specific leaf lamina area when crop growing without stress, cm2 g−1,162 - 271,151 - 290,151 - 279,151 - 280,153 - 251,154 - 281,151 - 271,275 - 275,271 - 271,210 - 210,181 - 181
+LLIFA,Leaf life, from full expansion to start senescence (thermal units),1000 - 1500,669 - 1500,611 - 1800,629 - 1800,452 - 1800,1050 - 1500,600 - 1800,1500 - 1500,1000 - 1000,1500 - 1500,1500 - 1500
+LPEFR,Leaf-petiole weight fraction (no.),0.23 - 0.34,0.21 - 0.35,0.23 - 0.35,0.21 - 0.35,0.23 - 0.3,0.22 - 0.35,0.23 - 0.35,0.35 - 0.35,0.33 - 0.33,0.29 - 0.29,0.35 - 0.35
+LNSLP,Slope for leaf production (no.),0.7 - 0.71,0.7 - 1.78,0.7 - 1.79,0.7 - 0.73,0.7 - 1.12,0.7 - 1.77,0.7 - 1.79,1.78 - 1.78,0.71 - 0.71,0.71 - 0.71,1.8 - 1.8
+NODWT,Individual node weight (g),3.01 - 3.74,3.03 - 6.87,3.01 - 14.21,3.01 - 13.5,3.03 - 12.67,3.01 - 5.95,3.01 - 12.09,3.22 - 3.22,4.24 - 4.24,3.03 - 3.03,8.29 - 8.29
+NODLT,Internode length (cm),1.64 - 3.78,1.02 - 3.98,1 - 3.84,1.15 - 3.69,1.01 - 3.72,1.91 - 3.79,1.02 - 2.1,3.17 - 3.17,1.52 - 1.52,2.22 - 2.22,1.35 - 1.35
+PARUE,Radiation use efficiency (g dry matter MJ−1),1.8,2.0,2.2,2.5,2.8,1.8,2.5,1.7,1.9,1.6,2.4
+KCAN,Photosynthetically active radiation (PAR) extinction parameter (no.),0.75,0.75,0.75,0.75,0.75,0.65,0.65,0.65,0.75,0.65,0.65

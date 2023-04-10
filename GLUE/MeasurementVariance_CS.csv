@@ -1,0 +1,9 @@
+,STD,Variance,CV,Flag,Description
+EDAP,3,9,,1,Emergence date (dap)
+B1DAP,3,9,,1,Branch 1 date (dap)
+B2DAP,3,9,,1,Branch 2 date (dap)
+B3DAP,3,9,,1,Branch 3 date (dap)
+B4DAP,3,9,,1,Branch 4 date (dap)
+HWAM,,,0.3,2,Yield at harvest maturity (kg [dm]/ha). 
+CWAM,,,0.3,0,Tops weight at maturity (kg [dm]/ha).  
+LAIX,,,0.4,0,"Leaf area index, maximum."

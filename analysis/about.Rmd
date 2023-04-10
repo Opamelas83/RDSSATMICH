@@ -1,0 +1,12 @@
+---
+title: "About"
+output:
+  workflowr::wflow_html:
+    toc: false
+editor_options:
+  chunk_output_type: console
+---
+The scripts for running the MANIHOT-Cassava model are "here" 
+1- Here in the "makeDSSATFiles2021.Rmd" file, you are the functions to create the crop management (".CSX") and crop measurement  (".CSA" and ".CST") files.  model are in the analysis directory "/analysis/".
+2- The scripts to run the model are here "/OUT.analisis.Rmd" or "/OUT.analisis2.Rmd".The model was run for each experimental trial that mean each environment (location/year). The model was run in 2 steps: "before GLUE estimation" means run the model with the default genotype parameters files "*.CUL and *.ECO".
+3- The remaining files here are for data curation and model output analysis.

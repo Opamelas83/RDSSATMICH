@@ -1,0 +1,360 @@
+---
+title: "Paper_Tables"
+author: "Opamelas83"
+date: "2022-06-02"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+```{r}
+library(tidyverse)
+library(DSSAT)
+library(corrplot)
+```
+
+## Paper1 Tables
+```{r}
+EVALana2 <- read_csv("data/EVALana2.csv")
+ENVinfo <- EVALana2 %>% 
+             mutate(ENVI = source) %>% 
+              dplyr::select(ENVI, LONG, LAT, TMIN, TMAX, RAIN, RH2M, SRAD, PAR, WIND) %>% 
+             group_by(ENVI) %>% 
+             dplyr::summarise(across(c(LONG, LAT, TMIN, TMAX, RAIN,RH2M, SRAD, PAR, WIND),
+                                     unique, na.rm=TRUE)) %>%
+               mutate("Geo Loc" =  paste0(round(LAT, digits = 2), "°", "N, ", round(LONG, digits = 2),"°", "E"),
+                      #"LONG (°E)" = round(LAT, digits = 2),
+                     "TMIN (°C)" = round(TMIN, digits = 1), 
+                     "TMAX (°C)"= round(TMAX, digits = 1), 
+                     "RAIN (mm)" = round(RAIN, digits = 1),
+                     "RH2M (%)" = round(RH2M, digits = 1),
+                     "SRAD (MJ/m^2/day)" = round(SRAD, digits = 1), 
+                     "PAR (W/m^2)" = round(PAR, digits = 1), 
+                     "WIND (m/s)" = round(WIND, digits = 1)) 
+              
+ENVinfo$Location <- ENVinfo$ENVI
+ENVinfo$Location[grep(pattern = "^Abu", x = ENVinfo$ENVI)] <- "ABUJA"
+ENVinfo$Location[grep(pattern = "^Ago", x = ENVinfo$ENVI)] <- "AGO-OWU"
+ENVinfo$Location[grep(pattern = "^Ibad", x = ENVinfo$ENVI)] <- "IBADAN"
+ENVinfo$Location[grep(pattern = "^Iken", x = ENVinfo$ENVI)] <- "IKENNE"
+ENVinfo$Location[grep(pattern = "^Kan", x = ENVinfo$ENVI)] <- "KANO"
+ENVinfo$Location[grep(pattern = "^Mokw", x = ENVinfo$ENVI)] <- "MOKWA"
+ENVinfo$Location[grep(pattern = "^Onn", x = ENVinfo$ENVI)] <- "ONNE"
+ENVinfo$Location[grep(pattern = "^Otob", x = ENVinfo$ENVI)] <- "OTOBI"
+ENVinfo$Location[grep(pattern = "^Ubia", x = ENVinfo$ENVI)] <- "UBIAJA"
+ENVinfo$Location[grep(pattern = "^Umud", x = ENVinfo$ENVI)] <- "UMUDIKE"
+ENVinfo$Location[grep(pattern = "^Zar", x = ENVinfo$ENVI)] <- "ZARIA"
+
+ENVinform <- ENVinfo %>%
+                mutate(YEAR = paste0(20,as.numeric(str_extract(ENVI, "\\d{2}+")),"-",20,as.numeric(str_extract(ENVI, "\\d{2}+"))+1),
+                       "Soil" = case_when(Location == "ABUJA" ~ "SCL",
+                                                Location == "AGO-OWU" ~ "SCL",
+                                                Location == "IBADAN" ~ "SL",
+                                                Location == "IKENNE" ~ "CL",
+                                                Location == "KANO" ~ "SL",
+                                                Location == "MOKWA" ~ "SCL",
+                                                Location == "ONNE" ~ "SCL",
+                                                Location == "OTOBI" ~ "CL",
+                                                Location == "UBIAJA" ~ "SCL",
+                                                Location == "UMUDIKE" ~ "SCL",
+                                                Location == "ZARIA" ~ "SCL"),
+                       "Planting Date" = case_when(ENVI == "Abuja19" ~ "June 2019",
+                                              ENVI == "Ago17" ~ "August 2017",
+                                              ENVI == "Ago18" ~ "June 2018",
+                                              ENVI == "Ago19" ~ "June 2019",
+                                              ENVI == "Ibadan17" ~ "September 2017",
+                                              ENVI == "Ibadan18" ~ "July 2018",
+                                              ENVI == "Ibadan19" ~ "May 2019",
+                                              ENVI == "Ikenne17" ~ "August 2017",
+                                              ENVI == "Ikenne18" ~ "June 2018",
+                                              ENVI == "Ikenne19" ~ "June 2019",
+                                              ENVI == "Kano18" ~ "July 2018",
+                                              ENVI == "Mokwa17" ~ "August 2017",
+                                              ENVI == "Mokwa18" ~ "January 2018",
+                                              ENVI == "Mokwa19" ~ "June 2019",
+                                              ENVI == "Onne18" ~ "April 2018",
+                                              ENVI == "Otobi18" ~ "July 2018",
+                                              ENVI == "Ubiaja19" ~ "June 2019",
+                                              ENVI == "Umudike18" ~ "July 2018",
+                                              ENVI == "Zaria19" ~ "June 2019")) %>%
+             select(Location, "Geo Loc", "Soil", YEAR, ENVI, "Planting Date", "TMIN (°C)", "TMAX (°C)", "RAIN (mm)", "RH2M (%)", "SRAD (MJ/m^2/day)", "PAR (W/m^2)", "WIND (m/s)")
+                    
+write.csv(ENVinform, "data/Paper_Table1.csv", quote = T, row.names = F)
+```
+
+GSP set, the the minimum and the maximum values for each parameter
+```{r}
+MyCUL1 <- read_lines(here::here("CSYCA048.CUL"), skip = 42, n_max = 67)
+write_lines(MyCUL1, (here::here("MyCUL1.txt")))
+MyCUL2 <- read.table(here::here("MyCUL1.txt"), header = FALSE, sep = "", dec = ".")
+
+MyCUL3 <- MyCUL2 %>% filter(str_detect(V1, "UC00")) %>%
+                            mutate(Cultivar = V2, Ecogrp = V4, B01ND = round(V5, 0), B12ND = round(V6, 0),  B23ND = round(V7, 0), B34ND = round(V8, 0), BR1FX = V9, BR2FX = V10, BR3FX = V11, BR4FX = V12, LAXS = round(V13, 0),  SLAS = round(V14, 0), LLIFA = round(V15, 0), LPEFR = round(V16, 2), LNSLP = round(V17, 2), NODWT = round(V18, 2), NODLT = round(V19, 2)) %>%
+                   dplyr::select(Cultivar, Ecogrp, B01ND, B12ND, B23ND, B34ND, BR1FX, BR2FX, BR3FX, BR4FX, LAXS, SLAS, LLIFA, LPEFR, LNSLP, NODWT, NODLT) %>%
+                    mutate(Ecogrp = as.character(Ecogrp), V4B01ND = as.numeric(B01ND), B12ND = as.numeric(B12ND), B23ND = as.numeric(B23ND), B34ND = as.numeric(B34ND), BR1FX = as.numeric(BR1FX), BR2FX = as.numeric(BR2FX), BR3FX = as.numeric(BR3FX), BR4FX = as.numeric(BR4FX), LAXS = as.numeric(LAXS), SLAS = as.numeric(SLAS), LLIFA = as.numeric(LLIFA), LPEFR = as.numeric(LPEFR), LNSLP = as.numeric(LNSLP), NODWT = as.numeric(NODWT), NODLT = as.numeric(NODLT))
+
+min_max <- list(
+  min = ~min(.x, na.rm = TRUE), 
+  max = ~max(.x, na.rm = TRUE)
+)
+MyCUL4 <- MyCUL3 %>% group_by(Ecogrp) %>%
+                   summarise(across(where(is.numeric), min_max, .names = "{.fn}.{.col}")) 
+MyECO1 <- read_lines(here::here("CSYCA048.ECO"), skip = 36, n_max = 15)
+write_lines(MyECO1, (here::here("MyECO1.txt")))
+MyECO2 <- read.table(here::here("MyECO1.txt"), header = FALSE, sep = "", dec = ".")
+MyECO3 <- MyECO2 %>% mutate(Ecogrp = V1, PARUE = V3, KCAN = V6) %>%
+                   dplyr::select(Ecogrp, PARUE, KCAN) %>%
+                     mutate(Ecogrp = as.character(Ecogrp),
+                            PARUE = as.numeric(PARUE),
+                            KCAN = as.numeric(KCAN))
+MyCUL4 <- left_join(MyCUL4, MyECO3)  
+MyCUL5 <- MyCUL4 %>% mutate(B01ND = paste0(min.B01ND," - ",max.B01ND),
+                            B12ND = paste0(min.B01ND," - ",max.B12ND), 
+                            B23ND = paste0(min.B23ND," - ",max.B23ND), 
+                            B34ND = paste0(min.B34ND," - ",max.B34ND),
+                            BR1FX = paste0(min.BR1FX," - ",max.BR1FX), 
+                            BR2FX = paste0(min.BR2FX," - ",max.BR2FX), 
+                            BR3FX = paste0(min.BR3FX," - ",max.BR3FX), 
+                            BR4FX = paste0(min.BR4FX," - ",max.BR4FX), 
+                            LAXS = paste0(min.LAXS," - ",max.LAXS), 
+                            SLAS = paste0(min.SLAS," - ",max.SLAS), 
+                            LLIFA = paste0(min.LLIFA," - ",max.LLIFA), 
+                            LPEFR = paste0(min.LPEFR," - ",max.LPEFR), 
+                            LNSLP = paste0(min.LNSLP," - ",max.LNSLP), 
+                            NODWT = paste0(min.NODWT," - ",max.NODWT), 
+                            NODLT = paste0(min.NODLT," - ",max.NODLT)) %>%
+                            #Ecotype = case_when(Ecogrp == "990016" ~ "Ecotype 1", 
+                             #                   Ecogrp == "990017" ~ "Ecotype 2",
+                              #                  Ecogrp == "990018" ~ "Ecotype 3", 
+                              #                  Ecogrp == "990019" ~ "Ecotype 4", 
+                              #                  Ecogrp == "990020" ~ "Ecotype 5", 
+                              #                  Ecogrp == "990021" ~ "Ecotype 6", 
+                               #                 Ecogrp == "990022" ~ "Ecotype 7", 
+                               #                 Ecogrp == "990023" ~ "Ecotype 8", 
+                               #                 Ecogrp == "990024" ~ "Ecotype 9",
+                                #                Ecogrp == "990025" ~ "Ecotype 10", 
+                                #                Ecogrp == "990026" ~ "Ecotype 11")) %>%
+  dplyr::select(B01ND, B12ND, B23ND, B34ND, BR1FX, BR2FX, BR3FX, BR4FX, LAXS, SLAS, LLIFA, LPEFR, LNSLP, NODWT, NODLT, PARUE, KCAN)
+
+MyCUL6 <- t(MyCUL5) 
+colnames(MyCUL6) <- MyCUL6[1, ]
+
+MyCUL6 <- MyCUL6 %>% 
+  as.data.frame %>% 
+  rownames_to_column("Coefficient")
+#MyCUL6 = MyCUL6[-1, ] 
+  
+MyCUL7 <- MyCUL6 %>% mutate(Definition = 
+               dplyr::case_when(Coefficient == "B01ND" ~ "Duration from planting to first forking (thermal units)", 
+               Coefficient == "B12ND" ~ "Duration from first forking to second forking (thermal units)", 
+               Coefficient == "B23ND" ~ "Duration from second forking to third forking (thermal units)", 
+               Coefficient == "B34ND" ~ "Duration from second forking to third forking (thermal units)", 
+               Coefficient == "BR1FX" ~ "Branch number per fork at fork 1 (no.)", 
+               Coefficient == "BR2FX" ~ "Branch number per fork at fork 2 (no.)", 
+               Coefficient == "BR3FX" ~ "Branch number per fork at fork 3 (no.)", 
+               Coefficient == "BR4FX" ~ "Branch number per fork at fork 4 (no.)", 
+               Coefficient == "LAXS" ~ "Area/leaf at maximum area/leaf, cm2",
+               Coefficient == "SLAS" ~ "Specific leaf lamina area when crop growing without stress, cm2 g−1",
+               Coefficient == "LLIFA" ~ "Leaf life, from full expansion to start senescence (thermal units)", 
+               Coefficient == "LPEFR" ~ "Leaf-petiole weight fraction (no.)", 
+               Coefficient == "LNSLP" ~ "Slope for leaf production (no.)", 
+               Coefficient == "NODWT" ~ "Individual node weight (g)", 
+               Coefficient == "NODLT" ~ "Internode length (cm)",
+              Coefficient == "PARUE" ~ "Radiation use efficiency (g dry matter MJ−1)",
+              Coefficient == "KCAN" ~ "Photosynthetically active radiation (PAR) extinction parameter (no.)")) %>%
+           dplyr:::relocate(Coefficient, Definition)
+
+write.csv(MyCUL7, "Result/Paper_Table2.csv", quote = F, row.names = F)
+
+```
+
+#second table to resume Tables 2 and make it less big
+```{r}
+library(raster)
+MyCUL77 <- MyCUL6 %>% mutate(Definition = 
+               case_when(Coefficient == "B01ND" ~ "Duration from planting to first forking (°Cd)", 
+               Coefficient == "B12ND" ~ "Duration from first to second forking (°Cd)", 
+               Coefficient == "B23ND" ~ "Duration from second to third forking (°Cd)", 
+               Coefficient == "B34ND" ~ "Duration from second to third forking (°Cd)", 
+               Coefficient == "BR1FX" ~ "Branch number per fork at fork 1 (no.)",
+               Coefficient == "BR2FX" ~ "Branch number per fork at fork 2 (no.)", 
+               Coefficient == "BR3FX" ~ "Branch number per fork at fork 3 (no.)", 
+               Coefficient == "BR4FX" ~ "Branch number per fork at fork 4 (no.)", 
+               Coefficient == "LAXS" ~ "Maximum leaf area when growing without stress (cm²)",
+               Coefficient == "SLAS" ~ "Specific leaf lamina area when crop growing without stress (cm2 g−1)",
+               Coefficient == "LLIFA" ~ "Leaf life from full expansion to start senescence (°Cd)", 
+               Coefficient == "LPEFR" ~ "Leaf-petiole fraction (fraction of lamina  petiole)", 
+               Coefficient == "LNSLP" ~ "Slope for leaf production", 
+              Coefficient == "NODWT" ~ "Node weight for the first stem of the shoot before branching at 3400 ˚Cd (g)", 
+                Coefficient == "NODLT" ~ " Mean internode length (cm) for the first stem of the shoot before branching when is lignified (cm)",
+               Coefficient == "PARUE" ~ "Photosynthetically active radiation (PAR) conversion factor standard (g dry matter MJ−1)",
+               Coefficient == "KCAN" ~ "Photosynthetically active radiation extinction parameter (no.)")) %>%
+            dplyr::select(Coefficient, Definition)
+
+
+MyCUL77a <- MyCUL77 %>% 
+  mutate(Min = dplyr::case_when(Coefficient == "B01ND" ~ min(MyCUL4$min.B01ND),
+                         Coefficient == "B12ND" ~ min(MyCUL4$min.B12ND),
+                         Coefficient == "B23ND" ~ min(MyCUL4$min.B23ND),
+                         Coefficient == "B34ND" ~ min(MyCUL4$min.B34ND),
+                         Coefficient == "BR1FX" ~ min(MyCUL4$min.BR1FX),
+                         Coefficient == "BR2FX" ~ min(MyCUL4$min.BR2FX),
+                         Coefficient == "BR3FX" ~ min(MyCUL4$min.BR3FX),
+                         Coefficient == "BR4FX" ~ min(MyCUL4$min.BR4FX),
+                         Coefficient == "LAXS" ~ min(MyCUL4$min.LAXS),
+                         Coefficient == "SLAS" ~ min(MyCUL4$min.SLAS),
+                         Coefficient == "LLIFA" ~ min(MyCUL4$min.LLIFA),
+                         Coefficient == "LPEFR" ~ min(MyCUL4$min.LPEFR),
+                         Coefficient == "LNSLP" ~ min(MyCUL4$min.LNSLP),
+                         Coefficient == "NODWT" ~ min(MyCUL4$min.NODWT),
+                         Coefficient == "NODLT" ~ min(MyCUL4$min.NODLT),
+                         Coefficient == "PARUE" ~ min(MyCUL4$PARUE),
+                         Coefficient == "KCAN" ~ min(MyCUL4$KCAN)),
+         Max = dplyr::case_when(Coefficient == "B01ND" ~ max(MyCUL4$max.B01ND),
+                         Coefficient == "B12ND" ~ max(MyCUL4$max.B12ND),
+                         Coefficient == "B23ND" ~ max(MyCUL4$max.B23ND),
+                         Coefficient == "B34ND" ~ max(MyCUL4$max.B34ND),
+                         Coefficient == "BR1FX" ~ max(MyCUL4$max.BR1FX),
+                         Coefficient == "BR2FX" ~ max(MyCUL4$max.BR2FX),
+                         Coefficient == "BR3FX" ~ max(MyCUL4$max.BR3FX),
+                         Coefficient == "BR4FX" ~ max(MyCUL4$max.BR4FX),
+                         Coefficient == "LAXS" ~ max(MyCUL4$max.LAXS),
+                         Coefficient == "SLAS" ~ max(MyCUL4$max.SLAS),
+                         Coefficient == "LLIFA" ~ max(MyCUL4$max.LLIFA),
+                         Coefficient == "LPEFR" ~ max(MyCUL4$max.LPEFR),
+                         Coefficient == "LNSLP" ~ max(MyCUL4$max.LNSLP),
+                         Coefficient == "NODWT" ~ max(MyCUL4$max.NODWT),
+                         Coefficient == "NODLT" ~ max(MyCUL4$max.NODLT),
+                         Coefficient == "PARUE" ~ max(MyCUL4$PARUE),
+                         Coefficient == "KCAN" ~ max(MyCUL4$KCAN)),
+         CV = dplyr::case_when(Coefficient == "B01ND" ~ cv(MyCUL3$B01ND),#*100,
+                         Coefficient == "B12ND" ~ cv(MyCUL3$B12ND),#*100,
+                         Coefficient == "B23ND" ~ cv(MyCUL3$B23ND),#*100,
+                         Coefficient == "B34ND" ~ cv(MyCUL3$B34ND),#*100,
+                         Coefficient == "BR1FX" ~ cv(MyCUL3$BR1FX),#*100,
+                         Coefficient == "BR2FX" ~ cv(MyCUL3$BR2FX),#*100,
+                         Coefficient == "BR3FX" ~ cv(MyCUL3$BR3FX),#*100,
+                         Coefficient == "BR4FX" ~ cv(MyCUL3$BR4FX),#*100,
+                         Coefficient == "LAXS" ~ cv(MyCUL3$LAXS),#*100,
+                         Coefficient == "SLAS" ~ cv(MyCUL3$SLAS),#*100,
+                         Coefficient == "LLIFA" ~ cv(MyCUL3$LLIFA),#*100,
+                         Coefficient == "LPEFR" ~ cv(MyCUL3$LPEFR),#*100,
+                         Coefficient == "LNSLP" ~ cv(MyCUL3$LNSLP),#*100,
+                         Coefficient == "NODWT" ~ cv(MyCUL3$NODWT),#*100,
+                         Coefficient == "NODLT" ~ cv(MyCUL3$NODLT),#*100,
+                         Coefficient == "PARUE" ~ cv(MyCUL4$PARUE),#*100,
+                         Coefficient == "KCAN" ~ (cv(MyCUL4$KCAN)))) %>% #*100
+  mutate(Max = round(Max, 1),
+         Min = round(Min, 1),
+         "CV (%)" = round(CV, 1)) %>% 
+  dplyr::select(Coefficient, Definition, Max, Min, "CV (%)")
+        
+write.csv(MyCUL77a, "Result/Paper_Table22.csv", quote = F, row.names = F)
+
+
+```
+
+
+
+```{r}
+ggplot(data = REGR_RMSE, aes(x = BeforeGLUE, y = AfterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+   geom_point(aes()) +
+   geom_smooth(method = "lm", color = "black") +
+   #scale_color_brewer("Performance", palette = "Set1") +
+   ggtitle("RMSE comparison") +
+   geom_hline(data = mediansRMSE, mapping = aes(yintercept = case_when(mediansRMSE$Mean == "AfterGLUE" ~ RMSE), color = "AfterGLUE")) +
+   geom_vline(data = mediansRMSE, mapping = aes(xintercept = case_when(mediansRMSE$Mean == "BeforeGLUE" ~ RMSE), color = "red")) +
+  # scale_linetype_manual(name ="Median", values = c("blues9", "green"))
+  annotate(x = 10, y = 10, label = paste0("t.test, ", "p < 0.001"),
+            color = "black", geom = "text") +
+   theme_classic()#+ # for removing grille hjust = 1
+dev.off()
+```
+
+
+## correlation and RMSE tables represented by boxplot
+```{r}
+
+
+COMP1 <- read_csv("Result/RESUT.csv")
+## for R
+REGR_R <- COMP1 %>% 
+  select(Clone, R.Cor, GLUER.Cor) %>% 
+           mutate(Clone = c(1:67),
+                  BeforeGLUE = R.Cor,
+                  AfterGLUE = GLUER.Cor) %>%
+  select(Clone, beforeGLUE, afterGLUE)
+
+
+#COMP_R <- COMP1 %>% select(R.Cor) %>% 
+ #                    mutate(R = R.Cor,
+  #                          Statut = "BeforeGLUE")
+#COMP_RGLUE <- COMP1 %>% select(GLUER.Cor) %>% 
+  #                   mutate(R = GLUER.Cor,
+ #                           Statut = "afterGLUE") 
+#COMP_RR <- bind_rows(COMP_R,COMP_RGLUE) %>% select(Statut, R)
+#ggboxplot(COMP_RR, x = "Statut", y = "R", color = "Statut", add = "jitter")+
+
+## for R square 
+COMP_Rsq <- COMP1 %>% select(R.sq) %>%
+                     mutate("R²" = R.sq,
+                            Statut = "BeforeGLUE")
+COMP_RsqGLUE <- COMP1 %>% select(GLUER.Rsq) %>% 
+                     mutate("R²" = GLUER.Rsq,
+                            Statut = "afterGLUE") 
+COMP_Rsq <- bind_rows(COMP_Rsq,COMP_RsqGLUE) %>% select(Statut, "R²")
+ggboxplot(COMP_Rsq, x = "Statut", y = "R²", color = "Statut", add = "jitter")+
+  stat_compare_means()
+
+
+
+## for rmse
+COMP_RMSE <- COMP1 %>% select(R.rmse) %>%
+                     mutate(RMSE = R.rmse,
+                            Statut = "BeforeGLUE")
+COMP_RMSEGLUE <- COMP1 %>% select(GLUER.rmse) %>% 
+                     mutate(RMSE = GLUER.rmse,
+                            Statut = "afterGLUE") 
+COMP_RMSE <- bind_rows(COMP_RMSE,COMP_RMSEGLUE) %>% select(Statut, RMSE)
+ggboxplot(COMP_RMSE, x = "Statut", y = "RMSE", color = "Statut", add = "jitter")+
+  stat_compare_means()
+
+ 
+```
+
+## AMMI Anova summary
+```{r}
+AMMIanova1 <- AMMIStatGXE$anova #anova table
+AMMIanova2 <- AMMIanova1 
+
+AMMIanova2 <- as_tibble(rownames_to_column(AMMIanova1)) %>% 
+                          rename(source = rowname) 
+AMMIanova3 <- AMMIanova2 %>% 
+  mutate("F value" = round(as.numeric(`F value`), digits = 1),
+         #"P value" = round(as.numeric(`Pr(>F)`), digits = 1),
+         "P value" = ifelse(!(is.na(`Pr(>F)`)), paste0("<", `Pr(>F)`, "***"), NA)) %>% 
+           dplyr::select(-(`Pr(>F)`)) %>%
+ mutate(source = if_else(source == "Trial", "Environment", source)) %>%
+  mutate(`Mean Sq` = round(`Mean Sq`))
+
+   AMMIanova4 <- AMMIanova3 %>% 
+            filter(source == "Genotype" | source == "Environment" | source == "Interactions") %>% 
+ # mutate(source = if_else(source == "Trial", "Environment", source)) %>%
+  mutate("% of Total SS" = round(`Sum Sq`/sum(`Sum Sq`) * 100, digits = 1)) %>%
+             dplyr::select(-(`Sum Sq`))
+
+AMMIanova5 <- left_join(AMMIanova3, AMMIanova4) #
+#IPCA
+AMMIPCA1 <- AMMIStatGXE$importance #anova table
+AMMIPCA2 <- as_tibble(rownames_to_column(AMMIPCA1)) %>% 
+                         rename(source = rowname)
+AMMIPCA3 <-  AMMIPCA2 %>% filter(source == "Cumulative Proportion")
+
+AMMIanova6 <- AMMIanova5 %>% mutate("Cumulative Proportion (%)" = case_when(source == "PC1" ~ round(AMMIPCA3$PC1 * 100, digits = 1),
+           source == "PC2" ~ round(AMMIPCA3$PC2 * 100, digits = 1),
+           source == "PC3" ~ round(AMMIPCA3$PC3 * 100, digits = 1))) %>%
+             dplyr::select(-(`Sum Sq`))
+
+write.csv(AMMIanova6, "Result/Paper_AMMITable3.csv", quote = F, row.names = F) 
+```
+

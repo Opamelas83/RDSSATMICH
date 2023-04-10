@@ -1,0 +1,51 @@
+---
+title: "disease_checking"
+author: "Opamelas83"
+date: "2022-02-11"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+
+```{r}
+DIS <- read_csv("data/IITA2021_CABASE/UYT_GXE_pheno.csv")
+DISE <- DIS %>% rename(Year = studyYear,
+               Clone = germplasmName,
+               Location = locationName,
+               CB_3Min = "cassava bacterial blight incidence 3-month evaluation|CO_334:0000178",
+               CB_3Msev = "cassava bacterial blight severity 3-month evaluation|CO_334:0000175",
+               CGM_1sev = "cassava green mite severity first evaluation|CO_334:0000189",
+               CGM_2sev = "cassava green mite severity second evaluation|CO_334:0000190",
+               CMO_1Min = "cassava mosaic disease incidence 1-month evaluation|CO_334:0000195",
+               CMO_3Min = "cassava mosaic disease incidence 3-month evaluation|CO_334:0000196",
+               CMO_1Msev = "cassava mosaic disease severity 1-month evaluation|CO_334:0000191",
+               CMO_3Msev = "cassava mosaic disease severity 3-month evaluation|CO_334:0000192",
+               HWAM = "fresh storage root weight per plot|CO_334:0000012",
+               CWAM = "fresh shoot weight measurement in kg per plot|CO_334:0000016") %>%
+            select(Year, Clone, Location, CB_3Min, CB_3Msev, CGM_1sev, CGM_2sev, CMO_1Min, CMO_3Min,                         CMO_1Msev, CMO_3Msev, HWAM, CWAM)
+```
+
+```{r}
+DISEA <- DISE %>% filter(!is.na(CMO_3Msev)) %>%
+                  dplyr::group_by(Location) %>%
+     dplyr::summarise(RCB_3Min.Cor = cor(CB_3Min, HWAM, use = "complete.obs"),
+                   RCB_3Msev.Cor = cor(CB_3Msev, HWAM, use = "complete.obs"),
+                   RCGM_1sev.Cor = cor(!is.na(CGM_1sev), HWAM, use = "complete.obs"),
+                   RCGM_2sev.Cor = cor(!is.na(CGM_2sev), HWAM, use = "complete.obs"),
+                   RCMO_1Min.Cor = cor(CMO_1Min, HWAM, use = "complete.obs"),
+                   RCMO_3Min.Cor = cor(CMO_3Min, HWAM,  use = "complete.obs"),
+                   RCMO_1Msev.Cor = cor(!is.na(CMO_1Msev), HWAM, use = "complete.obs"),
+                   RCMO_3Msev.Cor = cor(CMO_3Msev, HWAM, use = "complete.obs"),
+                   RCB_3Min.Cor = cor(CB_3Min, CWAM, use = "complete.obs"),
+                   RCB_3Msev.Cor = cor(CB_3Msev, CWAM, use = "complete.obs"),
+                   RCGM_1sev.Cor = cor(!is.na(CGM_1sev), CWAM, use = "complete.obs"),
+                   RCGM_2sev.Cor = cor(!is.na(CGM_2sev), CWAM, use = "complete.obs"),
+                   RCMO_1Min.Cor = cor(CMO_1Min, CWAM, use = "complete.obs"),
+                   RCMO_3Min.Cor = cor(CMO_3Min, CWAM, use = "complete.obs"),
+                   RCMO_1Msev.Cor = cor(CMO_1Msev, CWAM, use = "complete.obs"),
+                   RCMO_3Msev.Cor = cor(CMO_3Msev, CWAM, use = "complete.obs"))
+write.csv(DISEA, "Result/LocaDISEA_cor.csv", quote = F, row.names = F)
+```
+

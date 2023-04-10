@@ -1,0 +1,726 @@
+---
+title: "OUT_analisis"
+author: "Opamelas83"
+date: "2022-01-21"
+output: workflowr::wflow_html
+editor_options:
+  chunk_output_type: console
+---
+
+## Introduction
+Make a list of file for connect treatment number from evaluate out file to clone name from csx file
+```{r}
+library("data.table")
+library("tidyverse")
+library("hydroGOF")
+library("DSSAT")
+TralList <- dir()[dir()%like%".CSX"]
+```
+
+```{r}
+  for(x in TralList){
+      Tral <- read_lines(x)
+      strtTrt <- grep(pattern = "*TREATMENTS", x = Tral, fixed=T)+2
+      endTrt <- grep(pattern = "*CULTIVARS", x = Tral, fixed=T)-2
+      Tral <- Tral[strtTrt:endTrt]
+      Tral <- substr(Tral, start = 10, stop = 37)
+      write.table(Tral, "test.txt", quote = F, col.names = F, row.names = F)
+      Tral <- read.table("test.txt", header =F)
+      colnames(Tral) <- c("Clone", "TRNO")
+    
+    MYYY <- here::here("data", "ClonTRNO", paste0(substr(x, 1,8), ".csv"))
+    write.csv(x = Tral, file = MYYY, row.names = F)
+}
+
+```
+
+
+```{r}
+write_dssbatch("UYAB1901.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAB1901 <- OUT1 %>% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAB1901.csv")
+DUYAB1901 <- left_join(Gernam, OUT_UYAB1901)
+
+```
+
+
+```{r}
+write_dssbatch("UYAG1701.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1701 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAG1701.csv")
+DUYAG1701 <- left_join(Gernam, OUT_UYAG1701)
+
+```
+
+
+```{r}
+write_dssbatch("UYAG1801.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAG1801.csv")
+DUYAG1801 <- left_join(Gernam, OUT_UYAG1801)
+
+```
+
+```{r}
+write_dssbatch("UYAG1901.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYAG1901.csv")
+DUYAG1901 <- left_join(Gernam, OUT_UYAG1901)
+
+```
+
+```{r}
+write_dssbatch("UYIB1701.CSX", trtno = 1:33)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1701 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIB1701.csv")
+DUYIB1701 <- left_join(Gernam, OUT_UYIB1701)
+
+```
+
+```{r}
+write_dssbatch("UYIB1801.CSX", trtno = 1:57)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIB1801.csv")
+DUYIB1801 <- left_join(Gernam, OUT_UYIB1801)
+
+```
+
+```{r}
+write_dssbatch("UYIB1901.CSX", trtno = 1:66)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIB1901.csv")
+DUYIB1901 <- left_join(Gernam, OUT_UYIB1901)
+
+```
+
+```{r}
+#write_dssbatch("UYIB2001.CSX", trtno = 1:36)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                             col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYIB2001 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYIB2001.csv")
+#DUYIB1901 <- left_join(Gernam, OUT_UYIB2001)
+
+```
+
+```{r}
+#write_dssbatch("UYIB2001.CSX", trtno = 1:67)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+  #                             col_names = NULL, 
+  #                           left_justified = NULL, 
+   #           read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYIB2001 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYIB2001.csv")
+#DUYIB2001 <- left_join(Gernam, OUT_UYIB2001)
+
+```
+
+```{r}
+write_dssbatch("UYIK1701.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1701 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIK1701.csv")
+DUYIK1701 <- left_join(Gernam, OUT_UYIK1701)
+
+```
+
+```{r}
+write_dssbatch("UYIK1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIK1801.csv")
+DUYIK1801 <- left_join(Gernam, OUT_UYIK1801)
+
+```
+
+```{r}
+write_dssbatch("UYIK1901.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYIK1901.csv")
+DUYIK1901 <- left_join(Gernam, OUT_UYIK1901)
+
+```
+
+```{r}
+#write_dssbatch("UYKA1801.CSX", trtno = 1:61)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYKA1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYKA1801.csv")
+#DUYKA1801 <- left_join(Gernam, OUT_UYKA1801)
+
+```
+
+```{r}
+write_dssbatch("UYMO1701.CSX", trtno = 1:63)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1701 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYMO1701.csv")
+DUYMO1701 <- left_join(Gernam, OUT_UYMO1701)
+
+```
+
+```{r}
+write_dssbatch("UYMO1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYMO1801.csv")
+DUYMO1801 <- left_join(Gernam, OUT_UYMO1801)
+
+```
+
+```{r}
+write_dssbatch("UYMO1901.CSX", trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYMO1901.csv")
+DUYMO1901 <- left_join(Gernam, OUT_UYMO1901)
+
+```
+
+```{r}
+write_dssbatch("UYON1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                              col_names = NULL, 
+                            left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYON1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYON1801.csv")
+DUYON1801 <- left_join(Gernam, OUT_UYON1801)
+
+```
+
+```{r}
+#write_dssbatch("UYON1901.CSX", trtno = 1:64)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                            #   col_names = NULL, 
+                             #left_justified = NULL, 
+              #read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYON1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYON1901.csv")
+#DUYON1901 <- left_join(Gernam, OUT_UYON1901)
+
+```
+
+```{r}
+#write_dssbatch("UYOT1801.CSX", trtno = 1:55)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYOT1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYOT1801.csv")
+#DUYOT1801 <- left_join(Gernam, OUT_UYOT1801)
+
+```
+
+```{r}
+write_dssbatch("UYUB1901.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYUB1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYUB1901.csv")
+DUYUB1901 <- left_join(Gernam, OUT_UYUB1901)
+
+```
+
+```{r}
+write_dssbatch("UYUM1801.CSX", trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYUM1801 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam <- read_csv("data/ClonTRNO/UYUM1801.csv")
+DUYUM1801 <- left_join(Gernam, OUT_UYUM1801)
+
+```
+
+
+```{r}
+#write_dssbatch("UYZA1901.CSX", trtno = 1:4)
+#run_dssat(suppress_output = TRUE)
+#OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 
+ #                              col_names = NULL, 
+  #                           left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYZA1901 <- OUT1 %>% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam <- read_csv("data/ClonTRNO/UYZA1901.csv")
+#DUYZA1901 <- left_join(Gernam, OUT_UYZA1901)
+
+```
+
+
+##After GLUE
+```{r}
+GLUEVAL <- bind_rows(DUYAB1901, DUYAG1701, DUYAG1801, DUYAG1901, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1701, DUYIK1801, DUYIK1901, DUYMO1701, DUYMO1801, DUYMO1901, DUYON1801,  DUYUB1901, DUYUM1801,  .id = "source") %>% ####DUYAB1901, DUYAG1701, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1901, DUYMO1801, DUYUM1801, DUYZA1901, DUYKA1801, DUYOT1801,
+       mutate(HWAMMS = HWAMM - HWAMS,
+              CWAMMS = CWAMM - CWAMS,
+              LAIXMS = LAIXM - LAIXS) # %>% filter(Clone LAI)
+Parset <- GLUEVAL %>% group_by(Clone) %>%
+                 summarise(HWAMMSm = mean(HWAMMS, na.rm = TRUE),
+                           CWAMMSm = mean(CWAMMS, na.rm = TRUE) ,
+                           LAIXMSm = mean(LAIXMS, na.rm = TRUE))
+#cut(Parset$HWAMMSm, breaks = 5)
+#colnames()
+colnames(GLUEVAL)
+write.csv(GLUEVAL, "data/GLUEHWAM_VALana.csv", quote = F, row.names = F) 
+
+```
+
+
+```{r}
+library(data.table)
+GLUEYIELD <- read.csv("data/GLUEHWAM_VALana.csv") #EVALana2.csv
+GLUEYIELD$Location <- GLUEYIELD$EXCODE
+GLUEYIELD$Location[grep(pattern = "^UYAB", x = GLUEYIELD$EXCODE)] <- "ABUJA"
+GLUEYIELD$Location[grep(pattern = "^UYAG", x = GLUEYIELD$EXCODE)] <- "AGO"
+GLUEYIELD$Location[grep(pattern = "^UYIB", x = GLUEYIELD$EXCODE)] <- "IBADAN"
+GLUEYIELD$Location[grep(pattern = "^UYIK", x = GLUEYIELD$EXCODE)] <- "IKENNE"
+#GLUEYIELD$Location[grep(pattern = "^UYKA", x = GLUEYIELD$EXCODE)] <- "KANO"
+GLUEYIELD$Location[grep(pattern = "^UYMO", x = GLUEYIELD$EXCODE)] <- "MOKWA"
+GLUEYIELD$Location[grep(pattern = "^UYON", x = GLUEYIELD$EXCODE)] <- "ONNE"
+#GLUEYIELD$Location[grep(pattern = "^UYOT", x = GLUEYIELD$EXCODE)] <- "OTOBI"
+GLUEYIELD$Location[grep(pattern = "^UYUB", x = GLUEYIELD$EXCODE)] <- "UBIAJA"
+GLUEYIELD$Location[grep(pattern = "^UYUM", x = GLUEYIELD$EXCODE)] <- "UMUDIKE"
+#GLUEYIELD$Location[grep(pattern = "^UYZA", x = GLUEYIELD$EXCODE)] <- "ZARIA"
+
+GLUEYIELD$Year <- GLUEYIELD$EXCODE
+#GLUEYIELD$Year[grep(pattern = "*2001CS", x = GLUEYIELD$EXCODE)] <- "2020"
+GLUEYIELD$Year[grep(pattern = "*1901CS", x = GLUEYIELD$EXCODE)] <- "2019"
+GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
+GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
+```
+
+
+```{r}
+GLUEYIELD1 <- GLUEYIELD %>% 
+  select(Clone, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM, LAIXS, Year, Location) %>% 
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         CWAMM = CWAMM / 1000,
+        CWAMS = CWAMS / 1000)
+```
+
+
+```{r}
+library(hydroGOF)
+cor(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM, use = "complete.obs")
+rmse(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM)
+nrmse(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM, na.rm =TRUE)
+##LAIX
+cor(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM, use = "complete.obs")
+rmse(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM)
+nrmse(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM, na.rm =TRUE)
+```
+
+#plot Root dry weight each clone for all environnment/each environment for all clone
+```{r}
+library(hydroGOF)
+GLUELAIXO <- GLUEYIELD1 %>%
+   #filter(!is.na(LAIXM)) %>%
+   group_by(Clone) %>% 
+  summarise(GLUELAIX.Cor = mean(LAIXM - LAIXS),
+                   GLUELAIX.rmse = hydroGOF::rmse(LAIXS, LAIXM, na.rm =TRUE),
+                   GLUELAIX.d = d(LAIXS, LAIXM, na.rm =TRUE))
+
+
+## #each clone for all environnment
+GLUEResYIELD1 <- GLUEYIELD1 %>% dplyr::group_by(Clone) %>%
+  dplyr::summarise(GLUEM.R = round(mean(HWAMM - HWAMS, na.rm =TRUE), 3),
+                   GLUET.M = round(mean(CWAMM - CWAMS, na.rm =TRUE), 3),
+                   GLUER.rmse = round(hydroGOF::rmse(HWAMS, HWAMM, na.rm =TRUE), 3),
+                   GLUET.rmse = round(rmse(CWAMS, CWAMM, na.rm =TRUE), 3),
+                   GLUET.Cor = round(cor(CWAMS, CWAMM, use = "complete.obs"), 3),
+                   GLUER.Cor = round(cor(HWAMS, HWAMM, use = "complete.obs"), 3),
+                   #GLUER.Rsq = rsq(lm(HWAMS ~ HWAMM)),
+                   #GLUER.nrmse = hydroGOF::nrmse(HWAMS, HWAMM, na.rm =TRUE),
+                   
+                   #GLUET.Cor = cor(CWAMS, CWAMM, use = "complete.obs"),
+                   GLUER.d = d(HWAMS, HWAMM, na.rm =TRUE),
+                   #GLUET.nrmse = nrmse(CWAMS, CWAMM, na.rm =TRUE),
+                   GLUET.d = d(CWAMS, CWAMM, na.rm =TRUE))
+
+write.csv(GLUEResYIELD1, "Result/GLUErmse_cor.csv", quote = F, row.names = F)
+
+#each environment for all clones
+#GLUEResYIELD1 <- GLUEYIELD1 %>% dplyr::group_by(Location) %>%
+#  dplyr::summarise(H.R^2 = (eq(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM), parse = TRUE),
+ #                  H.rmse = rmse(HWAMS, HWAMM),
+ #                  LAI.R^2 = (eq(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM), parse = TRUE),
+  #                 LAI.rmse = rmse(LAIXS, LAIXM))
+                   
+
+#write.csv(GLUEResYIELD1, "Result/GLUEHWAMrmse_cor.csv", quote = F, row.names = F)
+  
+#eq <- function(x,y) {
+#  m <- lm(y ~ x)
+#  as.character(
+ #   as.expression(
+#      substitute(italic(r)^2~"="~r2,
+ #               list(r2 = format(summary(m)$r.squared, digits = 3)))
+ #   )
+ # )
+#}
+
+eqr <- function(x,y) {
+  m <- round(cor(x, y, use = "complete.obs"), 2)
+  
+}
+
+eqrmse <- function(x,y) {
+  m <- round(rmse(x, y), 1)
+  
+}
+
+eqd <- function(x,y) {
+  m <- round(d(x, y), 2)
+  
+}
+
+
+#MYIELD1 <- lm(YIELD1$HWAMM ~ YIELD1$HWAMS)
+#summary(MYIELD1)
+
+ClonesID <- unique(GLUEYIELD1$Clone) %>% .[order(.)]
+
+for(i in 1:length(ClonesID)) {
+  FileName <- paste("RegressionGLUE_", ClonesID[i], ".jpeg", sep = "")
+  data <- GLUEYIELD1 %>% filter(Clone == ClonesID[i])
+  
+  Fig <- ggplot(data = data,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Location)) +
+    geom_smooth(method = "lm") + ggtitle(ClonesID[i]) +
+    xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+    ylab(Observed~Root~weight~(t~ha^{-1})) + 
+    geom_text(x = max(GLUEYIELD1$HWAMS, na.rm = TRUE) - 3.0*sd(GLUEYIELD1$HWAMS, na.rm = TRUE),
+            y = max(GLUEYIELD1$HWAMM, na.rm = TRUE) - 2.85*sd(GLUEYIELD1$HWAMM, na.rm = TRUE), size = 3.5, 
+            label = paste0("r = ", eqr(data$HWAMM, data$HWAMS))) +
+  #paste0("r = ", round(cor(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM, use = "complete.obs"), 2))) +
+   geom_text(x = max(GLUEYIELD1$HWAMS, na.rm = TRUE) - 2.9*sd(GLUEYIELD1$HWAMS, na.rm = TRUE),
+            y = max(GLUEYIELD1$HWAMM, na.rm = TRUE) - 2.93*sd(GLUEYIELD1$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0("RMSE = ", eqrmse(data$HWAMM, data$HWAMS))) +
+  geom_text(x = max(GLUEYIELD1$HWAMS, na.rm = TRUE) - 3.0*sd(GLUEYIELD1$HWAMS, na.rm = TRUE),
+            y = max(GLUEYIELD1$HWAMM, na.rm = TRUE) - 3*sd(GLUEYIELD1$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0("d = ", eqd(data$HWAMM, data$HWAMS))) +
+  
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) 
+  
+    ggsave(plot = Fig, filename = FileName,width = 8, height = 6, units = "in",  path = "Result/PlotGLUEHWAM", device = "jpeg", dpi = 350)
+
+}
+
+```
+
+##Before Glue estimation
+```{r}
+EVAL <- bind_rows(DUYAB1901, DUYAG1701, DUYAG1801, DUYAG1901, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1701, DUYIK1801, DUYIK1901, DUYMO1701, DUYMO1801, DUYMO1901, DUYON1801,  DUYUB1901, DUYUM1801,  .id = "source") %>% ####DUYAB1901, DUYAG1701, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1901, DUYMO1801, DUYUM1801, DUYZA1901, DUYKA1801, DUYOT1801,1
+#colnames()
+       mutate(HWAMMS = HWAMM - HWAMS,
+              CWAMMS = CWAMM - CWAMS,
+              LAIXMS = LAIXM - LAIXS)
+colnames(EVAL)
+write.csv(EVAL, "data/EVALana.csv", quote = F, row.names = F) 
+```
+
+```{r}
+library(data.table)
+YIELD <- read.csv("data/EVALana.csv")
+YIELD$Location <- YIELD$EXCODE
+YIELD$Location[grep(pattern = "^UYAB", x = YIELD$EXCODE)] <- "ABUJA"
+YIELD$Location[grep(pattern = "^UYAG", x = YIELD$EXCODE)] <- "AGO-OWO"
+YIELD$Location[grep(pattern = "^UYIB", x = YIELD$EXCODE)] <- "IBADAN"
+YIELD$Location[grep(pattern = "^UYIK", x = YIELD$EXCODE)] <- "IKENNE"
+#YIELD$Location[grep(pattern = "^UYKA", x = YIELD$EXCODE)] <- "KANO"
+YIELD$Location[grep(pattern = "^UYMO", x = YIELD$EXCODE)] <- "MOKWA"
+YIELD$Location[grep(pattern = "^UYON", x = YIELD$EXCODE)] <- "ONNE"
+#YIELD$Location[grep(pattern = "^UYOT", x = YIELD$EXCODE)] <- "OTOBI"
+YIELD$Location[grep(pattern = "^UYUB", x = YIELD$EXCODE)] <- "UBIAJA"
+YIELD$Location[grep(pattern = "^UYUM", x = YIELD$EXCODE)] <- "UMUDIKE"
+#YIELD$Location[grep(pattern = "^UYZA", x = YIELD$EXCODE)] <- "ZARIA"
+
+YIELD$Year <- YIELD$EXCODE
+#YIELD$Year[grep(pattern = "*2001CS", x = YIELD$EXCODE)] <- "2020"
+YIELD$Year[grep(pattern = "*1901CS", x = YIELD$EXCODE)] <- "2019"
+YIELD$Year[grep(pattern = "*1801CS", x = YIELD$EXCODE)] <- "2018"
+YIELD$Year[grep(pattern = "*1701CS", x = YIELD$EXCODE)] <- "2017"
+```
+
+```{r}
+YIELD1 <- YIELD %>% 
+  select(Clone, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, Year, Location) %>% 
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         CWAMM = CWAMM / 1000,
+        CWAMS = CWAMS / 1000)
+```
+
+```{r}
+cor(YIELD1$HWAMM, YIELD1$HWAMS, use = "complete.obs")
+```
+
+```{r}
+ResYIELD1 <- YIELD1 %>% dplyr::group_by(Clone) %>%
+  dplyr::summarise(M.R = round(mean(HWAMM - HWAMS, na.rm =TRUE), 3),
+                   T.M = round(mean(CWAMM - CWAMS, na.rm =TRUE), 3),
+                   R.rmse = round(hydroGOF::rmse(HWAMS, HWAMM, na.rm =TRUE), 3),
+                   T.rmse = round(rmse(CWAMS, CWAMM, na.rm =TRUE), 3),
+                   T.Cor = round(cor(CWAMS, CWAMM, use = "complete.obs"), 3),
+                   R.Cor = round(cor(HWAMS, HWAMM, use = "complete.obs"), 3),
+                   #R.Rsq = rsq(lm(HWAMS ~ HWAMM)),
+                   #R.nrmse = hydroGOF::nrmse(HWAMS, HWAMM, na.rm =TRUE),
+                   
+                   #T.Cor = cor(CWAMS, CWAMM, use = "complete.obs"),
+                   R.d = d(HWAMS, HWAMM, na.rm =TRUE),
+                   #T.nrmse = nrmse(CWAMS, CWAMM, na.rm =TRUE),
+                   T.d = d(CWAMS, CWAMM, na.rm =TRUE))
+
+write.csv(ResYIELD1, "Result/rmse_cor.csv", quote = F, row.names = F)
+  
+#MYIELD1 <- lm(YIELD1$HWAMM ~ YIELD1$HWAMS)
+#summary(MYIELD1)
+
+ClonesID <- unique(YIELD1$Clone) %>% .[order(.)]
+
+eq <- function(x,y) {
+  m <- lm(y ~ x)
+  as.character(
+    as.expression(
+      substitute(italic(r)^2~"="~r2,
+                list(r2 = format(summary(m)$r.squared, digits = 3)))
+    )
+  )
+}
+
+for(i in 1:length(ClonesID)) {
+  FileName <- paste("Regression_", ClonesID[i], ".jpeg", sep = "")
+  data <- YIELD1 %>% filter(Clone == ClonesID[i])
+  
+  Fig <- ggplot(data = data,aes(x = HWAMM, y = HWAMS)) +
+    geom_point(aes(color = Location)) +
+    geom_smooth(method = "lm") + ggtitle(ClonesID[i]) +
+    xlab(expression(Observed~Root~weight~(t~ha^{-1}))) + 
+    ylab(Simulated~Root~weight~(t~ha^{-1})) + 
+    geom_text(x = max(data$HWAMM, na.rm = TRUE) - 0.8*sd(data$HWAMM, na.rm = TRUE),
+              y = max(data$HWAMS, na.rm = TRUE) - 0.8*sd(data$HWAMS, na.rm = TRUE),
+              label = eq(data$HWAMM, data$HWAMS), parse = TRUE) +
+    theme_bw()
+  ggsave(plot = Fig, filename = FileName,
+         width = 8, height = 6, units = "in", path = "Result/Plot", device = "jpeg", dpi = 350)
+
+  }
+```
+
+
+```{r}
+Resut <- read_csv("Result/rmse_cor.csv")
+GLUEResut <- read_csv("Result/GLUErmse_cor.csv")
+RESUT <- left_join(Resut, GLUEResut) %>%
+  mutate(R.Cor = round(R.Cor, digits = 2),
+         GLUER.Cor = round(GLUER.Cor, digits = 2),
+         #R.sq = round(R.sq, digits = 2),
+         #GLUER.Rsq = round(GLUER.Rsq, digits = 2),
+         R.rmse = round(R.rmse, digits = 2), 
+         GLUER.rmse = round(GLUER.rmse, digits = 2), 
+          # R.nrmse = round(R.nrmse, digits = 2), 
+         #GLUER.nrmse = round(GLUER.rmse, digits = 2), 
+         R.d = round(R.d, digits = 2), 
+         GLUER.d = round(GLUER.d, digits = 2), 
+           T.Cor = round(T.Cor, digits = 2),
+         GLUET.Cor = round(GLUET.Cor, digits = 2),
+         T.rmse = round(T.rmse, digits = 2), 
+         GLUET.rmse = round(GLUET.rmse, digits = 2), 
+           #T.nrmse = round(T.nrmse, digits = 2), 
+         #GLUET.nrmse = round(GLUET.rmse, digits = 2), 
+         T.d = round(T.d, digits = 2), 
+         GLUET.d = round(GLUET.d, digits = 2)) %>%
+  relocate(R.Cor, GLUER.Cor, R.rmse, GLUER.rmse, 
+            R.d, GLUER.d, 
+           T.Cor, GLUET.Cor, T.rmse, GLUET.rmse, 
+            T.d, GLUET.d)# R.nrmse, GLUER.nrmse, T.nrmse, GLUET.nrmse,
+write.csv(RESUT, "Result/RESUT.csv", quote = F, row.names = F) 
+```
+
+
+```{r}
+YIELDP <- YIELD %>% 
+       filter(!is.na(HWAMM)) %>%
+       dplyr::group_by(Clone) %>%
+    summarise(RSMEROOT = rmse(actual = HWAMM, predicted = HWAMS)) %>%
+   mutate(RSMEROOT = round(RSMEROOT))
+      
+YIELD2 <- YIELD %>% 
+       dplyr::group_by(Clone) %>%
+summarise(MeanROOT = mean(HWAMM, na.rm = TRUE)) %>%
+  mutate(MeanROOT = round(MeanROOT))
+
+YIELDres <- left_join(YIELD1,YIELD2)
+write.csv(YIELDres, "data/YIELDres.csv", quote = F, row.names = F)
+
+YIELD5 <- YIELD1 %>% 
+      mutate(HWAMM = as.numeric(HWAMM),
+             HWAMS = as.numeric(HWAMS)) %>% 
+            select(Clone, HWAMM,HWAMS) %>%
+             filter(Clone == "TMEB419") #%>%
+          #dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+YIELD5 <- YIELD5  %>% column_to_rownames(var = "Clone")
+#AnalMYFI2[is.na(AnalMYFI2)] = 0
+cor(YIELD5, method = "pearson")
+  
+   #filter (Clone == "TMEB419") %>%
+  #cor(HWAMM, HWAMS)) #%>%
+   #mutate(RSMEROOT = round(RSMEROOT))
+
+CLroot <- YIELD1 %>% 
+  group_by(Clone, Location, Year) %>%
+  summarise(RSMEROOT = rmse(actual = HWAMM, predicted = HWAMS)) 
+CLtop <- YIELD1 %>% 
+  group_by(Clone, Location, Year) %>%
+  summarise(RSMETOP = rmse(actual = CWAMM, predicted = CWAMS))
+
+YIELD1 %>% filter(EXCODE %in% "UYAB*")
+YIELD1[grep(pattern = "UYAB*", x = YIELD1$EXCODE), "EXCODE"]
+
+#dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+rmse(YIELD1$HWAMM, YIELD1$HWAMS)
+ # mutate(Year = ,
+        # HWAMS = as.numeric(is.na(HWAMS)))
+#sqrt(mean((YIELD$HWAMM - YIELD$HWAMS)^2, na.rm = TRUE))
+#mean(YIELD$HWAMM, na.rm = TRUE)
+#rmse(YIELD$HWAMM, YIELD$HWAMS)
+```
+
+
+#For environment checking
+```{r}
+GLUEENV <- GLUEYIELD %>% select(Clone, HWAMM, HWAMS, EXCODE, Year, Location) %>% 
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+        Envi = paste0(Location, 20, str_sub(EXCODE, 5, 6)))
+
+GLUEENVID <- unique(GLUEENV$Envi) %>% .[order(.)]
+
+eq <- function(x,y) {
+  m <- lm(y ~ x)
+  as.character(
+    as.expression(
+      substitute(italic(r)^2~"="~r2,
+                list(r2 = format(summary(m)$r.squared, digits = 3)))
+    )
+  )
+}
+
+for(i in 1:length(GLUEENVID)) {
+  FileName <- paste("RegressionGLUE_", GLUEENVID[i], ".jpeg", sep = "")
+  dataENV <- GLUEENV %>% filter(Envi == GLUEENVID[i])
+  
+  Fig <- ggplot(data = dataENV,aes(x = HWAMM, y = HWAMS)) +
+    geom_point(aes()) +
+    geom_smooth(method = "lm") + ggtitle(GLUEENVID[i]) +
+    xlab(expression(Observed~Root~weight~(t~ha^{-1}))) + 
+    ylab(Simulated~Root~weight~(t~ha^{-1})) + 
+    geom_text(x = max(data$HWAMM, na.rm = TRUE) - 0.8*sd(data$HWAMM, na.rm = TRUE),
+              y = max(data$HWAMS, na.rm = TRUE) - 0.8*sd(data$HWAMS, na.rm = TRUE),
+              label = eq(data$HWAMM, data$HWAMS), parse = TRUE) +
+    theme_bw()
+  ggsave(plot = Fig, filename = FileName,
+         width = 8, height = 6, units = "in", path = "Result/PlotLocat_GLUEHWAM", device = "jpeg", dpi = 350)
+}
+```

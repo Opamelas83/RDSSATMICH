@@ -1,0 +1,22 @@
+Location,RCB_3Min.Cor,RCB_3Msev.Cor,RCGM_1sev.Cor,RCGM_2sev.Cor,RCMO_1Min.Cor,RCMO_3Min.Cor,RCMO_1Msev.Cor,RCMO_3Msev.Cor
+Ago-Owu,0.125712796,0.091435426,-0.07010661,-0.059474919,-0.124771168,-0.092244377,-0.084970538,-0.037021953
+Ibadan,0.339195079,-0.009091757,NA,-0.367607567,0.050015244,0.081788126,0.084431973,0.077643637
+Ikenne,-0.052684396,0.175313823,NA,-0.018053348,-0.108983181,-0.085961593,0.002672439,-0.034425911
+Kano,-0.038728163,0.032702191,0.221366646,NA,-0.139258297,-0.193898943,-0.101772301,-0.151936585
+Mokwa,0.204171278,0.186661041,-0.378828855,-0.218601568,0.007821954,0.057223014,0.032305694,0.025351501
+Onne,0.029463777,-0.01531014,NA,NA,-0.009190228,-0.003695811,0.050900601,0.037853875
+Otobi,0.19742764,0.221938313,NA,NA,-0.078886053,-0.043416806,-0.046664423,-0.066474306
+Umudike,0.042708807,0.017949974,NA,NA,-0.059498422,-0.06582586,-0.04228041,-0.016097352
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,"CB_3Min = ""cassava bacterial blight incidence 3-month evaluation|CO_334:0000178"",",,,,,
+,,,"               CB_3Msev = ""cassava bacterial blight severity 3-month evaluation|CO_334:0000175"",",,,,,
+,,,"               CGM_1sev = ""cassava green mite severity first evaluation|CO_334:0000189"",",,,,,
+,,,"               CGM_2sev = ""cassava green mite severity second evaluation|CO_334:0000190"",",,,,,
+,,,"               CMO_1Min = ""cassava mosaic disease incidence 1-month evaluation|CO_334:0000195"",",,,,,
+,,,"               CMO_3Min = ""cassava mosaic disease incidence 3-month evaluation|CO_334:0000196"",",,,,,
+,,,"               CMO_1Msev = ""cassava mosaic disease severity 1-month evaluation|CO_334:0000191"",",,,,,
+,,,"               CMO_3Msev = ""cassava mosaic disease severity 3-month evaluation|CO_334:0000192"",",,,,,
+,,,"               HWAM = ""fresh storage root weight per plot|CO_334:0000012"",",,,,,
+,,,"               CWAM = ""fresh shoot weight measurement in kg per plot|CO_334:0000016"")",,,,,

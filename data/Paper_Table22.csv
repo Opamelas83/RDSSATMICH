@@ -1,0 +1,18 @@
+Coefficient,Definition,Max,Min,CV (%)
+B01ND,Duration from planting to first forking (°Cd),803,211,52.8
+B12ND,Duration from first to second forking (°Cd),404,80,23
+B23ND,Duration from second to third forking (°Cd),374,101,20.1
+B34ND,Duration from second to third forking (°Cd),250,100,12
+BR1FX,Branch number per fork at fork 1 (no.),3.1,2,11.7
+BR2FX,Branch number per fork at fork 2 (no.),4,2,16.5
+BR3FX,Branch number per fork at fork 3 (no.),3,1,16.5
+BR4FX,Branch number per fork at fork 4 (no.),1.5,1.5,0
+LAXS,Maximum leaf area when growing without stress (cm²),999,347,22.1
+SLAS,Specific leaf lamina area when crop growing without stress (cm2 g−1),290,151,18.7
+LLIFA,Leaf life from full expansion to start senescence (°Cd),1800,452,30
+LPEFR,Leaf-petiole fraction (fraction of lamina  petiole),0.3,0.2,14.5
+LNSLP,Slope for leaf production,1.8,0.7,41.6
+NODWT,Node weight for the first stem of the shoot before branching at 3400 ˚Cd (g),14.2,3,52.4
+NODLT, Mean internode length (cm) for the first stem of the shoot before branching when is lignified (cm),4,1,38.6
+PARUE,Photosynthetically active radiation (PAR) conversion factor standard (g dry matter MJ−1),2.8,1.6,18.7
+KCAN,Photosynthetically active radiation extinction parameter (no.),0.8,0.7,7.4
