@@ -10,6 +10,15 @@ editor_options:
 ## Introduction
 
 ```{r}
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
 OUTweath_UYAB1901_6 <- OUTweath_UYAB1901 %>% slice(1:180)
 OUTweath_UYAB1901_9 <- OUTweath_UYAB1901 %>% slice(181:270)
 OUTweath_UYAB1901_12 <- OUTweath_UYAB1901 %>% slice(270:406)

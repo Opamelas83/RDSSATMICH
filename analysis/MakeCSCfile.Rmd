@@ -20,7 +20,9 @@ packages_used <- c("workflowr", "tidyverse", "DSSAT", "here", "lubridate")
 for (package in packages_used){
   if (!(package %in% ip[,"Package"])) install.packages(package)
 }
-library(tidyverse)
+library(tidyverse)library(tidyverse)
+library(zoo)
+library(rsq)
 ```
 
  

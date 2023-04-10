@@ -10,6 +10,12 @@ editor_options:
 ## Introduction
 
 ```{r}
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+
 DIS <- read_csv("data/IITA2021_CABASE/UYT_GXE_pheno.csv")
 DISE <- DIS %>% rename(Year = studyYear,
                Clone = germplasmName,

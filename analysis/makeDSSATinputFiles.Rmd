@@ -22,6 +22,15 @@ for (package in packages_used){
 }
 library(tidyverse)
 here::i_am("analysis/makeDSSATinputFiles.Rmd")
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
 ```
 
 ### Read the GxE trials file  

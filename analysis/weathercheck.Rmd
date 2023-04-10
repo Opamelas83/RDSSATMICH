@@ -8,13 +8,21 @@ editor_options:
 ---
 
 ## Weather data checking
+```{r}
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
+```
 
 ```{r}
 library(data.table)
 WeatherdataList <- dir("data/WEATHERdata")[dir("data/WEATHERdata")%like%"WT.csv"] ##reach weather data from NASA and calculate the parameters mean by year
-```
-
-```{r}
 ```
 
 #Calculate weather parameters for NASA data download from https://power.larc.nasa.gov/

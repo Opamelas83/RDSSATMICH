@@ -8,6 +8,17 @@ editor_options:
 ---
 
 ## check weather parameter variation accross cassava cycle time: 4 main cycle time for cassava
+```{r}
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
+```
 
 ```{r}
 OUTweath_UYAB1901C <- OUTweath_UYAB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAB1901),

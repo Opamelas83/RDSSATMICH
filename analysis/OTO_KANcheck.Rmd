@@ -10,6 +10,16 @@ editor_options:
 ## Introduction
 
 ```{r}
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
+
 write_dssbatch("UYOT1801.CSX", trtno = 1:55)
 run_dssat(suppress_output = TRUE)
 OUT1 <- read_output((here::here("Evaluate.OUT")), col_types = NULL, 

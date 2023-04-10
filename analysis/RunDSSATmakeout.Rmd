@@ -21,6 +21,15 @@ editor_options:
 
 ```{r}
 library(DSSAT)
+library(tidyverse)
+library(hydroGOF)
+library(corrplot)
+library(zoo)
+library(rsq)
+library(lemon)
+library(gridExtra)
+library(grid)
+library(gridtext)
 here::i_am("analysis/RunDSSATmakeout.Rmd")
 ```
 
