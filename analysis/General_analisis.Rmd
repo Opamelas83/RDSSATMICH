@@ -314,7 +314,7 @@ GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
 GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
 
 GLUEADANA <-  GLUEYIELD %>%
-dplyr::select(Clone, EXCODE, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, Year, Location) %>%
+dplyr::select(Clone, EXCODE, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM, LAIXS, Year, Location) %>%
   mutate(HWAMM = HWAMM / 1000,
          HWAMS = HWAMS / 1000,
          CWAMM = CWAMM / 1000,
@@ -383,7 +383,7 @@ GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
 GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
 
 GLUEADANA <-  GLUEYIELD %>%
- dplyr::select(Clone, EXCODE, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, year, Location) %>%
+ dplyr::select(Clone, EXCODE, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, Year, Location) %>%
   mutate(HWAMM = HWAMM / 1000,
          HWAMS = HWAMS / 1000,
          CWAMM = CWAMM / 1000,
@@ -753,12 +753,12 @@ ggplot(EVAL2, aes(TMAX, HWAMMS)) +
 #colors <- c('#FF5233', '#FFA533', '#7E9B23', '#C7DC18', "#16B8B1", "#2F78F0", "#9E2FF0", "#F02FB2")
 
 EVAL2 <- EVAL2 %>% mutate(colour = case_when(Location == "UBIAJA" ~ "#FF5233", Location == "AGO" ~ '#FFA533', Location == "MOKWA" ~ '#7E9B23', Location == "UMUDIKE" ~ '#C7DC18', Location == "ONNE" ~ "#16B8B1", Location == "IBADAN" ~ "#2F78F0", Location == "IKENNE" ~ "#9E2FF0", Location == "ABUJA" ~ "#F02FB2"))
-
-MICHE3D <- scatterplot3d(EVAL2$HWAMMS, EVAL2$TMAX, EVAL2$RAIN, main="Model deviation vs TMAX and RAIN", cex.main = 0.5,
-              xlab = "Obs - Sim",
-              ylab = "TMAX (c/year)",
-              zlab = "RAIN (mm/year)", pch = 16, cex.axis = 0.5, cex.lab = 0.5, box=FALSE, color = EVAL2$colour,  angle= 20)#y.margin.add,
-legend("bottom", legend = c("UBIAJA", "AGO", "MOKWA", "UMUDIKE", "ONNE", "IBADAN", "IKENNE" , "ABUJA"),
-      col =  c("#FF5233", '#FFA533', '#7E9B23', '#C7DC18', "#16B8B1", "#2F78F0", "#9E2FF0", "#F02FB2"), pch = 16, inset=c(-2.2), cex=.4)
+#library(scatterplot3d)
+#MICHE3D <- scatterplot3d(EVAL2$HWAMMS, EVAL2$TMAX, EVAL2$RAIN, main="Model deviation vs TMAX and RAIN", cex.main = 0.5,
+ #             xlab = "Obs - Sim",
+ #             ylab = "TMAX (c/year)",
+ #             zlab = "RAIN (mm/year)", pch = 16, cex.axis = 0.5, cex.lab = 0.5, box=FALSE, color = EVAL2$colour,  angle= 20)#y.margin.add,
+#legend("bottom", legend = c("UBIAJA", "AGO", "MOKWA", "UMUDIKE", "ONNE", "IBADAN", "IKENNE" , "ABUJA"),
+ #     col =  c("#FF5233", '#FFA533', '#7E9B23', '#C7DC18', "#16B8B1", "#2F78F0", #"#9E2FF0", "#F02FB2"), pch = 16, inset=c(-2.2), cex=.4)
 ```
 
