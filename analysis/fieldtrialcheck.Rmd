@@ -142,12 +142,6 @@ write.table(results, file = "Result/MixedModelResults.csv", quote = F, sep =",",
 
 ```{r}
 library(reactable)
-reactable::reactable(results, groupBy = "Trial",
-                     columns = list(VarG = colDef(format = colFormat(digits = 3, locales = "en-US")),
-                                    VarE = colDef(format = colFormat(digits = 3, locales = "en-US")),
-                                    H2 = colDef(format = colFormat(digits = 3, locales = "en-US")),
-                                    Real = colDef(format = colFormat(digits = 3, locales = "en-US")),
-                                    DvPrb = colDef(format = colFormat(digits = 3, locales = "en-US"))))
 ```
 
 Work with only two traits (without disease)
@@ -214,50 +208,50 @@ ggplot(Trialcheckfiltered_2022) +
 Luc
 ```{r}
 
-Trialcheck1 <- readr::read_csv(here::here("data/IITA2021_CABASE", "UYT_GXE_pheno.csv"), col_types=colString)
+#Trialcheck1 <- readr::read_csv(here::here("data/IITA2021_CABASE", "UYT_GXE_pheno.csv"), col_types=colString)
 
-Trials <- Trialcheck1$studyName %>% table %>% .[order(.)] 
+#Trials <- Trialcheck1$studyName %>% table %>% .[order(.)] 
 
-Trialcheck2 <- Trialcheck1 %>% filter(studyName == Trials[1]) %>% 
-  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
-         PHar = "plant stands harvested counting|CO_334:0000010",
-         FTY = "fresh shoot weight measurement in kg per plot|CO_334:0000016") %>% 
-  mutate(blockNumber = as.factor(blockNumber)) %>% 
-  lmer(formula = FRY ~ blockNumber + (1|germplasmName), data = .)
-visualize ()
-anova(Trialcheck2)
+#Trialcheck2 <- Trialcheck1 %>% filter(studyName == Trials[1]) %>% 
+ # rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+ #        PHar = "plant stands harvested counting|CO_334:0000010",
+  #       FTY = "fresh shoot weight measurement in kg per plot|CO_334:0000016") %>% 
+ # mutate(blockNumber = as.factor(blockNumber)) %>% 
+  #lmer(formula = FRY ~ blockNumber + (1|germplasmName), data = .)
+#visualize ()
+#anova(Trialcheck2)
 
-Trialcheck2rd <- Trialcheck1 %>% filter(studyName == Trials[1]) %>% 
-  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
-         PHar = "plant stands harvested counting|CO_334:0000010") %>% 
-  mutate(blockNumber = as.factor(blockNumber)) %>% 
-    lmer(formula =  FRY ~ PHar, data = .)#blockNumber
-anova(Trialcheck2, Trialcheck2rd)
-results <- tibble()
+#Trialcheck2rd <- Trialcheck1 %>% filter(studyName == Trials[1]) %>% 
+ # rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+ #        PHar = "plant stands harvested counting|CO_334:0000010") %>% 
+  # mutate(blockNumber = as.factor(blockNumber)) %>% 
+  #  lmer(formula =  FRY ~ PHar, data = .)#blockNumber
+#anova(Trialcheck2, Trialcheck2rd)
+#results <- tibble()
 
-for(i in Trials){
-  try(MixedModels <- Trialcheck1 %>% filter(studyName == i) %>% 
-  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
-         PHar = "plant stands harvested counting|CO_334:0000010") %>% 
-  mutate(blockNumber = as.factor(blockNumber)) %>% 
-    lmer(formula =  FRY ~ PHar + (1|germplasmName), data = .))#blockNumber#
-  try(MixedModelsrd <- Trialcheck1 %>% filter(studyName == i) %>% 
-  rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
-         PHar = "plant stands harvested counting|CO_334:0000010") %>% 
-  mutate(blockNumber = as.factor(blockNumber)) %>% 
-    lm(formula =  FRY ~ PHar, data = .))#blockNumber
+#for(i in Trials){
+#  try(MixedModels <- Trialcheck1 %>% filter(studyName == i) %>% 
+ # rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+ #        PHar = "plant stands harvested counting|CO_334:0000010") %>% 
+  #mutate(blockNumber = as.factor(blockNumber)) %>% 
+  #  lmer(formula =  FRY ~ PHar + (1|germplasmName), data = .))#blockNumber#
+#  try(MixedModelsrd <- Trialcheck1 %>% filter(studyName == i) %>% 
+ # rename(FRY = "fresh storage root weight per plot|CO_334:0000012",
+ #        PHar = "plant stands harvested counting|CO_334:0000010") %>% 
+ # mutate(blockNumber = as.factor(blockNumber)) %>% 
+  #  lm(formula =  FRY ~ PHar, data = .))#blockNumber
   
-  try(result <- tibble(Trial = i,
-                       VarG = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[1,2],
-                       VarE = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[2,2],
-                       H2 = VarG/(VarG + VarE),
-                       Real = suppressWarnings(MuMIn::r.squaredGLMM(MixedModels)[2]),
-      DvPrb = anova(MixedModels, MixedModelsrd) %>% as.data.frame() %>% 
-        .[2,"Pr(>Chisq)"] %>% as.numeric))
-  try(results <- rbind(results, result))
- rm(MixedModels); rm(result); rm(MixedModelsrd)
-}
-results
+#  try(result <- tibble(Trial = i,
+ #                      VarG = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% .[1,2],
+ #                      VarE = as.data.frame(VarCorr(MixedModels))[,c("grp","vcov")] %>% #.[2,2],
+  #                     H2 = VarG/(VarG + VarE),
+  #                     Real = suppressWarnings(MuMIn::r.squaredGLMM(MixedModels)[2]),
+   #   DvPrb = anova(MixedModels, MixedModelsrd) %>% as.data.frame() %>% 
+   #     .[2,"Pr(>Chisq)"] %>% as.numeric))
+ # try(results <- rbind(results, result))
+# rm(MixedModels); rm(result); rm(MixedModelsrd)
+#}
+#results
 
 ```
 
