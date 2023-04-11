@@ -927,7 +927,7 @@ PRdata <- HMMM %>%
             # Umudike18 = as.numeric(Umudike18),
              #Zaria19 = as.numeric(Zaria19))
 ```
-
+## check weather parameter variation accross cassava cycle time: 4 main cycle time for cassava
 ```{r}
 OUTweath_UYAB1901C <- OUTweath_UYAB1901 %>% mutate(DayAfPlanting = rownames(OUTweath_UYAB1901),
                                                ENV = "Abuja19")
@@ -1022,6 +1022,565 @@ weather_cycleT5 <- left_join(weather_cycleT1, weather_cycleT2)
 weather_cycleT6 <- left_join(weather_cycleT5, weather_cycleT3)
 weather_cycleT <- left_join(weather_cycleT6, weather_cycleT4)
 write.csv(weather_cycleT, "data/weather_cycle.csv", quote = F, row.names = F)
+```
+
+```{r}
+OUTweath_UYAB1901_6 <- OUTweath_UYAB1901 %>% slice(1:180)
+OUTweath_UYAB1901_9 <- OUTweath_UYAB1901 %>% slice(181:270)
+OUTweath_UYAB1901_12 <- OUTweath_UYAB1901 %>% slice(270:406)
+#Merge column
+DUYAB1901$TMIN_6 <- mean(OUTweath_UYAB1901_6$TMIN, na.rm = TRUE)
+DUYAB1901$TMIN_9 <- mean(OUTweath_UYAB1901_9$TMIN, na.rm = TRUE)
+DUYAB1901$TMIN_12 <- mean(OUTweath_UYAB1901_12$TMIN, na.rm = TRUE)
+
+DUYAB1901$TMAX_6 <- mean(OUTweath_UYAB1901_6$TMAX, na.rm = TRUE)
+DUYAB1901$TMAX_9 <- mean(OUTweath_UYAB1901_9$TMAX, na.rm = TRUE)
+DUYAB1901$TMAX_12 <- mean(OUTweath_UYAB1901_12$TMAX, na.rm = TRUE)
+
+DUYAB1901$SRAD_6 <- mean(OUTweath_UYAB1901_6$SRAD, na.rm = TRUE)
+DUYAB1901$SRAD_9 <- mean(OUTweath_UYAB1901_9$SRAD, na.rm = TRUE)
+DUYAB1901$SRAD_12 <- mean(OUTweath_UYAB1901_12$SRAD, na.rm = TRUE)
+
+DUYAB1901$PAR_6 <- mean(OUTweath_UYAB1901_6$PAR, na.rm = TRUE)
+DUYAB1901$PAR_9 <- mean(OUTweath_UYAB1901_9$PAR, na.rm = TRUE)
+DUYAB1901$PAR_12 <- mean(OUTweath_UYAB1901_12$PAR, na.rm = TRUE)
+
+DUYAB1901$RH2M_6 <- mean(OUTweath_UYAB1901_6$RH2M, na.rm = TRUE)
+DUYAB1901$RH2M_9 <- mean(OUTweath_UYAB1901_9$RH2M, na.rm = TRUE)
+DUYAB1901$RH2M_12 <- mean(OUTweath_UYAB1901_12$RH2M, na.rm = TRUE)
+
+DUYAB1901$WIND_6 <- mean(OUTweath_UYAB1901_6$WIND, na.rm = TRUE)
+DUYAB1901$WIND_9 <- mean(OUTweath_UYAB1901_9$WIND, na.rm = TRUE)
+DUYAB1901$WIND_12 <- mean(OUTweath_UYAB1901_12$WIND, na.rm = TRUE)
+
+DUYAB1901$RAIN_6 <- sum(OUTweath_UYAB1901_6$RAIN)
+DUYAB1901$RAIN_9 <- sum(OUTweath_UYAB1901_9$RAIN)
+DUYAB1901$RAIN_12 <- sum(OUTweath_UYAB1901_12$RAIN)
+```
+
+```{r}
+OUTweath_UYAG1701_6 <- OUTweath_UYAG1701 %>% slice(1:180)
+OUTweath_UYAG1701_9 <- OUTweath_UYAG1701 %>% slice(181:270)
+OUTweath_UYAG1701_12 <- OUTweath_UYAG1701 %>% slice(270:317)
+#Merge column
+DUYAG1701$TMIN_6 <- mean(OUTweath_UYAG1701_6$TMIN, na.rm = TRUE)
+DUYAG1701$TMIN_9 <- mean(OUTweath_UYAG1701_9$TMIN, na.rm = TRUE)
+DUYAG1701$TMIN_12 <- mean(OUTweath_UYAG1701_12$TMIN, na.rm = TRUE)
+
+DUYAG1701$TMAX_6 <- mean(OUTweath_UYAG1701_6$TMAX, na.rm = TRUE)
+DUYAG1701$TMAX_9 <- mean(OUTweath_UYAG1701_9$TMAX, na.rm = TRUE)
+DUYAG1701$TMAX_12 <- mean(OUTweath_UYAG1701_12$TMAX, na.rm = TRUE)
+
+DUYAG1701$SRAD_6 <- mean(OUTweath_UYAG1701_6$SRAD, na.rm = TRUE)
+DUYAG1701$SRAD_9 <- mean(OUTweath_UYAG1701_9$SRAD, na.rm = TRUE)
+DUYAG1701$SRAD_12 <- mean(OUTweath_UYAG1701_12$SRAD, na.rm = TRUE)
+
+DUYAG1701$PAR_6 <- mean(OUTweath_UYAG1701_6$PAR, na.rm = TRUE)
+DUYAG1701$PAR_9 <- mean(OUTweath_UYAG1701_9$PAR, na.rm = TRUE)
+DUYAG1701$PAR_12 <- mean(OUTweath_UYAG1701_12$PAR, na.rm = TRUE)
+
+DUYAG1701$RH2M_6 <- mean(OUTweath_UYAG1701_6$RH2M, na.rm = TRUE)
+DUYAG1701$RH2M_9 <- mean(OUTweath_UYAG1701_9$RH2M, na.rm = TRUE)
+DUYAG1701$RH2M_12 <- mean(OUTweath_UYAG1701_12$RH2M, na.rm = TRUE)
+
+DUYAG1701$WIND_6 <- mean(OUTweath_UYAG1701_6$WIND, na.rm = TRUE)
+DUYAG1701$WIND_9 <- mean(OUTweath_UYAG1701_9$WIND, na.rm = TRUE)
+DUYAG1701$WIND_12 <- mean(OUTweath_UYAG1701_12$WIND, na.rm = TRUE)
+
+DUYAG1701$RAIN_6 <- sum(OUTweath_UYAG1701_6$RAIN)
+DUYAG1701$RAIN_9 <- sum(OUTweath_UYAG1701_9$RAIN)
+DUYAG1701$RAIN_12 <- sum(OUTweath_UYAG1701_12$RAIN)
+```
+
+```{r}
+OUTweath_UYAG1801_6 <- OUTweath_UYAG1801 %>% slice(1:180)
+OUTweath_UYAG1801_9 <- OUTweath_UYAG1801 %>% slice(181:270)
+OUTweath_UYAG1801_12 <- OUTweath_UYAG1801 %>% slice(210:366)
+#Merge column
+DUYAG1801$TMIN_6 <- mean(OUTweath_UYAG1801_6$TMIN, na.rm = TRUE)
+DUYAG1801$TMIN_9 <- mean(OUTweath_UYAG1801_9$TMIN, na.rm = TRUE)
+DUYAG1801$TMIN_12 <- mean(OUTweath_UYAG1801_12$TMIN, na.rm = TRUE)
+
+DUYAG1801$TMAX_6 <- mean(OUTweath_UYAG1801_6$TMAX, na.rm = TRUE)
+DUYAG1801$TMAX_9 <- mean(OUTweath_UYAG1801_9$TMAX, na.rm = TRUE)
+DUYAG1801$TMAX_12 <- mean(OUTweath_UYAG1801_12$TMAX, na.rm = TRUE)
+
+DUYAG1801$SRAD_6 <- mean(OUTweath_UYAG1801_6$SRAD, na.rm = TRUE)
+DUYAG1801$SRAD_9 <- mean(OUTweath_UYAG1801_9$SRAD, na.rm = TRUE)
+DUYAG1801$SRAD_12 <- mean(OUTweath_UYAG1801_12$SRAD, na.rm = TRUE)
+
+DUYAG1801$PAR_6 <- mean(OUTweath_UYAG1801_6$PAR, na.rm = TRUE)
+DUYAG1801$PAR_9 <- mean(OUTweath_UYAG1801_9$PAR, na.rm = TRUE)
+DUYAG1801$PAR_12 <- mean(OUTweath_UYAG1801_12$PAR, na.rm = TRUE)
+
+DUYAG1801$RH2M_6 <- mean(OUTweath_UYAG1801_6$RH2M, na.rm = TRUE)
+DUYAG1801$RH2M_9 <- mean(OUTweath_UYAG1801_9$RH2M, na.rm = TRUE)
+DUYAG1801$RH2M_12 <- mean(OUTweath_UYAG1801_12$RH2M, na.rm = TRUE)
+
+DUYAG1801$WIND_6 <- mean(OUTweath_UYAG1801_6$WIND, na.rm = TRUE)
+DUYAG1801$WIND_9 <- mean(OUTweath_UYAG1801_9$WIND, na.rm = TRUE)
+DUYAG1801$WIND_12 <- mean(OUTweath_UYAG1801_12$WIND, na.rm = TRUE)
+
+DUYAG1801$RAIN_6 <- sum(OUTweath_UYAG1801_6$RAIN)
+DUYAG1801$RAIN_9 <- sum(OUTweath_UYAG1801_9$RAIN)
+DUYAG1801$RAIN_12 <- sum(OUTweath_UYAG1801_12$RAIN)
+```
+
+```{r}
+OUTweath_UYAG1901_6 <- OUTweath_UYAG1901 %>% slice(1:180)
+OUTweath_UYAG1901_9 <- OUTweath_UYAG1901 %>% slice(181:270)
+OUTweath_UYAG1901_12 <- OUTweath_UYAG1901 %>% slice(210:367)
+#Merge column
+DUYAG1901$TMIN_6 <- mean(OUTweath_UYAG1901_6$TMIN, na.rm = TRUE)
+DUYAG1901$TMIN_9 <- mean(OUTweath_UYAG1901_9$TMIN, na.rm = TRUE)
+DUYAG1901$TMIN_12 <- mean(OUTweath_UYAG1901_12$TMIN, na.rm = TRUE)
+
+DUYAG1901$TMAX_6 <- mean(OUTweath_UYAG1901_6$TMAX, na.rm = TRUE)
+DUYAG1901$TMAX_9 <- mean(OUTweath_UYAG1901_9$TMAX, na.rm = TRUE)
+DUYAG1901$TMAX_12 <- mean(OUTweath_UYAG1901_12$TMAX, na.rm = TRUE)
+
+DUYAG1901$SRAD_6 <- mean(OUTweath_UYAG1901_6$SRAD, na.rm = TRUE)
+DUYAG1901$SRAD_9 <- mean(OUTweath_UYAG1901_9$SRAD, na.rm = TRUE)
+DUYAG1901$SRAD_12 <- mean(OUTweath_UYAG1901_12$SRAD, na.rm = TRUE)
+
+DUYAG1901$PAR_6 <- mean(OUTweath_UYAG1901_6$PAR, na.rm = TRUE)
+DUYAG1901$PAR_9 <- mean(OUTweath_UYAG1901_9$PAR, na.rm = TRUE)
+DUYAG1901$PAR_12 <- mean(OUTweath_UYAG1901_12$PAR, na.rm = TRUE)
+
+DUYAG1901$RH2M_6 <- mean(OUTweath_UYAG1901_6$RH2M, na.rm = TRUE)
+DUYAG1901$RH2M_9 <- mean(OUTweath_UYAG1901_9$RH2M, na.rm = TRUE)
+DUYAG1901$RH2M_12 <- mean(OUTweath_UYAG1901_12$RH2M, na.rm = TRUE)
+
+DUYAG1901$WIND_6 <- mean(OUTweath_UYAG1901_6$WIND, na.rm = TRUE)
+DUYAG1901$WIND_9 <- mean(OUTweath_UYAG1901_9$WIND, na.rm = TRUE)
+DUYAG1901$WIND_12 <- mean(OUTweath_UYAG1901_12$WIND, na.rm = TRUE)
+
+DUYAG1901$RAIN_6 <- sum(OUTweath_UYAG1901_6$RAIN)
+DUYAG1901$RAIN_9 <- sum(OUTweath_UYAG1901_9$RAIN)
+DUYAG1901$RAIN_12 <- sum(OUTweath_UYAG1901_12$RAIN)
+```
+
+```{r}
+OUTweath_UYIB1701_6 <- OUTweath_UYIB1701 %>% slice(1:180)
+OUTweath_UYIB1701_9 <- OUTweath_UYIB1701 %>% slice(181:270)
+OUTweath_UYIB1701_12 <- OUTweath_UYIB1701 %>% slice(210:366)
+#Merge column
+DUYIB1701$TMIN_6 <- mean(OUTweath_UYIB1701_6$TMIN, na.rm = TRUE)
+DUYIB1701$TMIN_9 <- mean(OUTweath_UYIB1701_9$TMIN, na.rm = TRUE)
+DUYIB1701$TMIN_12 <- mean(OUTweath_UYIB1701_12$TMIN, na.rm = TRUE)
+
+DUYIB1701$TMAX_6 <- mean(OUTweath_UYIB1701_6$TMAX, na.rm = TRUE)
+DUYIB1701$TMAX_9 <- mean(OUTweath_UYIB1701_9$TMAX, na.rm = TRUE)
+DUYIB1701$TMAX_12 <- mean(OUTweath_UYIB1701_12$TMAX, na.rm = TRUE)
+
+DUYIB1701$SRAD_6 <- mean(OUTweath_UYIB1701_6$SRAD, na.rm = TRUE)
+DUYIB1701$SRAD_9 <- mean(OUTweath_UYIB1701_9$SRAD, na.rm = TRUE)
+DUYIB1701$SRAD_12 <- mean(OUTweath_UYIB1701_12$SRAD, na.rm = TRUE)
+
+DUYIB1701$PAR_6 <- mean(OUTweath_UYIB1701_6$PAR, na.rm = TRUE)
+DUYIB1701$PAR_9 <- mean(OUTweath_UYIB1701_9$PAR, na.rm = TRUE)
+DUYIB1701$PAR_12 <- mean(OUTweath_UYIB1701_12$PAR, na.rm = TRUE)
+
+DUYIB1701$RH2M_6 <- mean(OUTweath_UYIB1701_6$RH2M, na.rm = TRUE)
+DUYIB1701$RH2M_9 <- mean(OUTweath_UYIB1701_9$RH2M, na.rm = TRUE)
+DUYIB1701$RH2M_12 <- mean(OUTweath_UYIB1701_12$RH2M, na.rm = TRUE)
+
+DUYIB1701$WIND_6 <- mean(OUTweath_UYIB1701_6$WIND, na.rm = TRUE)
+DUYIB1701$WIND_9 <- mean(OUTweath_UYIB1701_9$WIND, na.rm = TRUE)
+DUYIB1701$WIND_12 <- mean(OUTweath_UYIB1701_12$WIND, na.rm = TRUE)
+
+DUYIB1701$RAIN_6 <- sum(OUTweath_UYIB1701_6$RAIN)
+DUYIB1701$RAIN_9 <- sum(OUTweath_UYIB1701_9$RAIN)
+DUYIB1701$RAIN_12 <- sum(OUTweath_UYIB1701_12$RAIN)
+```
+
+```{r}
+OUTweath_UYIB1801_6 <- OUTweath_UYIB1801 %>% slice(1:180)
+OUTweath_UYIB1801_9 <- OUTweath_UYIB1801 %>% slice(181:270)
+OUTweath_UYIB1801_12 <- OUTweath_UYIB1801 %>% slice(210:366)
+#Merge column
+DUYIB1801$TMIN_6 <- mean(OUTweath_UYIB1801_6$TMIN, na.rm = TRUE)
+DUYIB1801$TMIN_9 <- mean(OUTweath_UYIB1801_9$TMIN, na.rm = TRUE)
+DUYIB1801$TMIN_12 <- mean(OUTweath_UYIB1801_12$TMIN, na.rm = TRUE)
+
+DUYIB1801$TMAX_6 <- mean(OUTweath_UYIB1801_6$TMAX, na.rm = TRUE)
+DUYIB1801$TMAX_9 <- mean(OUTweath_UYIB1801_9$TMAX, na.rm = TRUE)
+DUYIB1801$TMAX_12 <- mean(OUTweath_UYIB1801_12$TMAX, na.rm = TRUE)
+
+DUYIB1801$SRAD_6 <- mean(OUTweath_UYIB1801_6$SRAD, na.rm = TRUE)
+DUYIB1801$SRAD_9 <- mean(OUTweath_UYIB1801_9$SRAD, na.rm = TRUE)
+DUYIB1801$SRAD_12 <- mean(OUTweath_UYIB1801_12$SRAD, na.rm = TRUE)
+
+DUYIB1801$PAR_6 <- mean(OUTweath_UYIB1801_6$PAR, na.rm = TRUE)
+DUYIB1801$PAR_9 <- mean(OUTweath_UYIB1801_9$PAR, na.rm = TRUE)
+DUYIB1801$PAR_12 <- mean(OUTweath_UYIB1801_12$PAR, na.rm = TRUE)
+
+DUYIB1801$RH2M_6 <- mean(OUTweath_UYIB1801_6$RH2M, na.rm = TRUE)
+DUYIB1801$RH2M_9 <- mean(OUTweath_UYIB1801_9$RH2M, na.rm = TRUE)
+DUYIB1801$RH2M_12 <- mean(OUTweath_UYIB1801_12$RH2M, na.rm = TRUE)
+
+DUYIB1801$WIND_6 <- mean(OUTweath_UYIB1801_6$WIND, na.rm = TRUE)
+DUYIB1801$WIND_9 <- mean(OUTweath_UYIB1801_9$WIND, na.rm = TRUE)
+DUYIB1801$WIND_12 <- mean(OUTweath_UYIB1801_12$WIND, na.rm = TRUE)
+
+DUYIB1801$RAIN_6 <- sum(OUTweath_UYIB1801_6$RAIN)
+DUYIB1801$RAIN_9 <- sum(OUTweath_UYIB1801_9$RAIN)
+DUYIB1801$RAIN_12 <- sum(OUTweath_UYIB1801_12$RAIN)
+```
+
+```{r}
+OUTweath_UYIB1901_6 <- OUTweath_UYIB1901 %>% slice(1:180)
+OUTweath_UYIB1901_9 <- OUTweath_UYIB1901 %>% slice(181:270)
+OUTweath_UYIB1901_12 <- OUTweath_UYIB1901 %>% slice(210:341)
+#Merge column
+DUYIB1901$TMIN_6 <- mean(OUTweath_UYIB1901_6$TMIN, na.rm = TRUE)
+DUYIB1901$TMIN_9 <- mean(OUTweath_UYIB1901_9$TMIN, na.rm = TRUE)
+DUYIB1901$TMIN_12 <- mean(OUTweath_UYIB1901_12$TMIN, na.rm = TRUE)
+
+DUYIB1901$TMAX_6 <- mean(OUTweath_UYIB1901_6$TMAX, na.rm = TRUE)
+DUYIB1901$TMAX_9 <- mean(OUTweath_UYIB1901_9$TMAX, na.rm = TRUE)
+DUYIB1901$TMAX_12 <- mean(OUTweath_UYIB1901_12$TMAX, na.rm = TRUE)
+
+DUYIB1901$SRAD_6 <- mean(OUTweath_UYIB1901_6$SRAD, na.rm = TRUE)
+DUYIB1901$SRAD_9 <- mean(OUTweath_UYIB1901_9$SRAD, na.rm = TRUE)
+DUYIB1901$SRAD_12 <- mean(OUTweath_UYIB1901_12$SRAD, na.rm = TRUE)
+
+DUYIB1901$PAR_6 <- mean(OUTweath_UYIB1901_6$PAR, na.rm = TRUE)
+DUYIB1901$PAR_9 <- mean(OUTweath_UYIB1901_9$PAR, na.rm = TRUE)
+DUYIB1901$PAR_12 <- mean(OUTweath_UYIB1901_12$PAR, na.rm = TRUE)
+
+DUYIB1901$RH2M_6 <- mean(OUTweath_UYIB1901_6$RH2M, na.rm = TRUE)
+DUYIB1901$RH2M_9 <- mean(OUTweath_UYIB1901_9$RH2M, na.rm = TRUE)
+DUYIB1901$RH2M_12 <- mean(OUTweath_UYIB1901_12$RH2M, na.rm = TRUE)
+
+DUYIB1901$WIND_6 <- mean(OUTweath_UYIB1901_6$WIND, na.rm = TRUE)
+DUYIB1901$WIND_9 <- mean(OUTweath_UYIB1901_9$WIND, na.rm = TRUE)
+DUYIB1901$WIND_12 <- mean(OUTweath_UYIB1901_12$WIND, na.rm = TRUE)
+
+DUYIB1901$RAIN_6 <- sum(OUTweath_UYIB1901_6$RAIN)
+DUYIB1901$RAIN_9 <- sum(OUTweath_UYIB1901_9$RAIN)
+DUYIB1901$RAIN_12 <- sum(OUTweath_UYIB1901_12$RAIN)
+```
+
+
+```{r}
+OUTweath_UYIK1701_6 <- OUTweath_UYIK1701 %>% slice(1:180)
+OUTweath_UYIK1701_9 <- OUTweath_UYIK1701 %>% slice(181:270)
+OUTweath_UYIK1701_12 <- OUTweath_UYIK1701 %>% slice(210:371)
+#Merge column
+DUYIK1701$TMIN_6 <- mean(OUTweath_UYIK1701_6$TMIN, na.rm = TRUE)
+DUYIK1701$TMIN_9 <- mean(OUTweath_UYIK1701_9$TMIN, na.rm = TRUE)
+DUYIK1701$TMIN_12 <- mean(OUTweath_UYIK1701_12$TMIN, na.rm = TRUE)
+
+DUYIK1701$TMAX_6 <- mean(OUTweath_UYIK1701_6$TMAX, na.rm = TRUE)
+DUYIK1701$TMAX_9 <- mean(OUTweath_UYIK1701_9$TMAX, na.rm = TRUE)
+DUYIK1701$TMAX_12 <- mean(OUTweath_UYIK1701_12$TMAX, na.rm = TRUE)
+
+DUYIK1701$SRAD_6 <- mean(OUTweath_UYIK1701_6$SRAD, na.rm = TRUE)
+DUYIK1701$SRAD_9 <- mean(OUTweath_UYIK1701_9$SRAD, na.rm = TRUE)
+DUYIK1701$SRAD_12 <- mean(OUTweath_UYIK1701_12$SRAD, na.rm = TRUE)
+
+DUYIK1701$PAR_6 <- mean(OUTweath_UYIK1701_6$PAR, na.rm = TRUE)
+DUYIK1701$PAR_9 <- mean(OUTweath_UYIK1701_9$PAR, na.rm = TRUE)
+DUYIK1701$PAR_12 <- mean(OUTweath_UYIK1701_12$PAR, na.rm = TRUE)
+
+DUYIK1701$RH2M_6 <- mean(OUTweath_UYIK1701_6$RH2M, na.rm = TRUE)
+DUYIK1701$RH2M_9 <- mean(OUTweath_UYIK1701_9$RH2M, na.rm = TRUE)
+DUYIK1701$RH2M_12 <- mean(OUTweath_UYIK1701_12$RH2M, na.rm = TRUE)
+
+DUYIK1701$WIND_6 <- mean(OUTweath_UYIK1701_6$WIND, na.rm = TRUE)
+DUYIK1701$WIND_9 <- mean(OUTweath_UYIK1701_9$WIND, na.rm = TRUE)
+DUYIK1701$WIND_12 <- mean(OUTweath_UYIK1701_12$WIND, na.rm = TRUE)
+
+DUYIK1701$RAIN_6 <- sum(OUTweath_UYIK1701_6$RAIN)
+DUYIK1701$RAIN_9 <- sum(OUTweath_UYIK1701_9$RAIN)
+DUYIK1701$RAIN_12 <- sum(OUTweath_UYIK1701_12$RAIN)
+```
+
+```{r}
+OUTweath_UYIK1801_6 <- OUTweath_UYIK1801 %>% slice(1:180)
+OUTweath_UYIK1801_9 <- OUTweath_UYIK1801 %>% slice(181:270)
+OUTweath_UYIK1801_12 <- OUTweath_UYIK1801 %>% slice(210:366)
+#Merge column
+DUYIK1801$TMIN_6 <- mean(OUTweath_UYIK1801_6$TMIN, na.rm = TRUE)
+DUYIK1801$TMIN_9 <- mean(OUTweath_UYIK1801_9$TMIN, na.rm = TRUE)
+DUYIK1801$TMIN_12 <- mean(OUTweath_UYIK1801_12$TMIN, na.rm = TRUE)
+
+DUYIK1801$TMAX_6 <- mean(OUTweath_UYIK1801_6$TMAX, na.rm = TRUE)
+DUYIK1801$TMAX_9 <- mean(OUTweath_UYIK1801_9$TMAX, na.rm = TRUE)
+DUYIK1801$TMAX_12 <- mean(OUTweath_UYIK1801_12$TMAX, na.rm = TRUE)
+
+DUYIK1801$SRAD_6 <- mean(OUTweath_UYIK1801_6$SRAD, na.rm = TRUE)
+DUYIK1801$SRAD_9 <- mean(OUTweath_UYIK1801_9$SRAD, na.rm = TRUE)
+DUYIK1801$SRAD_12 <- mean(OUTweath_UYIK1801_12$SRAD, na.rm = TRUE)
+
+DUYIK1801$PAR_6 <- mean(OUTweath_UYIK1801_6$PAR, na.rm = TRUE)
+DUYIK1801$PAR_9 <- mean(OUTweath_UYIK1801_9$PAR, na.rm = TRUE)
+DUYIK1801$PAR_12 <- mean(OUTweath_UYIK1801_12$PAR, na.rm = TRUE)
+
+DUYIK1801$RH2M_6 <- mean(OUTweath_UYIK1801_6$RH2M, na.rm = TRUE)
+DUYIK1801$RH2M_9 <- mean(OUTweath_UYIK1801_9$RH2M, na.rm = TRUE)
+DUYIK1801$RH2M_12 <- mean(OUTweath_UYIK1801_12$RH2M, na.rm = TRUE)
+
+DUYIK1801$WIND_6 <- mean(OUTweath_UYIK1801_6$WIND, na.rm = TRUE)
+DUYIK1801$WIND_9 <- mean(OUTweath_UYIK1801_9$WIND, na.rm = TRUE)
+DUYIK1801$WIND_12 <- mean(OUTweath_UYIK1801_12$WIND, na.rm = TRUE)
+
+DUYIK1801$RAIN_6 <- sum(OUTweath_UYIK1801_6$RAIN)
+DUYIK1801$RAIN_9 <- sum(OUTweath_UYIK1801_9$RAIN)
+DUYIK1801$RAIN_12 <- sum(OUTweath_UYIK1801_12$RAIN)
+```
+
+```{r}
+OUTweath_UYIK1901_6 <- OUTweath_UYIK1901 %>% slice(1:180)
+OUTweath_UYIK1901_9 <- OUTweath_UYIK1901 %>% slice(181:270)
+OUTweath_UYIK1901_12 <- OUTweath_UYIK1901 %>% slice(210:381)
+#Merge column
+DUYIK1901$TMIN_6 <- mean(OUTweath_UYIK1901_6$TMIN, na.rm = TRUE)
+DUYIK1901$TMIN_9 <- mean(OUTweath_UYIK1901_9$TMIN, na.rm = TRUE)
+DUYIK1901$TMIN_12 <- mean(OUTweath_UYIK1901_12$TMIN, na.rm = TRUE)
+
+DUYIK1901$TMAX_6 <- mean(OUTweath_UYIK1901_6$TMAX, na.rm = TRUE)
+DUYIK1901$TMAX_9 <- mean(OUTweath_UYIK1901_9$TMAX, na.rm = TRUE)
+DUYIK1901$TMAX_12 <- mean(OUTweath_UYIK1901_12$TMAX, na.rm = TRUE)
+
+DUYIK1901$SRAD_6 <- mean(OUTweath_UYIK1901_6$SRAD, na.rm = TRUE)
+DUYIK1901$SRAD_9 <- mean(OUTweath_UYIK1901_9$SRAD, na.rm = TRUE)
+DUYIK1901$SRAD_12 <- mean(OUTweath_UYIK1901_12$SRAD, na.rm = TRUE)
+
+DUYIK1901$PAR_6 <- mean(OUTweath_UYIK1901_6$PAR, na.rm = TRUE)
+DUYIK1901$PAR_9 <- mean(OUTweath_UYIK1901_9$PAR, na.rm = TRUE)
+DUYIK1901$PAR_12 <- mean(OUTweath_UYIK1901_12$PAR, na.rm = TRUE)
+
+DUYIK1901$RH2M_6 <- mean(OUTweath_UYIK1901_6$RH2M, na.rm = TRUE)
+DUYIK1901$RH2M_9 <- mean(OUTweath_UYIK1901_9$RH2M, na.rm = TRUE)
+DUYIK1901$RH2M_12 <- mean(OUTweath_UYIK1901_12$RH2M, na.rm = TRUE)
+
+DUYIK1901$WIND_6 <- mean(OUTweath_UYIK1901_6$WIND, na.rm = TRUE)
+DUYIK1901$WIND_9 <- mean(OUTweath_UYIK1901_9$WIND, na.rm = TRUE)
+DUYIK1901$WIND_12 <- mean(OUTweath_UYIK1901_12$WIND, na.rm = TRUE)
+
+DUYIK1901$RAIN_6 <- sum(OUTweath_UYIK1901_6$RAIN)
+DUYIK1901$RAIN_9 <- sum(OUTweath_UYIK1901_9$RAIN)
+DUYIK1901$RAIN_12 <- sum(OUTweath_UYIK1901_12$RAIN)
+```
+
+```{r}
+OUTweath_UYMO1701_6 <- OUTweath_UYMO1701 %>% slice(1:180)
+OUTweath_UYMO1701_9 <- OUTweath_UYMO1701 %>% slice(181:270)
+OUTweath_UYMO1701_12 <- OUTweath_UYMO1701 %>% slice(210:406)
+#Merge column
+DUYMO1701$TMIN_6 <- mean(OUTweath_UYMO1701_6$TMIN, na.rm = TRUE)
+DUYMO1701$TMIN_9 <- mean(OUTweath_UYMO1701_9$TMIN, na.rm = TRUE)
+DUYMO1701$TMIN_12 <- mean(OUTweath_UYMO1701_12$TMIN, na.rm = TRUE)
+
+DUYMO1701$TMAX_6 <- mean(OUTweath_UYMO1701_6$TMAX, na.rm = TRUE)
+DUYMO1701$TMAX_9 <- mean(OUTweath_UYMO1701_9$TMAX, na.rm = TRUE)
+DUYMO1701$TMAX_12 <- mean(OUTweath_UYMO1701_12$TMAX, na.rm = TRUE)
+
+DUYMO1701$SRAD_6 <- mean(OUTweath_UYMO1701_6$SRAD, na.rm = TRUE)
+DUYMO1701$SRAD_9 <- mean(OUTweath_UYMO1701_9$SRAD, na.rm = TRUE)
+DUYMO1701$SRAD_12 <- mean(OUTweath_UYMO1701_12$SRAD, na.rm = TRUE)
+
+DUYMO1701$PAR_6 <- mean(OUTweath_UYMO1701_6$PAR, na.rm = TRUE)
+DUYMO1701$PAR_9 <- mean(OUTweath_UYMO1701_9$PAR, na.rm = TRUE)
+DUYMO1701$PAR_12 <- mean(OUTweath_UYMO1701_12$PAR, na.rm = TRUE)
+
+DUYMO1701$RH2M_6 <- mean(OUTweath_UYMO1701_6$RH2M, na.rm = TRUE)
+DUYMO1701$RH2M_9 <- mean(OUTweath_UYMO1701_9$RH2M, na.rm = TRUE)
+DUYMO1701$RH2M_12 <- mean(OUTweath_UYMO1701_12$RH2M, na.rm = TRUE)
+
+DUYMO1701$WIND_6 <- mean(OUTweath_UYMO1701_6$WIND, na.rm = TRUE)
+DUYMO1701$WIND_9 <- mean(OUTweath_UYMO1701_9$WIND, na.rm = TRUE)
+DUYMO1701$WIND_12 <- mean(OUTweath_UYMO1701_12$WIND, na.rm = TRUE)
+
+DUYMO1701$RAIN_6 <- sum(OUTweath_UYMO1701_6$RAIN)
+DUYMO1701$RAIN_9 <- sum(OUTweath_UYMO1701_9$RAIN)
+DUYMO1701$RAIN_12 <- sum(OUTweath_UYMO1701_12$RAIN)
+```
+
+
+```{r}
+OUTweath_UYMO1801_6 <- OUTweath_UYMO1801 %>% slice(1:180)
+OUTweath_UYMO1801_9 <- OUTweath_UYMO1801 %>% slice(181:270)
+OUTweath_UYMO1801_12 <- OUTweath_UYMO1801 %>% slice(210:366)
+#Merge column
+DUYMO1801$TMIN_6 <- mean(OUTweath_UYMO1801_6$TMIN, na.rm = TRUE)
+DUYMO1801$TMIN_9 <- mean(OUTweath_UYMO1801_9$TMIN, na.rm = TRUE)
+DUYMO1801$TMIN_12 <- mean(OUTweath_UYMO1801_12$TMIN, na.rm = TRUE)
+
+DUYMO1801$TMAX_6 <- mean(OUTweath_UYMO1801_6$TMAX, na.rm = TRUE)
+DUYMO1801$TMAX_9 <- mean(OUTweath_UYMO1801_9$TMAX, na.rm = TRUE)
+DUYMO1801$TMAX_12 <- mean(OUTweath_UYMO1801_12$TMAX, na.rm = TRUE)
+
+DUYMO1801$SRAD_6 <- mean(OUTweath_UYMO1801_6$SRAD, na.rm = TRUE)
+DUYMO1801$SRAD_9 <- mean(OUTweath_UYMO1801_9$SRAD, na.rm = TRUE)
+DUYMO1801$SRAD_12 <- mean(OUTweath_UYMO1801_12$SRAD, na.rm = TRUE)
+
+DUYMO1801$PAR_6 <- mean(OUTweath_UYMO1801_6$PAR, na.rm = TRUE)
+DUYMO1801$PAR_9 <- mean(OUTweath_UYMO1801_9$PAR, na.rm = TRUE)
+DUYMO1801$PAR_12 <- mean(OUTweath_UYMO1801_12$PAR, na.rm = TRUE)
+
+DUYMO1801$RH2M_6 <- mean(OUTweath_UYMO1801_6$RH2M, na.rm = TRUE)
+DUYMO1801$RH2M_9 <- mean(OUTweath_UYMO1801_9$RH2M, na.rm = TRUE)
+DUYMO1801$RH2M_12 <- mean(OUTweath_UYMO1801_12$RH2M, na.rm = TRUE)
+
+DUYMO1801$WIND_6 <- mean(OUTweath_UYMO1801_6$WIND, na.rm = TRUE)
+DUYMO1801$WIND_9 <- mean(OUTweath_UYMO1801_9$WIND, na.rm = TRUE)
+DUYMO1801$WIND_12 <- mean(OUTweath_UYMO1801_12$WIND, na.rm = TRUE)
+
+DUYMO1801$RAIN_6 <- sum(OUTweath_UYMO1801_6$RAIN)
+DUYMO1801$RAIN_9 <- sum(OUTweath_UYMO1801_9$RAIN)
+DUYMO1801$RAIN_12 <- sum(OUTweath_UYMO1801_12$RAIN)
+```
+
+```{r}
+OUTweath_UYMO1901_6 <- OUTweath_UYMO1901 %>% slice(1:180)
+OUTweath_UYMO1901_9 <- OUTweath_UYMO1901 %>% slice(181:270)
+OUTweath_UYMO1901_12 <- OUTweath_UYMO1901 %>% slice(210:366)
+#Merge column
+DUYMO1901$TMIN_6 <- mean(OUTweath_UYMO1901_6$TMIN, na.rm = TRUE)
+DUYMO1901$TMIN_9 <- mean(OUTweath_UYMO1901_9$TMIN, na.rm = TRUE)
+DUYMO1901$TMIN_12 <- mean(OUTweath_UYMO1901_12$TMIN, na.rm = TRUE)
+
+DUYMO1901$TMAX_6 <- mean(OUTweath_UYMO1901_6$TMAX, na.rm = TRUE)
+DUYMO1901$TMAX_9 <- mean(OUTweath_UYMO1901_9$TMAX, na.rm = TRUE)
+DUYMO1901$TMAX_12 <- mean(OUTweath_UYMO1901_12$TMAX, na.rm = TRUE)
+
+DUYMO1901$SRAD_6 <- mean(OUTweath_UYMO1901_6$SRAD, na.rm = TRUE)
+DUYMO1901$SRAD_9 <- mean(OUTweath_UYMO1901_9$SRAD, na.rm = TRUE)
+DUYMO1901$SRAD_12 <- mean(OUTweath_UYMO1901_12$SRAD, na.rm = TRUE)
+
+DUYMO1901$PAR_6 <- mean(OUTweath_UYMO1901_6$PAR, na.rm = TRUE)
+DUYMO1901$PAR_9 <- mean(OUTweath_UYMO1901_9$PAR, na.rm = TRUE)
+DUYMO1901$PAR_12 <- mean(OUTweath_UYMO1901_12$PAR, na.rm = TRUE)
+
+DUYMO1901$RH2M_6 <- mean(OUTweath_UYMO1901_6$RH2M, na.rm = TRUE)
+DUYMO1901$RH2M_9 <- mean(OUTweath_UYMO1901_9$RH2M, na.rm = TRUE)
+DUYMO1901$RH2M_12 <- mean(OUTweath_UYMO1901_12$RH2M, na.rm = TRUE)
+
+DUYMO1901$WIND_6 <- mean(OUTweath_UYMO1901_6$WIND, na.rm = TRUE)
+DUYMO1901$WIND_9 <- mean(OUTweath_UYMO1901_9$WIND, na.rm = TRUE)
+DUYMO1901$WIND_12 <- mean(OUTweath_UYMO1901_12$WIND, na.rm = TRUE)
+
+DUYMO1901$RAIN_6 <- sum(OUTweath_UYMO1901_6$RAIN)
+DUYMO1901$RAIN_9 <- sum(OUTweath_UYMO1901_9$RAIN)
+DUYMO1901$RAIN_12 <- sum(OUTweath_UYMO1901_12$RAIN)
+```
+
+```{r}
+OUTweath_UYON1801_6 <- OUTweath_UYON1801 %>% slice(1:180)
+OUTweath_UYON1801_9 <- OUTweath_UYON1801 %>% slice(181:270)
+OUTweath_UYON1801_12 <- OUTweath_UYON1801 %>% slice(210:366)
+#Merge column
+DUYON1801$TMIN_6 <- mean(OUTweath_UYON1801_6$TMIN, na.rm = TRUE)
+DUYON1801$TMIN_9 <- mean(OUTweath_UYON1801_9$TMIN, na.rm = TRUE)
+DUYON1801$TMIN_12 <- mean(OUTweath_UYON1801_12$TMIN, na.rm = TRUE)
+
+DUYON1801$TMAX_6 <- mean(OUTweath_UYON1801_6$TMAX, na.rm = TRUE)
+DUYON1801$TMAX_9 <- mean(OUTweath_UYON1801_9$TMAX, na.rm = TRUE)
+DUYON1801$TMAX_12 <- mean(OUTweath_UYON1801_12$TMAX, na.rm = TRUE)
+
+DUYON1801$SRAD_6 <- mean(OUTweath_UYON1801_6$SRAD, na.rm = TRUE)
+DUYON1801$SRAD_9 <- mean(OUTweath_UYON1801_9$SRAD, na.rm = TRUE)
+DUYON1801$SRAD_12 <- mean(OUTweath_UYON1801_12$SRAD, na.rm = TRUE)
+
+DUYON1801$PAR_6 <- mean(OUTweath_UYON1801_6$PAR, na.rm = TRUE)
+DUYON1801$PAR_9 <- mean(OUTweath_UYON1801_9$PAR, na.rm = TRUE)
+DUYON1801$PAR_12 <- mean(OUTweath_UYON1801_12$PAR, na.rm = TRUE)
+
+DUYON1801$RH2M_6 <- mean(OUTweath_UYON1801_6$RH2M, na.rm = TRUE)
+DUYON1801$RH2M_9 <- mean(OUTweath_UYON1801_9$RH2M, na.rm = TRUE)
+DUYON1801$RH2M_12 <- mean(OUTweath_UYON1801_12$RH2M, na.rm = TRUE)
+
+DUYON1801$WIND_6 <- mean(OUTweath_UYON1801_6$WIND, na.rm = TRUE)
+DUYON1801$WIND_9 <- mean(OUTweath_UYON1801_9$WIND, na.rm = TRUE)
+DUYON1801$WIND_12 <- mean(OUTweath_UYON1801_12$WIND, na.rm = TRUE)
+
+DUYON1801$RAIN_6 <- sum(OUTweath_UYON1801_6$RAIN)
+DUYON1801$RAIN_9 <- sum(OUTweath_UYON1801_9$RAIN)
+DUYON1801$RAIN_12 <- sum(OUTweath_UYON1801_12$RAIN)
+```
+
+
+```{r}
+OUTweath_UYUB1901_6 <- OUTweath_UYUB1901 %>% slice(1:180)
+OUTweath_UYUB1901_9 <- OUTweath_UYUB1901 %>% slice(181:270)
+OUTweath_UYUB1901_12 <- OUTweath_UYUB1901 %>% slice(210:370)
+#Merge column
+DUYUB1901$TMIN_6 <- mean(OUTweath_UYUB1901_6$TMIN, na.rm = TRUE)
+DUYUB1901$TMIN_9 <- mean(OUTweath_UYUB1901_9$TMIN, na.rm = TRUE)
+DUYUB1901$TMIN_12 <- mean(OUTweath_UYUB1901_12$TMIN, na.rm = TRUE)
+
+DUYUB1901$TMAX_6 <- mean(OUTweath_UYUB1901_6$TMAX, na.rm = TRUE)
+DUYUB1901$TMAX_9 <- mean(OUTweath_UYUB1901_9$TMAX, na.rm = TRUE)
+DUYUB1901$TMAX_12 <- mean(OUTweath_UYUB1901_12$TMAX, na.rm = TRUE)
+
+DUYUB1901$SRAD_6 <- mean(OUTweath_UYUB1901_6$SRAD, na.rm = TRUE)
+DUYUB1901$SRAD_9 <- mean(OUTweath_UYUB1901_9$SRAD, na.rm = TRUE)
+DUYUB1901$SRAD_12 <- mean(OUTweath_UYUB1901_12$SRAD, na.rm = TRUE)
+
+DUYUB1901$PAR_6 <- mean(OUTweath_UYUB1901_6$PAR, na.rm = TRUE)
+DUYUB1901$PAR_9 <- mean(OUTweath_UYUB1901_9$PAR, na.rm = TRUE)
+DUYUB1901$PAR_12 <- mean(OUTweath_UYUB1901_12$PAR, na.rm = TRUE)
+
+DUYUB1901$RH2M_6 <- mean(OUTweath_UYUB1901_6$RH2M, na.rm = TRUE)
+DUYUB1901$RH2M_9 <- mean(OUTweath_UYUB1901_9$RH2M, na.rm = TRUE)
+DUYUB1901$RH2M_12 <- mean(OUTweath_UYUB1901_12$RH2M, na.rm = TRUE)
+
+DUYUB1901$WIND_6 <- mean(OUTweath_UYUB1901_6$WIND, na.rm = TRUE)
+DUYUB1901$WIND_9 <- mean(OUTweath_UYUB1901_9$WIND, na.rm = TRUE)
+DUYUB1901$WIND_12 <- mean(OUTweath_UYUB1901_12$WIND, na.rm = TRUE)
+
+DUYUB1901$RAIN_6 <- sum(OUTweath_UYUB1901_6$RAIN)
+DUYUB1901$RAIN_9 <- sum(OUTweath_UYUB1901_9$RAIN)
+DUYUB1901$RAIN_12 <- sum(OUTweath_UYUB1901_12$RAIN)
+```
+
+```{r}
+OUTweath_UYUM1801_6 <- OUTweath_UYUM1801 %>% slice(1:180)
+OUTweath_UYUM1801_9 <- OUTweath_UYUM1801 %>% slice(181:270)
+OUTweath_UYUM1801_12 <- OUTweath_UYUM1801 %>% slice(210:366)
+#Merge column
+DUYUM1801$TMIN_6 <- mean(OUTweath_UYUM1801_6$TMIN, na.rm = TRUE)
+DUYUM1801$TMIN_9 <- mean(OUTweath_UYUM1801_9$TMIN, na.rm = TRUE)
+DUYUM1801$TMIN_12 <- mean(OUTweath_UYUM1801_12$TMIN, na.rm = TRUE)
+
+DUYUM1801$TMAX_6 <- mean(OUTweath_UYUM1801_6$TMAX, na.rm = TRUE)
+DUYUM1801$TMAX_9 <- mean(OUTweath_UYUM1801_9$TMAX, na.rm = TRUE)
+DUYUM1801$TMAX_12 <- mean(OUTweath_UYUM1801_12$TMAX, na.rm = TRUE)
+
+DUYUM1801$SRAD_6 <- mean(OUTweath_UYUM1801_6$SRAD, na.rm = TRUE)
+DUYUM1801$SRAD_9 <- mean(OUTweath_UYUM1801_9$SRAD, na.rm = TRUE)
+DUYUM1801$SRAD_12 <- mean(OUTweath_UYUM1801_12$SRAD, na.rm = TRUE)
+
+DUYUM1801$PAR_6 <- mean(OUTweath_UYUM1801_6$PAR, na.rm = TRUE)
+DUYUM1801$PAR_9 <- mean(OUTweath_UYUM1801_9$PAR, na.rm = TRUE)
+DUYUM1801$PAR_12 <- mean(OUTweath_UYUM1801_12$PAR, na.rm = TRUE)
+
+DUYUM1801$RH2M_6 <- mean(OUTweath_UYUM1801_6$RH2M, na.rm = TRUE)
+DUYUM1801$RH2M_9 <- mean(OUTweath_UYUM1801_9$RH2M, na.rm = TRUE)
+DUYUM1801$RH2M_12 <- mean(OUTweath_UYUM1801_12$RH2M, na.rm = TRUE)
+
+DUYUM1801$WIND_6 <- mean(OUTweath_UYUM1801_6$WIND, na.rm = TRUE)
+DUYUM1801$WIND_9 <- mean(OUTweath_UYUM1801_9$WIND, na.rm = TRUE)
+DUYUM1801$WIND_12 <- mean(OUTweath_UYUM1801_12$WIND, na.rm = TRUE)
+
+DUYUM1801$RAIN_6 <- sum(OUTweath_UYUM1801_6$RAIN)
+DUYUM1801$RAIN_9 <- sum(OUTweath_UYUM1801_9$RAIN)
+DUYUM1801$RAIN_12 <- sum(OUTweath_UYUM1801_12$RAIN)
+```
+
+
+
+```{r}
+#get all the evaluate Output
+GLUEVAL2 <- bind_rows(Abuja19 = DUYAB1901, Ago17 = DUYAG1701, Ago18 = DUYAG1801, Ago19 = DUYAG1901, Ibadan17 = DUYIB1701, Ibadan18 = DUYIB1801, Ibadan19 = DUYIB1901, Ikenne17 = DUYIK1701, Ikenne18 = DUYIK1801, Ikenne19 = DUYIK1901,  Mokwa17 = DUYMO1701, Mokwa18 = DUYMO1801, Mokwa19 = DUYMO1901, Onne18 = DUYON1801,  Ubiaja19 = DUYUB1901, Umudike18 = DUYUM1801, .id = "source") %>% #Zaria19 = DUYZA1901, Otobi18 = DUYOT1801, Kano18 = DUYKA1801,
+       mutate(HWAMMS = HWAMM - HWAMS,
+              HWAMMSsq = (HWAMM - HWAMS)^2) 
+colnames(GLUEVAL2)
+GLUEVAL2$year <- as.numeric(paste0("20", str_extract(GLUEVAL2$source, "\\d{2}+")))
+write.csv(GLUEVAL2, "data/GLUEVALana2.csv", quote = F, row.names = F) 
 ```
 
 
