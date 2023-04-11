@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Opamelas83" />
+
+<meta name="date" content="2022-08-27" />
+
+<title>fieldtrialcheck</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RDSSATMICH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">fieldtrialcheck</h1>
+<h4 class="author">Opamelas83</h4>
+<h4 class="date">2022-08-27</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-04-10
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>RDSSATMICH/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20211116code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20211116)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20211116code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20211116)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree6657f9ae839b01fc2a46c2feaf26285b724ecac2targetblank6657f9aa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/6657f9ae839b01fc2a46c2feaf26285b724ecac2" target="_blank">6657f9a</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree6657f9ae839b01fc2a46c2feaf26285b724ecac2targetblank6657f9aa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/6657f9ae839b01fc2a46c2feaf26285b724ecac2" target="_blank">6657f9a</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    CUL_files/.DS_Store
+    Ignored:    Cassava/.DS_Store
+    Ignored:    Cassava/Evaluate.OUT
+    Ignored:    Cassava/FreshWt.OUT
+    Ignored:    Cassava/INFO.OUT
+    Ignored:    Cassava/Leaves.OUT
+    Ignored:    Cassava/Measured.OUT
+    Ignored:    Cassava/MgmtEvent.OUT
+    Ignored:    Cassava/MgmtOps.OUT
+    Ignored:    Cassava/Mulch.OUT
+    Ignored:    Cassava/Overview.OUT
+    Ignored:    Cassava/PlantGr2.OUT
+    Ignored:    Cassava/PlantGrf.OUT
+    Ignored:    Cassava/PlantGro.OUT
+    Ignored:    Cassava/Plantsum.OUT
+    Ignored:    Cassava/SoilCBal.OUT
+    Ignored:    Cassava/SoilCBalSum.OUT
+    Ignored:    Cassava/SoilOrg.OUT
+    Ignored:    Cassava/SoilTemp.OUT
+    Ignored:    Cassava/SoilWat.OUT
+    Ignored:    Cassava/SoilWatBal.OUT
+    Ignored:    Cassava/Summary.OUT
+    Ignored:    Cassava/Tiers.OUT
+    Ignored:    Cassava/WARNING.OUT
+    Ignored:    Cassava/Weather.OUT
+    Ignored:    Evaluate.OUT
+    Ignored:    FreshWt.OUT
+    Ignored:    INFO.OUT
+    Ignored:    Leaves.OUT
+    Ignored:    Measured.OUT
+    Ignored:    MgmtEvent.OUT
+    Ignored:    MgmtOps.OUT
+    Ignored:    Mulch.OUT
+    Ignored:    Needhelp.R
+    Ignored:    OVERVIEW.OUT
+    Ignored:    PlantGr2.OUT
+    Ignored:    PlantGrf.OUT
+    Ignored:    PlantGro.OUT
+    Ignored:    Plantsum.OUT
+    Ignored:    Result/.DS_Store
+    Ignored:    Result/PlotGLUE/
+    Ignored:    Result/PlotLocat_GLUEHWAM/.DS_Store
+    Ignored:    SoilCBal.OUT
+    Ignored:    SoilCBalSum.OUT
+    Ignored:    SoilOrg.OUT
+    Ignored:    SoilTemp.OUT
+    Ignored:    SoilWat.OUT
+    Ignored:    SoilWatBal.OUT
+    Ignored:    Summary.OUT
+    Ignored:    Tiers.OUT
+    Ignored:    WARNING.OUT
+    Ignored:    Weather.OUT
+    Ignored:    Weather/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/CSfiles/.DS_Store
+    Ignored:    data/DSSATtempfile/.DS_Store
+    Ignored:    data/IITA2021_CABASE/.DS_Store
+    Ignored:    data/IITA2021_Mich/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/D21J/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/MichelData/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_A/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_B/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/Area/.DS_Store
+    Ignored:    data/WEATHERdata/.DS_Store
+
+Unstaged changes:
+    Modified:   ET.OUT
+    Modified:   data/CSfiles/UYAB1901.CSA
+    Modified:   data/CSfiles/UYAB1901.CST
+    Modified:   data/CSfiles/UYAG1701.CSA
+    Modified:   data/CSfiles/UYAG1701.CST
+    Modified:   data/CSfiles/UYAG1801.CSA
+    Modified:   data/CSfiles/UYAG1801.CST
+    Modified:   data/CSfiles/UYAG1901.CSA
+    Modified:   data/CSfiles/UYAG1901.CST
+    Modified:   data/CSfiles/UYIB1701.CSA
+    Modified:   data/CSfiles/UYIB1701.CST
+    Modified:   data/CSfiles/UYIB1801.CSA
+    Modified:   data/CSfiles/UYIB1801.CST
+    Modified:   data/CSfiles/UYIB1901.CSA
+    Modified:   data/CSfiles/UYIB1901.CST
+    Modified:   data/CSfiles/UYIB2001.CSA
+    Modified:   data/CSfiles/UYIB2001.CST
+    Modified:   data/CSfiles/UYIK1701.CSA
+    Modified:   data/CSfiles/UYIK1701.CST
+    Modified:   data/CSfiles/UYIK1801.CSA
+    Modified:   data/CSfiles/UYIK1801.CST
+    Modified:   data/CSfiles/UYIK1901.CSA
+    Modified:   data/CSfiles/UYIK1901.CST
+    Modified:   data/CSfiles/UYKA1801.CSA
+    Modified:   data/CSfiles/UYKA1801.CST
+    Modified:   data/CSfiles/UYMO1701.CSA
+    Modified:   data/CSfiles/UYMO1701.CST
+    Modified:   data/CSfiles/UYMO1801.CSA
+    Modified:   data/CSfiles/UYMO1801.CST
+    Modified:   data/CSfiles/UYMO1901.CSA
+    Modified:   data/CSfiles/UYMO1901.CST
+    Modified:   data/CSfiles/UYON1801.CSA
+    Modified:   data/CSfiles/UYON1801.CST
+    Modified:   data/CSfiles/UYON1901.CSA
+    Modified:   data/CSfiles/UYON1901.CST
+    Modified:   data/CSfiles/UYOT1801.CSA
+    Modified:   data/CSfiles/UYOT1801.CST
+    Modified:   data/CSfiles/UYUB1901.CSA
+    Modified:   data/CSfiles/UYUB1901.CST
+    Modified:   data/CSfiles/UYUM1801.CSA
+    Modified:   data/CSfiles/UYUM1801.CST
+    Modified:   data/CSfiles/UYZA1901.CSA
+    Modified:   data/CSfiles/UYZA1901.CST
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/fieldtrialcheck.Rmd</code>) and
+HTML (<code>docs/fieldtrialcheck.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/4b309669e8ec4451805e6f285d67fc7f7d205496/analysis/fieldtrialcheck.Rmd" target="_blank">4b30966</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/9333df11b7f314e955db89ce250e068adcb46784/analysis/fieldtrialcheck.Rmd" target="_blank">9333df1</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial project
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Sources of variability Fixed Factors: blockNumber: fixed-effect for
+block replicate effects with levels uniquely nested within trials
+combination Plantharvested: cov</p>
+<p>Random Factors: germplasmName: random genetic effect, primary aim is
+to compute BLUPs for this term</p>
+<p>Error Variance: studyName: heterogeneous error variances for each
+trial</p>
+<pre class="r"><code>library(workflowr); library(tidyverse); library(here); library(lubridate);  library(lme4); library(magrittr)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.2      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+here() starts at /Users/mo367/Desktop/Analy_project/RDSSATMICH
+
+
+Attaching package: &#39;lubridate&#39;
+
+
+The following objects are masked from &#39;package:base&#39;:
+
+    date, intersect, setdiff, union
+
+
+Loading required package: Matrix
+
+
+Attaching package: &#39;Matrix&#39;
+
+
+The following objects are masked from &#39;package:tidyr&#39;:
+
+    expand, pack, unpack
+
+
+
+Attaching package: &#39;magrittr&#39;
+
+
+The following object is masked from &#39;package:purrr&#39;:
+
+    set_names
+
+
+The following object is masked from &#39;package:tidyr&#39;:
+
+    extract</code></pre>
+<pre class="r"><code>colClasses &lt;- readr::read_csv(here::here(&quot;data/IITA2021_CABASE&quot;, &quot;colClasses.csv&quot;))</code></pre>
+<pre><code>Rows: 103 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (2): colName, colClass
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>colString &lt;- paste0(substring(colClasses$colClass, 1, 1), collapse=&quot;&quot;)
+Trialcheck1 &lt;- readr::read_csv(here::here(&quot;data/IITA2021_CABASE&quot;, &quot;UYT_GXE_pheno.csv&quot;), col_types=colString)</code></pre>
+<pre><code>Warning: One or more parsing issues, see `problems()` for details</code></pre>
+<pre class="r"><code>Trialcheck1 &lt;- Trialcheck1 %&gt;% filter(!(studyYear == 2020))</code></pre>
+<p>#create explicitly nested design variables (yearInLoc, trialInLocYr,
+repInTrial, blockInRep).</p>
+<pre class="r"><code>#Trialcheck1 %&lt;&gt;% 
+ #    group_by(studyName) %&gt;% 
+   #  summarize(N_replicate=length(unique(replicate)),
+        #       N_blockNumber=length(unique(blockNumber)),
+         #      doRepsEqualBlocks=all(replicate==blockNumber)) %&gt;% 
+    # ungroup() %&gt;% 
+     #mutate(CompleteBlocks=ifelse(N_replicate&gt;1,TRUE,FALSE),
+      #      IncompleteBlocks=ifelse(N_blockNumber&gt;1 &amp; !doRepsEqualBlocks,TRUE,FALSE)) %&gt;% 
+     #left_join(Trialcheck1) %&gt;% 
+    # mutate(yearInLoc=paste0(programName,&quot;_&quot;,locationName,&quot;_&quot;,studyYear),
+          #  trialInLocYr=paste0(yearInLoc,&quot;_&quot;,studyName),
+           # repInTrial=paste0(trialInLocYr,&quot;_&quot;,replicate))</code></pre>
+<p>Cassavabase downloads use very long column-names corresponding to the
+full trait-ontology name. For convenience, I replace these names with
+abbreviations, documented here. I also use this opportunity to subselect
+traits.</p>
+<pre class="r"><code>Trialcheck2 &lt;- Trialcheck1 %&gt;%
+  rename(CMD1S =&quot;cassava mosaic disease severity 1-month evaluation|CO_334:0000191&quot;,
+        CMD3S = &quot;cassava mosaic disease severity 3-month evaluation|CO_334:0000192&quot;,
+        DMC = &quot;dry matter content percentage|CO_334:0000092&quot;,
+        FRWT = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+        PHar = &quot;plant stands harvested counting|CO_334:0000010&quot;,
+        FTWT = &quot;fresh shoot weight measurement in kg per plot|CO_334:0000016&quot;) %&gt;% 
+  mutate(yearInLoc = paste0(locationName,&quot;_&quot;,studyYear),
+         PlantsPerPlot = max(PHar, na.rm=TRUE),
+         PropPHar = PHar/PlantsPerPlot,
+         repInTrial = paste0(studyYear,&quot;_&quot;,replicate),
+         blockInRep = paste0(repInTrial,&quot;_&quot;,blockNumber)) %&gt;%
+  dplyr::select(studyName,
+         yearInLoc ,
+         repInTrial,
+         blockInRep,
+         germplasmName,
+         CMD1S,
+         CMD3S,
+         DMC,
+         FRWT,
+         PropPHar, 
+         PHar,
+         PlantsPerPlot,
+         FTWT)</code></pre>
+<p>Variance component estimates</p>
+<pre class="r"><code>TRaits &lt;- c(&quot;FRWT&quot;, &quot;FTWT&quot;)#, &quot;CMD1S&quot;, &quot;CMD3S&quot;) 
+PHenos &lt;-Trialcheck2 %&gt;% 
+      # Convert the data to &quot;long format&quot; 
+      pivot_longer(cols = all_of(TRaits), 
+                   names_to = &quot;TRait&quot;, values_to = &quot;Value&quot;) %&gt;%
+      # Remove missing values
+      filter(!is.na(Value))
+
+PHenos &lt;- PHenos %&gt;% mutate(studyName = as.factor(studyName),
+                            yearInLoc = as.factor(yearInLoc),
+                            repInTrial = as.factor(repInTrial),
+                            blockInRep = as.factor(blockInRep),
+                            germplasmName = as.factor(germplasmName),
+                            PropPHar = as.factor(PropPHar)) 
+WW &lt;- PHenos %&gt;% group_by(studyName) %&gt;% summarise(n=length(unique(PropPHar))) %&gt;% filter(n==1)
+WWs &lt;- droplevels(WW$studyName) %&gt;% table %&gt;% names
+TRials &lt;- PHenos$studyName %&gt;% table %&gt;% .[order(.)] %&gt;% names
+
+j &lt;- TRaits[1]
+i &lt;- TRials[1]
+results &lt;- tibble()
+
+for(j in TRaits){
+  for(i in TRials){
+    DataM &lt;- PHenos %&gt;% filter(studyName == i, TRait == j)
+    meanNreps &lt;- DataM %&gt;%
+     count(germplasmName) %$% mean(n)
+    Formula1 &lt;- &quot;Value ~ (1|repInTrial) + (1|blockInRep ) + (1|germplasmName)&quot; 
+Formula &lt;- ifelse(unique(DataM$studyName) %in% WWs, Formula1, paste0(Formula1,&quot; + PropPHar&quot;))
+    if(nrow(DataM) != 0){
+          try(MixedModels &lt;-lmer(as.formula(Formula), data = DataM))
+     # try(MixedModelsrd &lt;- lm(Value ~ PropPHar + repInTrial, data = DataM))
+    try(result &lt;- tibble(Trait = j,
+                         Trial = i,
+                         VarG = as.data.frame(VarCorr(MixedModels))[,c(&quot;grp&quot;,&quot;vcov&quot;)] %&gt;% .[1,2],
+                         VarE = as.data.frame(VarCorr(MixedModels))[,c(&quot;grp&quot;,&quot;vcov&quot;)] %&gt;% .[4,2],
+                         H2 = VarG/(VarG + VarE/meanNreps),
+                         Rel =  suppressWarnings(MuMIn::r.squaredGLMM(MixedModels)[2]),
+                         model = Formula))
+                         #DvPrb = anova(MixedModels, MixedModelsrd) %&gt;% as.data.frame() %&gt;% .[2,&quot;Pr(&gt;Chisq)&quot;] %&gt;% as.numeric))
+    try(results &lt;- bind_rows(results, result))
+    #rm(MixedModels); rm(result); rm(MixedModelsrd)
+    }
+    }
+}</code></pre>
+<pre><code>boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+unable to evaluate scaled gradient</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
+<pre><code>boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+unable to evaluate scaled gradient
+
+Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
+<pre><code>boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+Model failed to converge with max|grad| = 0.00532091 (tol = 0.002, component 1)</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+unable to evaluate scaled gradient</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+unable to evaluate scaled gradient</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
+<pre><code>boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre><code>Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+unable to evaluate scaled gradient
+
+Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
+Model failed to converge: degenerate Hessian with 1 negative eigenvalues</code></pre>
+<pre><code>boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)
+boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
+<pre class="r"><code>results</code></pre>
+<pre><code># A tibble: 76 × 7
+   Trait Trial                     VarG  VarE     H2   Rel model                
+   &lt;chr&gt; &lt;chr&gt;                    &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                
+ 1 FRWT  19.GS.C2.UYT.36.setA.AB   0    111.  0      0.523 Value ~ (1|repInTria…
+ 2 FRWT  19.GS.C2.UYT.36.setB.IB  11.0  125.  0.137  0.510 Value ~ (1|repInTria…
+ 3 FRWT  19.GS.C2.UYT.36.setA.ON   1.30  11.4 0.181  0.442 Value ~ (1|repInTria…
+ 4 FRWT  19.GS.C2.UYT.36.setB.ZA   7.99  34.7 0.300  0.684 Value ~ (1|repInTria…
+ 5 FRWT  19.GS.C2.UYT.36.setA.IB  44.0   57.7 0.597  0.559 Value ~ (1|repInTria…
+ 6 FRWT  19.GS.C2.UYT.36.setA.ZA   0     36.6 0      0.695 Value ~ (1|repInTria…
+ 7 FRWT  19.GS.C2.UYT.36.setB.AG 154.   106.  0.744  0.682 Value ~ (1|repInTria…
+ 8 FRWT  18.GS.C2.setB.UYT.36.UM  87.4  144.  0.538  0.427 Value ~ (1|repInTria…
+ 9 FRWT  19.GS.C2.UYT.36.setB.ON   0     20.6 0      0.528 Value ~ (1|repInTria…
+10 FRWT  19.GS.C2.UYT.36.setA.MK   2.04  79.0 0.0486 0.516 Value ~ (1|repInTria…
+# … with 66 more rows</code></pre>
+<pre class="r"><code>write.table(results, file = &quot;Result/MixedModelResults.csv&quot;, quote = F, sep =&quot;,&quot;,
+            row.names = F)
+
+#results %&gt;% group_by(Trial) %&gt;%
+  #summarise(Ntraits = n(),
+  #          VarGmean = mean(VarG, na.rm = F),
+   #         VarEmean = mean(VarE, na.rm = F),
+    #        H2mean = mean(H2, na.rm = F),
+     #       Real = mean(Real, na.rm = F),
+      #      DvPrb = mean(DvPrb, na.rm = F)) -&gt; results2
+
+#write.table(results2, file = &quot;Result/MeansVarCompMixedModels.csv&quot;, quote = F,
+        #    sep = &quot;,&quot;, row.names = F)</code></pre>
+<pre class="r"><code>library(reactable)</code></pre>
+<p>Work with only two traits (without disease)</p>
+<pre class="r"><code>results &lt;- read_csv(&quot;Result/MixedModelResults.csv&quot;)</code></pre>
+<pre><code>Rows: 76 Columns: 7
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (3): Trait, Trial, model
+dbl (4): VarG, VarE, H2, Rel
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>results$Location &lt;- results$Trial
+results$Location[grep(pattern = &quot;AB&quot;, x = results$Trial)] &lt;- &quot;ABUJA&quot;
+results$Location[grep(pattern = &quot;AG&quot;, x = results$Trial)] &lt;- &quot;AGO&quot;
+results$Location[grep(pattern = &quot;IB&quot;, x = results$Trial)] &lt;- &quot;IBADAN&quot;
+results$Location[grep(pattern = &quot;IK&quot;, x = results$Trial)] &lt;- &quot;IKENNE&quot;
+results$Location[grep(pattern = &quot;KN&quot;, x = results$Trial)] &lt;- &quot;KANO&quot;
+results$Location[grep(pattern = &quot;MK&quot;, x = results$Trial)] &lt;- &quot;MOKWA&quot;
+results$Location[grep(pattern = &quot;ON&quot;, x = results$Trial)] &lt;- &quot;ONNE&quot;
+results$Location[grep(pattern = &quot;OT&quot;, x = results$Trial)] &lt;- &quot;OTOBI&quot;
+results$Location[grep(pattern = &quot;UB&quot;, x = results$Trial)] &lt;- &quot;UBIAJA&quot;
+results$Location[grep(pattern = &quot;UM&quot;, x = results$Trial)] &lt;- &quot;UMUDIKE&quot;
+results$Location[grep(pattern = &quot;ZA&quot;, x = results$Trial)] &lt;- &quot;ZARIA&quot;
+
+resultsW &lt;- results %&gt;% mutate(Mtrial = if_else((str_detect(results$Trial, &quot;^*19&quot;) | (str_detect(results$Trial, &quot;^*18&quot;) &amp; Location == &quot;AGO&quot;)), paste0(str_extract(Trial, &quot;\\d{2}+&quot;),&quot;_&quot;,substr(Trial, 17, 20),&quot;_&quot;,Location), paste0(str_extract(Trial, &quot;\\d{2}+&quot;),&quot;_&quot;,substr(Trial, 10, 13),&quot;_&quot;,Location)))
+
+ 
+
+ggplot(resultsW) + 
+  geom_text(aes(x = H2, y = Rel, label = Mtrial), size = 2) + 
+  xlab(&quot;Heritability&quot;) +
+  ylab(&quot;Reliability&quot;)</code></pre>
+<p><img src="figure/fieldtrialcheck.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>#Filter my database to eliminate the trials with H2 &lt; 0.25 and
+Reliability &lt; 40%</p>
+<pre class="r"><code>resultstrial &lt;- results %&gt;% 
+  filter(H2 &gt; 0.25 &amp; Rel &gt; 0.4) %&gt;%
+  dplyr::select(Trial)
+undesiredtrials &lt;- results%&gt;%
+  filter(H2 &lt; 0.25 | Rel &lt; 0.4)  %&gt;%
+  dplyr::select(Trial)
+#I should remove also trials common to both groups that means:  if a  trial has a bad genetic value for any of the trait, it will not be considered. If set A trial has bee removed, the set B should be too because I would keep the same rep for the 67 clones. 
+undesired &lt;- undesiredtrials$Trial
+Trialcheckfiltered &lt;- Trialcheck1 %&gt;% filter(!studyName %in% undesired) #This should be my final trial I used to run the model.
+write.table(Trialcheckfiltered, file = &quot;data/IITA2021_CABASE/UYT_GXE_phenofiltered.csv&quot;)#, quote = F, sep = &quot;,&quot;, row.names = F)
+undesired_2022 &lt;- c(&quot;17.GS.C2.setB.UYT.36.AG&quot;,
+  &quot;18.GS.C2.setA.UYT.36.KN&quot;,
+  &quot;18.GS.C2.setB.UYT.36.KN&quot;,
+  &quot;18.GS.C2.setB.UYT.36.OT&quot;,
+  &quot;18.GS.C2.UYT.36.setA.AG&quot;,
+  &quot;19.GS.C2.UYT.36.setA.MK&quot;,
+  &quot;19.GS.C2.UYT.36.setA.ZA&quot;,
+  &quot;19.GS.C2.UYT.36.setB.AG&quot;,
+  &quot;19.GS.C2.UYT.36.setB.ON&quot;,
+ &quot;19.GS.C2.UYT.36.setB.ZA&quot;,
+ &quot;20.GS.C2.UYT.36.setB.IB&quot;) 
+# I extracted my 28 trials I used to run the model. 
+Trialcheckfiltered_2022 &lt;- resultsW %&gt;% 
+  filter(!Trial %in% undesired_2022) %&gt;%  
+  filter(H2 &gt; 0.25 &amp; Rel &gt; 0.4)                                      
+
+ggplot(Trialcheckfiltered_2022) + 
+  geom_text(aes(x = H2, y = Rel, label = Mtrial, color = Trait), size = 2) +
+  xlab(&quot;Heritability&quot;) +
+  ylab(&quot;Reliability&quot;)</code></pre>
+<p><img src="figure/fieldtrialcheck.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Luc</p>
+<pre class="r"><code>#Trialcheck1 &lt;- readr::read_csv(here::here(&quot;data/IITA2021_CABASE&quot;, &quot;UYT_GXE_pheno.csv&quot;), col_types=colString)
+
+#Trials &lt;- Trialcheck1$studyName %&gt;% table %&gt;% .[order(.)] 
+
+#Trialcheck2 &lt;- Trialcheck1 %&gt;% filter(studyName == Trials[1]) %&gt;% 
+ # rename(FRY = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+ #        PHar = &quot;plant stands harvested counting|CO_334:0000010&quot;,
+  #       FTY = &quot;fresh shoot weight measurement in kg per plot|CO_334:0000016&quot;) %&gt;% 
+ # mutate(blockNumber = as.factor(blockNumber)) %&gt;% 
+  #lmer(formula = FRY ~ blockNumber + (1|germplasmName), data = .)
+#visualize ()
+#anova(Trialcheck2)
+
+#Trialcheck2rd &lt;- Trialcheck1 %&gt;% filter(studyName == Trials[1]) %&gt;% 
+ # rename(FRY = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+ #        PHar = &quot;plant stands harvested counting|CO_334:0000010&quot;) %&gt;% 
+  # mutate(blockNumber = as.factor(blockNumber)) %&gt;% 
+  #  lmer(formula =  FRY ~ PHar, data = .)#blockNumber
+#anova(Trialcheck2, Trialcheck2rd)
+#results &lt;- tibble()
+
+#for(i in Trials){
+#  try(MixedModels &lt;- Trialcheck1 %&gt;% filter(studyName == i) %&gt;% 
+ # rename(FRY = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+ #        PHar = &quot;plant stands harvested counting|CO_334:0000010&quot;) %&gt;% 
+  #mutate(blockNumber = as.factor(blockNumber)) %&gt;% 
+  #  lmer(formula =  FRY ~ PHar + (1|germplasmName), data = .))#blockNumber#
+#  try(MixedModelsrd &lt;- Trialcheck1 %&gt;% filter(studyName == i) %&gt;% 
+ # rename(FRY = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+ #        PHar = &quot;plant stands harvested counting|CO_334:0000010&quot;) %&gt;% 
+ # mutate(blockNumber = as.factor(blockNumber)) %&gt;% 
+  #  lm(formula =  FRY ~ PHar, data = .))#blockNumber
+  
+#  try(result &lt;- tibble(Trial = i,
+ #                      VarG = as.data.frame(VarCorr(MixedModels))[,c(&quot;grp&quot;,&quot;vcov&quot;)] %&gt;% .[1,2],
+ #                      VarE = as.data.frame(VarCorr(MixedModels))[,c(&quot;grp&quot;,&quot;vcov&quot;)] %&gt;% #.[2,2],
+  #                     H2 = VarG/(VarG + VarE),
+  #                     Real = suppressWarnings(MuMIn::r.squaredGLMM(MixedModels)[2]),
+   #   DvPrb = anova(MixedModels, MixedModelsrd) %&gt;% as.data.frame() %&gt;% 
+   #     .[2,&quot;Pr(&gt;Chisq)&quot;] %&gt;% as.numeric))
+ # try(results &lt;- rbind(results, result))
+# rm(MixedModels); rm(result); rm(MixedModelsrd)
+#}
+#results</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] reactable_0.3.0 magrittr_2.0.3  lme4_1.1-31     Matrix_1.5-1   
+ [5] lubridate_1.8.0 here_1.0.1      forcats_0.5.2   stringr_1.4.1  
+ [9] dplyr_1.0.10    purrr_0.3.5     readr_2.1.2     tidyr_1.2.1    
+[13] tibble_3.1.8    ggplot2_3.3.6   tidyverse_1.3.2 workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-159        fs_1.5.2            bit64_4.0.5        
+ [4] httr_1.4.4          rprojroot_2.0.3     tools_4.2.1        
+ [7] backports_1.4.1     bslib_0.4.0         utf8_1.2.2         
+[10] R6_2.5.1            DBI_1.1.3           colorspace_2.0-3   
+[13] withr_2.5.0         tidyselect_1.2.0    processx_3.8.0     
+[16] bit_4.0.4           compiler_4.2.1      git2r_0.30.1       
+[19] cli_3.4.1           rvest_1.0.3         xml2_1.3.3         
+[22] labeling_0.4.2      sass_0.4.2          scales_1.2.1       
+[25] callr_3.7.3         digest_0.6.30       minqa_1.2.5        
+[28] rmarkdown_2.16      MuMIn_1.47.1        pkgconfig_2.0.3    
+[31] htmltools_0.5.3     highr_0.9           dbplyr_2.2.1       
+[34] fastmap_1.1.0       htmlwidgets_1.5.4   rlang_1.0.6        
+[37] readxl_1.4.1        rstudioapi_0.14     farver_2.1.1       
+[40] jquerylib_0.1.4     generics_0.1.3      jsonlite_1.8.3     
+[43] vroom_1.5.7         googlesheets4_1.0.1 Rcpp_1.0.9         
+[46] munsell_0.5.0       fansi_1.0.3         lifecycle_1.0.3    
+[49] stringi_1.7.8       whisker_0.4         yaml_2.3.6         
+[52] MASS_7.3-58.1       grid_4.2.1          parallel_4.2.1     
+[55] promises_1.2.0.1    crayon_1.5.2        lattice_0.20-45    
+[58] haven_2.5.1         splines_4.2.1       hms_1.1.2          
+[61] knitr_1.40          ps_1.7.2            pillar_1.8.1       
+[64] boot_1.3-28         stats4_4.2.1        reprex_2.0.2       
+[67] glue_1.6.2          evaluate_0.18       getPass_0.2-2      
+[70] modelr_0.1.9        vctrs_0.5.0         nloptr_2.0.3       
+[73] tzdb_0.3.0          httpuv_1.6.6        cellranger_1.1.0   
+[76] gtable_0.3.1        assertthat_0.2.1    cachem_1.0.6       
+[79] xfun_0.34           broom_1.0.1         later_1.3.0        
+[82] googledrive_2.0.0   gargle_1.2.1        ellipsis_0.3.2     </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

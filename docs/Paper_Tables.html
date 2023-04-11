@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Opamelas83" />
+
+<meta name="date" content="2022-06-02" />
+
+<title>Paper_Tables</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RDSSATMICH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Paper_Tables</h1>
+<h4 class="author">Opamelas83</h4>
+<h4 class="date">2022-06-02</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-04-10
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>RDSSATMICH/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20211116code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20211116)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20211116code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20211116)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree6657f9ae839b01fc2a46c2feaf26285b724ecac2targetblank6657f9aa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/6657f9ae839b01fc2a46c2feaf26285b724ecac2" target="_blank">6657f9a</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree6657f9ae839b01fc2a46c2feaf26285b724ecac2targetblank6657f9aa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/6657f9ae839b01fc2a46c2feaf26285b724ecac2" target="_blank">6657f9a</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    CUL_files/.DS_Store
+    Ignored:    Cassava/.DS_Store
+    Ignored:    Cassava/Evaluate.OUT
+    Ignored:    Cassava/FreshWt.OUT
+    Ignored:    Cassava/INFO.OUT
+    Ignored:    Cassava/Leaves.OUT
+    Ignored:    Cassava/Measured.OUT
+    Ignored:    Cassava/MgmtEvent.OUT
+    Ignored:    Cassava/MgmtOps.OUT
+    Ignored:    Cassava/Mulch.OUT
+    Ignored:    Cassava/Overview.OUT
+    Ignored:    Cassava/PlantGr2.OUT
+    Ignored:    Cassava/PlantGrf.OUT
+    Ignored:    Cassava/PlantGro.OUT
+    Ignored:    Cassava/Plantsum.OUT
+    Ignored:    Cassava/SoilCBal.OUT
+    Ignored:    Cassava/SoilCBalSum.OUT
+    Ignored:    Cassava/SoilOrg.OUT
+    Ignored:    Cassava/SoilTemp.OUT
+    Ignored:    Cassava/SoilWat.OUT
+    Ignored:    Cassava/SoilWatBal.OUT
+    Ignored:    Cassava/Summary.OUT
+    Ignored:    Cassava/Tiers.OUT
+    Ignored:    Cassava/WARNING.OUT
+    Ignored:    Cassava/Weather.OUT
+    Ignored:    Evaluate.OUT
+    Ignored:    FreshWt.OUT
+    Ignored:    INFO.OUT
+    Ignored:    Leaves.OUT
+    Ignored:    Measured.OUT
+    Ignored:    MgmtEvent.OUT
+    Ignored:    MgmtOps.OUT
+    Ignored:    Mulch.OUT
+    Ignored:    Needhelp.R
+    Ignored:    OVERVIEW.OUT
+    Ignored:    PlantGr2.OUT
+    Ignored:    PlantGrf.OUT
+    Ignored:    PlantGro.OUT
+    Ignored:    Plantsum.OUT
+    Ignored:    Result/.DS_Store
+    Ignored:    Result/PlotGLUE/
+    Ignored:    Result/PlotLocat_GLUEHWAM/.DS_Store
+    Ignored:    SoilCBal.OUT
+    Ignored:    SoilCBalSum.OUT
+    Ignored:    SoilOrg.OUT
+    Ignored:    SoilTemp.OUT
+    Ignored:    SoilWat.OUT
+    Ignored:    SoilWatBal.OUT
+    Ignored:    Summary.OUT
+    Ignored:    Tiers.OUT
+    Ignored:    WARNING.OUT
+    Ignored:    Weather.OUT
+    Ignored:    Weather/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/CSfiles/.DS_Store
+    Ignored:    data/DSSATtempfile/.DS_Store
+    Ignored:    data/IITA2021_CABASE/.DS_Store
+    Ignored:    data/IITA2021_Mich/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/D21J/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/MichelData/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_A/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_B/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/Area/.DS_Store
+    Ignored:    data/WEATHERdata/.DS_Store
+
+Unstaged changes:
+    Modified:   ET.OUT
+    Modified:   data/CSfiles/UYAB1901.CSA
+    Modified:   data/CSfiles/UYAB1901.CST
+    Modified:   data/CSfiles/UYAG1701.CSA
+    Modified:   data/CSfiles/UYAG1701.CST
+    Modified:   data/CSfiles/UYAG1801.CSA
+    Modified:   data/CSfiles/UYAG1801.CST
+    Modified:   data/CSfiles/UYAG1901.CSA
+    Modified:   data/CSfiles/UYAG1901.CST
+    Modified:   data/CSfiles/UYIB1701.CSA
+    Modified:   data/CSfiles/UYIB1701.CST
+    Modified:   data/CSfiles/UYIB1801.CSA
+    Modified:   data/CSfiles/UYIB1801.CST
+    Modified:   data/CSfiles/UYIB1901.CSA
+    Modified:   data/CSfiles/UYIB1901.CST
+    Modified:   data/CSfiles/UYIB2001.CSA
+    Modified:   data/CSfiles/UYIB2001.CST
+    Modified:   data/CSfiles/UYIK1701.CSA
+    Modified:   data/CSfiles/UYIK1701.CST
+    Modified:   data/CSfiles/UYIK1801.CSA
+    Modified:   data/CSfiles/UYIK1801.CST
+    Modified:   data/CSfiles/UYIK1901.CSA
+    Modified:   data/CSfiles/UYIK1901.CST
+    Modified:   data/CSfiles/UYKA1801.CSA
+    Modified:   data/CSfiles/UYKA1801.CST
+    Modified:   data/CSfiles/UYMO1701.CSA
+    Modified:   data/CSfiles/UYMO1701.CST
+    Modified:   data/CSfiles/UYMO1801.CSA
+    Modified:   data/CSfiles/UYMO1801.CST
+    Modified:   data/CSfiles/UYMO1901.CSA
+    Modified:   data/CSfiles/UYMO1901.CST
+    Modified:   data/CSfiles/UYON1801.CSA
+    Modified:   data/CSfiles/UYON1801.CST
+    Modified:   data/CSfiles/UYON1901.CSA
+    Modified:   data/CSfiles/UYON1901.CST
+    Modified:   data/CSfiles/UYOT1801.CSA
+    Modified:   data/CSfiles/UYOT1801.CST
+    Modified:   data/CSfiles/UYUB1901.CSA
+    Modified:   data/CSfiles/UYUB1901.CST
+    Modified:   data/CSfiles/UYUM1801.CSA
+    Modified:   data/CSfiles/UYUM1801.CST
+    Modified:   data/CSfiles/UYZA1901.CSA
+    Modified:   data/CSfiles/UYZA1901.CST
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Paper_Tables.Rmd</code>) and HTML
+(<code>docs/Paper_Tables.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/c096d849eda801ec70b80a0bdc41c6d9dcc04283/analysis/Paper_Tables.Rmd" target="_blank">c096d84</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/5a6fcbcd1eed6a82d0b69eb37e6951a56ae67aec/analysis/Paper_Tables.Rmd" target="_blank">5a6fcbc</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/9333df11b7f314e955db89ce250e068adcb46784/analysis/Paper_Tables.Rmd" target="_blank">9333df1</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial project
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.2      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(DSSAT)</code></pre>
+<pre><code>
+When using the &#39;DSSAT&#39; package for publications please cite all of the
+following:
+
+  Alderman, P.D. 2021. DSSAT: A Comprehensive R Interface for the DSSAT
+  Cropping Systems Model. R package version 0.0.6.
+  https://CRAN.R-project.org/package=DSSAT.
+
+  Alderman, P.D. 2020. &quot;A Comprehensive R Interface for the DSSAT
+  Cropping Systems Model.&quot; Computers and Electronics in Agriculture
+  172: 105325. DOI: 10.1016/j.compag.2020.105325. URL:
+  https://www.sciencedirect.com/science/article/pii/S0168169919323075.
+
+  Jones, J.W., G. Hoogenboom, C.H. Porter, K.J. Boote, W.D. Batchelor,
+  L.A. Hunt, P.W. Wilkens, U. Singh, A.J. Gijsman, and J.T. Ritchie.
+  2003. &quot;The DSSAT Cropping System Model.&quot; European Journal of Agronomy
+  18 (3-4): 235-265.
+
+  Hoogenboom, G., C.H. Porter, K.J. Boote, V. Shelia, P.W. Wilkens, U.
+  Singh, J.W. White, S. Asseng, J.I. Lizaso, L.P. Moreno, W. Pavan, R.
+  Ogoshi, L.A. Hunt, G.Y. Tsuji, and J.W. Jones. 2019. &quot;The DSSAT Crop
+  Modeling Ecosystem.&quot; In: Advances in Crop Modeling for a Sustainable
+  Agriculture, edited by Kenneth J Boote, 173–216. Cambridge, United
+  Kingdom: Burleigh Dodds Science Publishing.
+
+  Hoogenboom, G., C.H. Porter, V. Shelia, K.J. Boote, U. Singh, J.W.
+  White, W. Pavan, F.A.A. Oliveira, L.P. Moreno-Cadena, J.I. Lizaso, S.
+  Asseng, D.N.L. Pequeno, B.A. Kimball, P.D. Alderman, K.R. Thorp, M.R.
+  Jones, S.V. Cuadra, M.S. Vianna, F.J. Villalobos, T.B. Ferreira, J.
+  Koo, L.A. Hunt, and J.W. Jones. &lt;YEAR&gt;. Decision Support System for
+  Agrotechnology Transfer (DSSAT) Version &lt;VERSION&gt;. Gainesville,
+  Florida, USA: DSSAT Foundation. https://DSSAT.net.
+
+For BibTeX entries use toBibtex(citation(&quot;DSSAT&quot;))
+
+A DSSAT-CSM executable was found here:
+
+  /Users/mo367/Desktop/Analy_project/RDSSATMICH/dscsm048
+
+If this is not the correct executable, please use
+
+  options(DSSAT.CSM=&quot;//path/to/executable&quot;)
+
+ to set the proper location and file name for DSSAT-CSM.</code></pre>
+<pre class="r"><code>library(corrplot)</code></pre>
+<pre><code>corrplot 0.92 loaded</code></pre>
+<pre class="r"><code>library(ggpubr)
+library(lemon)</code></pre>
+<pre><code>
+Attaching package: &#39;lemon&#39;
+
+The following object is masked from &#39;package:purrr&#39;:
+
+    %||%
+
+The following objects are masked from &#39;package:ggplot2&#39;:
+
+    CoordCartesian, element_render</code></pre>
+<pre class="r"><code>library(hydroGOF)</code></pre>
+<pre><code>Loading required package: zoo
+
+Attaching package: &#39;zoo&#39;
+
+The following objects are masked from &#39;package:base&#39;:
+
+    as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(zoo)
+library(rsq)</code></pre>
+<div id="paper1-tables" class="section level2">
+<h2>Paper1 Tables</h2>
+<pre class="r"><code>EVALana2 &lt;- read_csv(&quot;data/EVALana2.csv&quot;)</code></pre>
+<pre><code>Rows: 899 Columns: 44
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (3): source, Clone, EXCODE
+dbl (41): TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM, TMIN, TMAX, SRAD, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>ENVinfo &lt;- EVALana2 %&gt;% 
+             mutate(ENVI = source) %&gt;% 
+              dplyr::select(ENVI, LONG, LAT, TMIN, TMAX, RAIN, RH2M, SRAD, PAR, WIND) %&gt;% 
+             group_by(ENVI) %&gt;% 
+             dplyr::summarise(across(c(LONG, LAT, TMIN, TMAX, RAIN,RH2M, SRAD, PAR, WIND),
+                                     unique, na.rm=TRUE)) %&gt;%
+               mutate(&quot;Geo Loc&quot; =  paste0(round(LAT, digits = 2), &quot;°&quot;, &quot;N, &quot;, round(LONG, digits = 2),&quot;°&quot;, &quot;E&quot;),
+                      #&quot;LONG (°E)&quot; = round(LAT, digits = 2),
+                     &quot;TMIN (°C)&quot; = round(TMIN, digits = 1), 
+                     &quot;TMAX (°C)&quot;= round(TMAX, digits = 1), 
+                     &quot;RAIN (mm)&quot; = round(RAIN, digits = 1),
+                     &quot;RH2M (%)&quot; = round(RH2M, digits = 1),
+                     &quot;SRAD (MJ/m^2/day)&quot; = round(SRAD, digits = 1), 
+                     &quot;PAR (W/m^2)&quot; = round(PAR, digits = 1), 
+                     &quot;WIND (m/s)&quot; = round(WIND, digits = 1)) 
+              
+ENVinfo$Location &lt;- ENVinfo$ENVI
+ENVinfo$Location[grep(pattern = &quot;^Abu&quot;, x = ENVinfo$ENVI)] &lt;- &quot;ABUJA&quot;
+ENVinfo$Location[grep(pattern = &quot;^Ago&quot;, x = ENVinfo$ENVI)] &lt;- &quot;AGO-OWU&quot;
+ENVinfo$Location[grep(pattern = &quot;^Ibad&quot;, x = ENVinfo$ENVI)] &lt;- &quot;IBADAN&quot;
+ENVinfo$Location[grep(pattern = &quot;^Iken&quot;, x = ENVinfo$ENVI)] &lt;- &quot;IKENNE&quot;
+ENVinfo$Location[grep(pattern = &quot;^Kan&quot;, x = ENVinfo$ENVI)] &lt;- &quot;KANO&quot;
+ENVinfo$Location[grep(pattern = &quot;^Mokw&quot;, x = ENVinfo$ENVI)] &lt;- &quot;MOKWA&quot;
+ENVinfo$Location[grep(pattern = &quot;^Onn&quot;, x = ENVinfo$ENVI)] &lt;- &quot;ONNE&quot;
+ENVinfo$Location[grep(pattern = &quot;^Otob&quot;, x = ENVinfo$ENVI)] &lt;- &quot;OTOBI&quot;
+ENVinfo$Location[grep(pattern = &quot;^Ubia&quot;, x = ENVinfo$ENVI)] &lt;- &quot;UBIAJA&quot;
+ENVinfo$Location[grep(pattern = &quot;^Umud&quot;, x = ENVinfo$ENVI)] &lt;- &quot;UMUDIKE&quot;
+ENVinfo$Location[grep(pattern = &quot;^Zar&quot;, x = ENVinfo$ENVI)] &lt;- &quot;ZARIA&quot;
+
+ENVinform &lt;- ENVinfo %&gt;%
+                mutate(YEAR = paste0(20,as.numeric(str_extract(ENVI, &quot;\\d{2}+&quot;)),&quot;-&quot;,20,as.numeric(str_extract(ENVI, &quot;\\d{2}+&quot;))+1),
+                       &quot;Soil&quot; = case_when(Location == &quot;ABUJA&quot; ~ &quot;SCL&quot;,
+                                                Location == &quot;AGO-OWU&quot; ~ &quot;SCL&quot;,
+                                                Location == &quot;IBADAN&quot; ~ &quot;SL&quot;,
+                                                Location == &quot;IKENNE&quot; ~ &quot;CL&quot;,
+                                                Location == &quot;KANO&quot; ~ &quot;SL&quot;,
+                                                Location == &quot;MOKWA&quot; ~ &quot;SCL&quot;,
+                                                Location == &quot;ONNE&quot; ~ &quot;SCL&quot;,
+                                                Location == &quot;OTOBI&quot; ~ &quot;CL&quot;,
+                                                Location == &quot;UBIAJA&quot; ~ &quot;SCL&quot;,
+                                                Location == &quot;UMUDIKE&quot; ~ &quot;SCL&quot;,
+                                                Location == &quot;ZARIA&quot; ~ &quot;SCL&quot;),
+                       &quot;Planting Date&quot; = case_when(ENVI == &quot;Abuja19&quot; ~ &quot;June 2019&quot;,
+                                              ENVI == &quot;Ago17&quot; ~ &quot;August 2017&quot;,
+                                              ENVI == &quot;Ago18&quot; ~ &quot;June 2018&quot;,
+                                              ENVI == &quot;Ago19&quot; ~ &quot;June 2019&quot;,
+                                              ENVI == &quot;Ibadan17&quot; ~ &quot;September 2017&quot;,
+                                              ENVI == &quot;Ibadan18&quot; ~ &quot;July 2018&quot;,
+                                              ENVI == &quot;Ibadan19&quot; ~ &quot;May 2019&quot;,
+                                              ENVI == &quot;Ikenne17&quot; ~ &quot;August 2017&quot;,
+                                              ENVI == &quot;Ikenne18&quot; ~ &quot;June 2018&quot;,
+                                              ENVI == &quot;Ikenne19&quot; ~ &quot;June 2019&quot;,
+                                              ENVI == &quot;Kano18&quot; ~ &quot;July 2018&quot;,
+                                              ENVI == &quot;Mokwa17&quot; ~ &quot;August 2017&quot;,
+                                              ENVI == &quot;Mokwa18&quot; ~ &quot;January 2018&quot;,
+                                              ENVI == &quot;Mokwa19&quot; ~ &quot;June 2019&quot;,
+                                              ENVI == &quot;Onne18&quot; ~ &quot;April 2018&quot;,
+                                              ENVI == &quot;Otobi18&quot; ~ &quot;July 2018&quot;,
+                                              ENVI == &quot;Ubiaja19&quot; ~ &quot;June 2019&quot;,
+                                              ENVI == &quot;Umudike18&quot; ~ &quot;July 2018&quot;,
+                                              ENVI == &quot;Zaria19&quot; ~ &quot;June 2019&quot;)) %&gt;%
+             dplyr::select(Location, &quot;Geo Loc&quot;, &quot;Soil&quot;, YEAR, ENVI, &quot;Planting Date&quot;, &quot;TMIN (°C)&quot;, &quot;TMAX (°C)&quot;, &quot;RAIN (mm)&quot;, &quot;RH2M (%)&quot;, &quot;SRAD (MJ/m^2/day)&quot;, &quot;PAR (W/m^2)&quot;, &quot;WIND (m/s)&quot;)
+                    
+write.csv(ENVinform, &quot;data/Paper_Table1.csv&quot;, quote = T, row.names = F)</code></pre>
+<p>GSP set, the the minimum and the maximum values for each
+parameter</p>
+<pre class="r"><code>MyCUL1 &lt;- read_lines(here::here(&quot;CSYCA048.CUL&quot;), skip = 42, n_max = 67)
+write_lines(MyCUL1, (here::here(&quot;MyCUL1.txt&quot;)))
+MyCUL2 &lt;- read.table(here::here(&quot;MyCUL1.txt&quot;), header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+MyCUL3 &lt;- MyCUL2 %&gt;% filter(str_detect(V1, &quot;UC00&quot;)) %&gt;%
+                            mutate(Cultivar = V2, Ecogrp = V4, B01ND = round(V5, 0), B12ND = round(V6, 0),  B23ND = round(V7, 0), B34ND = round(V8, 0), BR1FX = V9, BR2FX = V10, BR3FX = V11, BR4FX = V12, LAXS = round(V13, 0),  SLAS = round(V14, 0), LLIFA = round(V15, 0), LPEFR = round(V16, 2), LNSLP = round(V17, 2), NODWT = round(V18, 2), NODLT = round(V19, 2)) %&gt;%
+                   dplyr::select(Cultivar, Ecogrp, B01ND, B12ND, B23ND, B34ND, BR1FX, BR2FX, BR3FX, BR4FX, LAXS, SLAS, LLIFA, LPEFR, LNSLP, NODWT, NODLT) %&gt;%
+                    mutate(Ecogrp = as.character(Ecogrp), V4B01ND = as.numeric(B01ND), B12ND = as.numeric(B12ND), B23ND = as.numeric(B23ND), B34ND = as.numeric(B34ND), BR1FX = as.numeric(BR1FX), BR2FX = as.numeric(BR2FX), BR3FX = as.numeric(BR3FX), BR4FX = as.numeric(BR4FX), LAXS = as.numeric(LAXS), SLAS = as.numeric(SLAS), LLIFA = as.numeric(LLIFA), LPEFR = as.numeric(LPEFR), LNSLP = as.numeric(LNSLP), NODWT = as.numeric(NODWT), NODLT = as.numeric(NODLT))
+
+min_max &lt;- list(
+  min = ~min(.x, na.rm = TRUE), 
+  max = ~max(.x, na.rm = TRUE)
+)
+MyCUL4 &lt;- MyCUL3 %&gt;% group_by(Ecogrp) %&gt;%
+                   summarise(across(where(is.numeric), min_max, .names = &quot;{.fn}.{.col}&quot;)) 
+MyECO1 &lt;- read_lines(here::here(&quot;CSYCA048.ECO&quot;), skip = 36, n_max = 15)
+write_lines(MyECO1, (here::here(&quot;MyECO1.txt&quot;)))
+MyECO2 &lt;- read.table(here::here(&quot;MyECO1.txt&quot;), header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+MyECO3 &lt;- MyECO2 %&gt;% mutate(Ecogrp = V1, PARUE = V3, KCAN = V6) %&gt;%
+                   dplyr::select(Ecogrp, PARUE, KCAN) %&gt;%
+                     mutate(Ecogrp = as.character(Ecogrp),
+                            PARUE = as.numeric(PARUE),
+                            KCAN = as.numeric(KCAN))
+MyCUL4 &lt;- left_join(MyCUL4, MyECO3)  </code></pre>
+<pre><code>Joining, by = &quot;Ecogrp&quot;</code></pre>
+<pre class="r"><code>MyCUL5 &lt;- MyCUL4 %&gt;% mutate(B01ND = paste0(min.B01ND,&quot; - &quot;,max.B01ND),
+                            B12ND = paste0(min.B01ND,&quot; - &quot;,max.B12ND), 
+                            B23ND = paste0(min.B23ND,&quot; - &quot;,max.B23ND), 
+                            B34ND = paste0(min.B34ND,&quot; - &quot;,max.B34ND),
+                            BR1FX = paste0(min.BR1FX,&quot; - &quot;,max.BR1FX), 
+                            BR2FX = paste0(min.BR2FX,&quot; - &quot;,max.BR2FX), 
+                            BR3FX = paste0(min.BR3FX,&quot; - &quot;,max.BR3FX), 
+                            BR4FX = paste0(min.BR4FX,&quot; - &quot;,max.BR4FX), 
+                            LAXS = paste0(min.LAXS,&quot; - &quot;,max.LAXS), 
+                            SLAS = paste0(min.SLAS,&quot; - &quot;,max.SLAS), 
+                            LLIFA = paste0(min.LLIFA,&quot; - &quot;,max.LLIFA), 
+                            LPEFR = paste0(min.LPEFR,&quot; - &quot;,max.LPEFR), 
+                            LNSLP = paste0(min.LNSLP,&quot; - &quot;,max.LNSLP), 
+                            NODWT = paste0(min.NODWT,&quot; - &quot;,max.NODWT), 
+                            NODLT = paste0(min.NODLT,&quot; - &quot;,max.NODLT)) %&gt;%
+                            #Ecotype = case_when(Ecogrp == &quot;990016&quot; ~ &quot;Ecotype 1&quot;, 
+                             #                   Ecogrp == &quot;990017&quot; ~ &quot;Ecotype 2&quot;,
+                              #                  Ecogrp == &quot;990018&quot; ~ &quot;Ecotype 3&quot;, 
+                              #                  Ecogrp == &quot;990019&quot; ~ &quot;Ecotype 4&quot;, 
+                              #                  Ecogrp == &quot;990020&quot; ~ &quot;Ecotype 5&quot;, 
+                              #                  Ecogrp == &quot;990021&quot; ~ &quot;Ecotype 6&quot;, 
+                               #                 Ecogrp == &quot;990022&quot; ~ &quot;Ecotype 7&quot;, 
+                               #                 Ecogrp == &quot;990023&quot; ~ &quot;Ecotype 8&quot;, 
+                               #                 Ecogrp == &quot;990024&quot; ~ &quot;Ecotype 9&quot;,
+                                #                Ecogrp == &quot;990025&quot; ~ &quot;Ecotype 10&quot;, 
+                                #                Ecogrp == &quot;990026&quot; ~ &quot;Ecotype 11&quot;)) %&gt;%
+  dplyr::select(B01ND, B12ND, B23ND, B34ND, BR1FX, BR2FX, BR3FX, BR4FX, LAXS, SLAS, LLIFA, LPEFR, LNSLP, NODWT, NODLT, PARUE, KCAN)
+
+MyCUL6 &lt;- t(MyCUL5) 
+colnames(MyCUL6) &lt;- MyCUL6[1, ]
+
+MyCUL6 &lt;- MyCUL6 %&gt;% 
+  as.data.frame %&gt;% 
+  rownames_to_column(&quot;Coefficient&quot;)
+#MyCUL6 = MyCUL6[-1, ] 
+  
+MyCUL7 &lt;- MyCUL6 %&gt;% mutate(Definition = 
+               dplyr::case_when(Coefficient == &quot;B01ND&quot; ~ &quot;Duration from planting to first forking (thermal units)&quot;, 
+               Coefficient == &quot;B12ND&quot; ~ &quot;Duration from first forking to second forking (thermal units)&quot;, 
+               Coefficient == &quot;B23ND&quot; ~ &quot;Duration from second forking to third forking (thermal units)&quot;, 
+               Coefficient == &quot;B34ND&quot; ~ &quot;Duration from second forking to third forking (thermal units)&quot;, 
+               Coefficient == &quot;BR1FX&quot; ~ &quot;Branch number per fork at fork 1 (no.)&quot;, 
+               Coefficient == &quot;BR2FX&quot; ~ &quot;Branch number per fork at fork 2 (no.)&quot;, 
+               Coefficient == &quot;BR3FX&quot; ~ &quot;Branch number per fork at fork 3 (no.)&quot;, 
+               Coefficient == &quot;BR4FX&quot; ~ &quot;Branch number per fork at fork 4 (no.)&quot;, 
+               Coefficient == &quot;LAXS&quot; ~ &quot;Area/leaf at maximum area/leaf, cm2&quot;,
+               Coefficient == &quot;SLAS&quot; ~ &quot;Specific leaf lamina area when crop growing without stress, cm2 g−1&quot;,
+               Coefficient == &quot;LLIFA&quot; ~ &quot;Leaf life, from full expansion to start senescence (thermal units)&quot;, 
+               Coefficient == &quot;LPEFR&quot; ~ &quot;Leaf-petiole weight fraction (no.)&quot;, 
+               Coefficient == &quot;LNSLP&quot; ~ &quot;Slope for leaf production (no.)&quot;, 
+               Coefficient == &quot;NODWT&quot; ~ &quot;Individual node weight (g)&quot;, 
+               Coefficient == &quot;NODLT&quot; ~ &quot;Internode length (cm)&quot;,
+              Coefficient == &quot;PARUE&quot; ~ &quot;Radiation use efficiency (g dry matter MJ−1)&quot;,
+              Coefficient == &quot;KCAN&quot; ~ &quot;Photosynthetically active radiation (PAR) extinction parameter (no.)&quot;)) %&gt;%
+           dplyr:::relocate(Coefficient, Definition)
+
+write.csv(MyCUL7, &quot;Result/Paper_Table2.csv&quot;, quote = F, row.names = F)</code></pre>
+<p>#second table to resume Tables 2 and make it less big</p>
+<pre class="r"><code>library(raster)</code></pre>
+<pre><code>Loading required package: sp</code></pre>
+<pre><code>
+Attaching package: &#39;raster&#39;</code></pre>
+<pre><code>The following object is masked from &#39;package:dplyr&#39;:
+
+    select</code></pre>
+<pre class="r"><code>MyCUL77 &lt;- MyCUL6 %&gt;% mutate(Definition = 
+               case_when(Coefficient == &quot;B01ND&quot; ~ &quot;Duration from planting to first forking (°Cd)&quot;, 
+               Coefficient == &quot;B12ND&quot; ~ &quot;Duration from first to second forking (°Cd)&quot;, 
+               Coefficient == &quot;B23ND&quot; ~ &quot;Duration from second to third forking (°Cd)&quot;, 
+               Coefficient == &quot;B34ND&quot; ~ &quot;Duration from second to third forking (°Cd)&quot;, 
+               Coefficient == &quot;BR1FX&quot; ~ &quot;Branch number per fork at fork 1 (no.)&quot;,
+               Coefficient == &quot;BR2FX&quot; ~ &quot;Branch number per fork at fork 2 (no.)&quot;, 
+               Coefficient == &quot;BR3FX&quot; ~ &quot;Branch number per fork at fork 3 (no.)&quot;, 
+               Coefficient == &quot;BR4FX&quot; ~ &quot;Branch number per fork at fork 4 (no.)&quot;, 
+               Coefficient == &quot;LAXS&quot; ~ &quot;Maximum leaf area when growing without stress (cm²)&quot;,
+               Coefficient == &quot;SLAS&quot; ~ &quot;Specific leaf lamina area when crop growing without stress (cm2 g−1)&quot;,
+               Coefficient == &quot;LLIFA&quot; ~ &quot;Leaf life from full expansion to start senescence (°Cd)&quot;, 
+               Coefficient == &quot;LPEFR&quot; ~ &quot;Leaf-petiole fraction (fraction of lamina  petiole)&quot;, 
+               Coefficient == &quot;LNSLP&quot; ~ &quot;Slope for leaf production&quot;, 
+              Coefficient == &quot;NODWT&quot; ~ &quot;Node weight for the first stem of the shoot before branching at 3400 ˚Cd (g)&quot;, 
+                Coefficient == &quot;NODLT&quot; ~ &quot; Mean internode length (cm) for the first stem of the shoot before branching when is lignified (cm)&quot;,
+               Coefficient == &quot;PARUE&quot; ~ &quot;Photosynthetically active radiation (PAR) conversion factor standard (g dry matter MJ−1)&quot;,
+               Coefficient == &quot;KCAN&quot; ~ &quot;Photosynthetically active radiation extinction parameter (no.)&quot;)) %&gt;%
+            dplyr::select(Coefficient, Definition)
+
+
+MyCUL77a &lt;- MyCUL77 %&gt;% 
+  mutate(Min = dplyr::case_when(Coefficient == &quot;B01ND&quot; ~ min(MyCUL4$min.B01ND),
+                         Coefficient == &quot;B12ND&quot; ~ min(MyCUL4$min.B12ND),
+                         Coefficient == &quot;B23ND&quot; ~ min(MyCUL4$min.B23ND),
+                         Coefficient == &quot;B34ND&quot; ~ min(MyCUL4$min.B34ND),
+                         Coefficient == &quot;BR1FX&quot; ~ min(MyCUL4$min.BR1FX),
+                         Coefficient == &quot;BR2FX&quot; ~ min(MyCUL4$min.BR2FX),
+                         Coefficient == &quot;BR3FX&quot; ~ min(MyCUL4$min.BR3FX),
+                         Coefficient == &quot;BR4FX&quot; ~ min(MyCUL4$min.BR4FX),
+                         Coefficient == &quot;LAXS&quot; ~ min(MyCUL4$min.LAXS),
+                         Coefficient == &quot;SLAS&quot; ~ min(MyCUL4$min.SLAS),
+                         Coefficient == &quot;LLIFA&quot; ~ min(MyCUL4$min.LLIFA),
+                         Coefficient == &quot;LPEFR&quot; ~ min(MyCUL4$min.LPEFR),
+                         Coefficient == &quot;LNSLP&quot; ~ min(MyCUL4$min.LNSLP),
+                         Coefficient == &quot;NODWT&quot; ~ min(MyCUL4$min.NODWT),
+                         Coefficient == &quot;NODLT&quot; ~ min(MyCUL4$min.NODLT),
+                         Coefficient == &quot;PARUE&quot; ~ min(MyCUL4$PARUE),
+                         Coefficient == &quot;KCAN&quot; ~ min(MyCUL4$KCAN)),
+         Max = dplyr::case_when(Coefficient == &quot;B01ND&quot; ~ max(MyCUL4$max.B01ND),
+                         Coefficient == &quot;B12ND&quot; ~ max(MyCUL4$max.B12ND),
+                         Coefficient == &quot;B23ND&quot; ~ max(MyCUL4$max.B23ND),
+                         Coefficient == &quot;B34ND&quot; ~ max(MyCUL4$max.B34ND),
+                         Coefficient == &quot;BR1FX&quot; ~ max(MyCUL4$max.BR1FX),
+                         Coefficient == &quot;BR2FX&quot; ~ max(MyCUL4$max.BR2FX),
+                         Coefficient == &quot;BR3FX&quot; ~ max(MyCUL4$max.BR3FX),
+                         Coefficient == &quot;BR4FX&quot; ~ max(MyCUL4$max.BR4FX),
+                         Coefficient == &quot;LAXS&quot; ~ max(MyCUL4$max.LAXS),
+                         Coefficient == &quot;SLAS&quot; ~ max(MyCUL4$max.SLAS),
+                         Coefficient == &quot;LLIFA&quot; ~ max(MyCUL4$max.LLIFA),
+                         Coefficient == &quot;LPEFR&quot; ~ max(MyCUL4$max.LPEFR),
+                         Coefficient == &quot;LNSLP&quot; ~ max(MyCUL4$max.LNSLP),
+                         Coefficient == &quot;NODWT&quot; ~ max(MyCUL4$max.NODWT),
+                         Coefficient == &quot;NODLT&quot; ~ max(MyCUL4$max.NODLT),
+                         Coefficient == &quot;PARUE&quot; ~ max(MyCUL4$PARUE),
+                         Coefficient == &quot;KCAN&quot; ~ max(MyCUL4$KCAN)),
+         CV = dplyr::case_when(Coefficient == &quot;B01ND&quot; ~ cv(MyCUL3$B01ND),#*100,
+                         Coefficient == &quot;B12ND&quot; ~ cv(MyCUL3$B12ND),#*100,
+                         Coefficient == &quot;B23ND&quot; ~ cv(MyCUL3$B23ND),#*100,
+                         Coefficient == &quot;B34ND&quot; ~ cv(MyCUL3$B34ND),#*100,
+                         Coefficient == &quot;BR1FX&quot; ~ cv(MyCUL3$BR1FX),#*100,
+                         Coefficient == &quot;BR2FX&quot; ~ cv(MyCUL3$BR2FX),#*100,
+                         Coefficient == &quot;BR3FX&quot; ~ cv(MyCUL3$BR3FX),#*100,
+                         Coefficient == &quot;BR4FX&quot; ~ cv(MyCUL3$BR4FX),#*100,
+                         Coefficient == &quot;LAXS&quot; ~ cv(MyCUL3$LAXS),#*100,
+                         Coefficient == &quot;SLAS&quot; ~ cv(MyCUL3$SLAS),#*100,
+                         Coefficient == &quot;LLIFA&quot; ~ cv(MyCUL3$LLIFA),#*100,
+                         Coefficient == &quot;LPEFR&quot; ~ cv(MyCUL3$LPEFR),#*100,
+                         Coefficient == &quot;LNSLP&quot; ~ cv(MyCUL3$LNSLP),#*100,
+                         Coefficient == &quot;NODWT&quot; ~ cv(MyCUL3$NODWT),#*100,
+                         Coefficient == &quot;NODLT&quot; ~ cv(MyCUL3$NODLT),#*100,
+                         Coefficient == &quot;PARUE&quot; ~ cv(MyCUL4$PARUE),#*100,
+                         Coefficient == &quot;KCAN&quot; ~ (cv(MyCUL4$KCAN)))) %&gt;% #*100
+  mutate(Max = round(Max, 1),
+         Min = round(Min, 1),
+         &quot;CV (%)&quot; = round(CV, 1)) %&gt;% 
+  dplyr::select(Coefficient, Definition, Max, Min, &quot;CV (%)&quot;)
+        
+write.csv(MyCUL77a, &quot;Result/Paper_Table22.csv&quot;, quote = F, row.names = F)</code></pre>
+<pre class="r"><code>#ggplot(data = REGR_RMSE, aes(x = BeforeGLUE, y = AfterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
+#   geom_point(aes()) +
+ #  geom_smooth(method = &quot;lm&quot;, color = &quot;black&quot;) +
+   #scale_color_brewer(&quot;Performance&quot;, palette = &quot;Set1&quot;) +
+  # ggtitle(&quot;RMSE comparison&quot;) +
+  # geom_hline(data = mediansRMSE, mapping = aes(yintercept = case_when(mediansRMSE$Mean == &quot;AfterGLUE&quot; ~ RMSE), color = &quot;AfterGLUE&quot;)) +
+ #  geom_vline(data = mediansRMSE, mapping = aes(xintercept = case_when(mediansRMSE$Mean == &quot;BeforeGLUE&quot; ~ RMSE), color = &quot;red&quot;)) +
+  # scale_linetype_manual(name =&quot;Median&quot;, values = c(&quot;blues9&quot;, &quot;green&quot;))
+ # annotate(x = 10, y = 10, label = paste0(&quot;t.test, &quot;, &quot;p &lt; 0.001&quot;),
+ #           color = &quot;black&quot;, geom = &quot;text&quot;) +
+  # theme_classic()#+ # for removing grille hjust = 1
+#dev.off()</code></pre>
+</div>
+<div id="correlation-and-rmse-tables-represented-by-boxplot"
+class="section level2">
+<h2>correlation and RMSE tables represented by boxplot</h2>
+<pre class="r"><code>COMP1 &lt;- read_csv(&quot;Result/RESUT.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 17
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (1): Clone
+dbl (16): R.Cor, GLUER.Cor, R.rmse, GLUER.rmse, R.d, GLUER.d, T.Cor, GLUET.C...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>## for R
+REGR_R &lt;- COMP1 %&gt;% 
+  dplyr::select(Clone, R.Cor, GLUER.Cor) %&gt;% 
+           mutate(Clone = c(1:67),
+                  BeforeGLUE = R.Cor,
+                  AfterGLUE = GLUER.Cor) %&gt;%
+  dplyr::select(Clone, BeforeGLUE, AfterGLUE)
+
+
+#COMP_R &lt;- COMP1 %&gt;% select(R.Cor) %&gt;% 
+ #                    mutate(R = R.Cor,
+  #                          Statut = &quot;BeforeGLUE&quot;)
+#COMP_RGLUE &lt;- COMP1 %&gt;% select(GLUER.Cor) %&gt;% 
+  #                   mutate(R = GLUER.Cor,
+ #                           Statut = &quot;afterGLUE&quot;) 
+#COMP_RR &lt;- bind_rows(COMP_R,COMP_RGLUE) %&gt;% select(Statut, R)
+#ggboxplot(COMP_RR, x = &quot;Statut&quot;, y = &quot;R&quot;, color = &quot;Statut&quot;, add = &quot;jitter&quot;)+
+
+
+
+## for rmse
+COMP_RMSE &lt;- COMP1 %&gt;% dplyr::select(R.rmse) %&gt;%
+                     mutate(RMSE = R.rmse,
+                            Statut = &quot;BeforeGLUE&quot;)
+COMP_RMSEGLUE &lt;- COMP1 %&gt;% dplyr::select(GLUER.rmse) %&gt;% 
+                     mutate(RMSE = GLUER.rmse,
+                            Statut = &quot;afterGLUE&quot;) 
+COMP_RMSE &lt;- bind_rows(COMP_RMSE,COMP_RMSEGLUE) %&gt;% dplyr::select(Statut, RMSE)
+ggboxplot(COMP_RMSE, x = &quot;Statut&quot;, y = &quot;RMSE&quot;, color = &quot;Statut&quot;, add = &quot;jitter&quot;)+
+  stat_compare_means()</code></pre>
+<p><img src="figure/Paper_Tables.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="ammi-anova-summary" class="section level2">
+<h2>AMMI Anova summary</h2>
+<pre class="r"><code>#AMMIanova1 &lt;- AMMIStatGXE$anova #anova table
+#AMMIanova2 &lt;- AMMIanova1 
+
+#AMMIanova2 &lt;- as_tibble(rownames_to_column(AMMIanova1)) %&gt;% 
+  #                        rename(source = rowname) 
+#AMMIanova3 &lt;- AMMIanova2 %&gt;% 
+ # mutate(&quot;F value&quot; = round(as.numeric(`F value`), digits = 1),
+         #&quot;P value&quot; = round(as.numeric(`Pr(&gt;F)`), digits = 1),
+  #       &quot;P value&quot; = ifelse(!(is.na(`Pr(&gt;F)`)), paste0(&quot;&lt;&quot;, `Pr(&gt;F)`, &quot;***&quot;), NA)) %&gt;% 
+ #          dplyr::select(-(`Pr(&gt;F)`)) %&gt;%
+# mutate(source = if_else(source == &quot;Trial&quot;, &quot;Environment&quot;, source)) %&gt;%
+ # mutate(`Mean Sq` = round(`Mean Sq`))
+
+ #  AMMIanova4 &lt;- AMMIanova3 %&gt;% 
+ #           filter(source == &quot;Genotype&quot; | source == &quot;Environment&quot; | source == &quot;Interactions&quot;) %&gt;% 
+ # mutate(source = if_else(source == &quot;Trial&quot;, &quot;Environment&quot;, source)) %&gt;%
+ # mutate(&quot;% of Total SS&quot; = round(`Sum Sq`/sum(`Sum Sq`) * 100, digits = 1)) %&gt;%
+ #            dplyr::select(-(`Sum Sq`))
+
+#AMMIanova5 &lt;- left_join(AMMIanova3, AMMIanova4) #
+#IPCA
+#AMMIPCA1 &lt;- AMMIStatGXE$importance #anova table
+#AMMIPCA2 &lt;- as_tibble(rownames_to_column(AMMIPCA1)) %&gt;% 
+#                         rename(source = rowname)
+#AMMIPCA3 &lt;-  AMMIPCA2 %&gt;% filter(source == &quot;Cumulative Proportion&quot;)
+
+#AMMIanova6 &lt;- AMMIanova5 %&gt;% mutate(&quot;Cumulative Proportion (%)&quot; = case_when(source == &quot;PC1&quot; ~ round(AMMIPCA3$PC1 * 100, digits = 1),
+#           source == &quot;PC2&quot; ~ round(AMMIPCA3$PC2 * 100, digits = 1),
+#           source == &quot;PC3&quot; ~ round(AMMIPCA3$PC3 * 100, digits = 1))) %&gt;%
+ #            dplyr::select(-(`Sum Sq`))
+
+#write.csv(AMMIanova6, &quot;Result/Paper_AMMITable3.csv&quot;, quote = F, row.names = F) </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] raster_3.6-3    sp_1.5-0        rsq_2.5         hydroGOF_0.4-0 
+ [5] zoo_1.8-11      lemon_0.4.5     ggpubr_0.4.0    corrplot_0.92  
+ [9] DSSAT_0.0.6     forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10   
+[13] purrr_0.3.5     readr_2.1.2     tidyr_1.2.1     tibble_3.1.8   
+[17] ggplot2_3.3.6   tidyverse_1.3.2 workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+  [1] minqa_1.2.5         googledrive_2.0.0   colorspace_2.0-3   
+  [4] ggsignif_0.6.3      ellipsis_0.3.2      class_7.3-20       
+  [7] rprojroot_2.0.3     fs_1.5.2            rstudioapi_0.14    
+ [10] proxy_0.4-27        farver_2.1.1        Deriv_4.1.3        
+ [13] bit64_4.0.5         fansi_1.0.3         lubridate_1.8.0    
+ [16] xml2_1.3.3          codetools_0.2-18    splines_4.2.1      
+ [19] cachem_1.0.6        knitr_1.40          jsonlite_1.8.3     
+ [22] nloptr_2.0.3        broom_1.0.1         dbplyr_2.2.1       
+ [25] compiler_4.2.1      httr_1.4.4          backports_1.4.1    
+ [28] Matrix_1.5-1        assertthat_0.2.1    fastmap_1.1.0      
+ [31] gargle_1.2.1        cli_3.4.1           later_1.3.0        
+ [34] htmltools_0.5.3     tools_4.2.1         gtable_0.3.1       
+ [37] glue_1.6.2          Rcpp_1.0.9          carData_3.0-5      
+ [40] cellranger_1.1.0    jquerylib_0.1.4     vctrs_0.5.0        
+ [43] nlme_3.1-159        xfun_0.34           ps_1.7.2           
+ [46] lme4_1.1-31         rvest_1.0.3         lifecycle_1.0.3    
+ [49] rstatix_0.7.0       googlesheets4_1.0.1 terra_1.6-17       
+ [52] getPass_0.2-2       MASS_7.3-58.1       scales_1.2.1       
+ [55] gstat_2.0-9         vroom_1.5.7         hms_1.1.2          
+ [58] promises_1.2.0.1    parallel_4.2.1      yaml_2.3.6         
+ [61] gridExtra_2.3       sass_0.4.2          reshape_0.8.9      
+ [64] stringi_1.7.8       highr_0.9           maptools_1.1-4     
+ [67] e1071_1.7-11        boot_1.3-28         intervals_0.15.2   
+ [70] rlang_1.0.6         pkgconfig_2.0.3     evaluate_0.18      
+ [73] lattice_0.20-45     labeling_0.4.2      bit_4.0.4          
+ [76] processx_3.8.0      tidyselect_1.2.0    here_1.0.1         
+ [79] hydroTSM_0.6-0      plyr_1.8.7          magrittr_2.0.3     
+ [82] R6_2.5.1            generics_0.1.3      automap_1.0-16     
+ [85] DBI_1.1.3           pillar_1.8.1        haven_2.5.1        
+ [88] whisker_0.4         foreign_0.8-83      withr_2.5.0        
+ [91] xts_0.12.1          abind_1.4-5         spacetime_1.2-8    
+ [94] modelr_0.1.9        crayon_1.5.2        car_3.1-0          
+ [97] utf8_1.2.2          tzdb_0.3.0          rmarkdown_2.16     
+[100] grid_4.2.1          readxl_1.4.1        FNN_1.1.3.1        
+[103] callr_3.7.3         git2r_0.30.1        reprex_2.0.2       
+[106] digest_0.6.30       httpuv_1.6.6        munsell_0.5.0      
+[109] bslib_0.4.0        </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

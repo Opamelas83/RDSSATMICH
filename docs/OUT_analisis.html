@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Opamelas83" />
+
+<meta name="date" content="2022-01-21" />
+
+<title>OUT_analisis</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RDSSATMICH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">OUT_analisis</h1>
+<h4 class="author">Opamelas83</h4>
+<h4 class="date">2022-01-21</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-04-10
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>RDSSATMICH/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20211116code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20211116)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20211116code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20211116)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree6657f9ae839b01fc2a46c2feaf26285b724ecac2targetblank6657f9aa">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/6657f9ae839b01fc2a46c2feaf26285b724ecac2" target="_blank">6657f9a</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree6657f9ae839b01fc2a46c2feaf26285b724ecac2targetblank6657f9aa"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/6657f9ae839b01fc2a46c2feaf26285b724ecac2" target="_blank">6657f9a</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    CUL_files/.DS_Store
+    Ignored:    Cassava/.DS_Store
+    Ignored:    Cassava/Evaluate.OUT
+    Ignored:    Cassava/FreshWt.OUT
+    Ignored:    Cassava/INFO.OUT
+    Ignored:    Cassava/Leaves.OUT
+    Ignored:    Cassava/Measured.OUT
+    Ignored:    Cassava/MgmtEvent.OUT
+    Ignored:    Cassava/MgmtOps.OUT
+    Ignored:    Cassava/Mulch.OUT
+    Ignored:    Cassava/Overview.OUT
+    Ignored:    Cassava/PlantGr2.OUT
+    Ignored:    Cassava/PlantGrf.OUT
+    Ignored:    Cassava/PlantGro.OUT
+    Ignored:    Cassava/Plantsum.OUT
+    Ignored:    Cassava/SoilCBal.OUT
+    Ignored:    Cassava/SoilCBalSum.OUT
+    Ignored:    Cassava/SoilOrg.OUT
+    Ignored:    Cassava/SoilTemp.OUT
+    Ignored:    Cassava/SoilWat.OUT
+    Ignored:    Cassava/SoilWatBal.OUT
+    Ignored:    Cassava/Summary.OUT
+    Ignored:    Cassava/Tiers.OUT
+    Ignored:    Cassava/WARNING.OUT
+    Ignored:    Cassava/Weather.OUT
+    Ignored:    Evaluate.OUT
+    Ignored:    FreshWt.OUT
+    Ignored:    INFO.OUT
+    Ignored:    Leaves.OUT
+    Ignored:    Measured.OUT
+    Ignored:    MgmtEvent.OUT
+    Ignored:    MgmtOps.OUT
+    Ignored:    Mulch.OUT
+    Ignored:    Needhelp.R
+    Ignored:    OVERVIEW.OUT
+    Ignored:    PlantGr2.OUT
+    Ignored:    PlantGrf.OUT
+    Ignored:    PlantGro.OUT
+    Ignored:    Plantsum.OUT
+    Ignored:    Result/.DS_Store
+    Ignored:    Result/PlotGLUE/
+    Ignored:    Result/PlotLocat_GLUEHWAM/.DS_Store
+    Ignored:    SoilCBal.OUT
+    Ignored:    SoilCBalSum.OUT
+    Ignored:    SoilOrg.OUT
+    Ignored:    SoilTemp.OUT
+    Ignored:    SoilWat.OUT
+    Ignored:    SoilWatBal.OUT
+    Ignored:    Summary.OUT
+    Ignored:    Tiers.OUT
+    Ignored:    WARNING.OUT
+    Ignored:    Weather.OUT
+    Ignored:    Weather/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/CSfiles/.DS_Store
+    Ignored:    data/DSSATtempfile/.DS_Store
+    Ignored:    data/IITA2021_CABASE/.DS_Store
+    Ignored:    data/IITA2021_Mich/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/D21J/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/MichelData/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_A/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_B/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/Area/.DS_Store
+    Ignored:    data/WEATHERdata/.DS_Store
+
+Unstaged changes:
+    Modified:   ET.OUT
+    Modified:   data/CSfiles/UYAB1901.CSA
+    Modified:   data/CSfiles/UYAB1901.CST
+    Modified:   data/CSfiles/UYAG1701.CSA
+    Modified:   data/CSfiles/UYAG1701.CST
+    Modified:   data/CSfiles/UYAG1801.CSA
+    Modified:   data/CSfiles/UYAG1801.CST
+    Modified:   data/CSfiles/UYAG1901.CSA
+    Modified:   data/CSfiles/UYAG1901.CST
+    Modified:   data/CSfiles/UYIB1701.CSA
+    Modified:   data/CSfiles/UYIB1701.CST
+    Modified:   data/CSfiles/UYIB1801.CSA
+    Modified:   data/CSfiles/UYIB1801.CST
+    Modified:   data/CSfiles/UYIB1901.CSA
+    Modified:   data/CSfiles/UYIB1901.CST
+    Modified:   data/CSfiles/UYIB2001.CSA
+    Modified:   data/CSfiles/UYIB2001.CST
+    Modified:   data/CSfiles/UYIK1701.CSA
+    Modified:   data/CSfiles/UYIK1701.CST
+    Modified:   data/CSfiles/UYIK1801.CSA
+    Modified:   data/CSfiles/UYIK1801.CST
+    Modified:   data/CSfiles/UYIK1901.CSA
+    Modified:   data/CSfiles/UYIK1901.CST
+    Modified:   data/CSfiles/UYKA1801.CSA
+    Modified:   data/CSfiles/UYKA1801.CST
+    Modified:   data/CSfiles/UYMO1701.CSA
+    Modified:   data/CSfiles/UYMO1701.CST
+    Modified:   data/CSfiles/UYMO1801.CSA
+    Modified:   data/CSfiles/UYMO1801.CST
+    Modified:   data/CSfiles/UYMO1901.CSA
+    Modified:   data/CSfiles/UYMO1901.CST
+    Modified:   data/CSfiles/UYON1801.CSA
+    Modified:   data/CSfiles/UYON1801.CST
+    Modified:   data/CSfiles/UYON1901.CSA
+    Modified:   data/CSfiles/UYON1901.CST
+    Modified:   data/CSfiles/UYOT1801.CSA
+    Modified:   data/CSfiles/UYOT1801.CST
+    Modified:   data/CSfiles/UYUB1901.CSA
+    Modified:   data/CSfiles/UYUB1901.CST
+    Modified:   data/CSfiles/UYUM1801.CSA
+    Modified:   data/CSfiles/UYUM1801.CST
+    Modified:   data/CSfiles/UYZA1901.CSA
+    Modified:   data/CSfiles/UYZA1901.CST
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/OUT_analisis.Rmd</code>) and HTML
+(<code>docs/OUT_analisis.html</code>) files. If you’ve configured a
+remote Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/5a6fcbcd1eed6a82d0b69eb37e6951a56ae67aec/analysis/OUT_analisis.Rmd" target="_blank">5a6fcbc</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/9333df11b7f314e955db89ce250e068adcb46784/analysis/OUT_analisis.Rmd" target="_blank">9333df1</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial project
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>Make a list of file for connect treatment number from evaluate out
+file to clone name from csx file</p>
+<pre class="r"><code>library(&quot;data.table&quot;)
+library(&quot;tidyverse&quot;)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.2      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::between()   masks data.table::between()
+✖ dplyr::filter()    masks stats::filter()
+✖ dplyr::first()     masks data.table::first()
+✖ dplyr::lag()       masks stats::lag()
+✖ dplyr::last()      masks data.table::last()
+✖ purrr::transpose() masks data.table::transpose()</code></pre>
+<pre class="r"><code>library(&quot;hydroGOF&quot;)</code></pre>
+<pre><code>Loading required package: zoo
+
+Attaching package: &#39;zoo&#39;
+
+The following objects are masked from &#39;package:base&#39;:
+
+    as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(&quot;DSSAT&quot;)</code></pre>
+<pre><code>
+When using the &#39;DSSAT&#39; package for publications please cite all of the
+following:
+
+  Alderman, P.D. 2021. DSSAT: A Comprehensive R Interface for the DSSAT
+  Cropping Systems Model. R package version 0.0.6.
+  https://CRAN.R-project.org/package=DSSAT.
+
+  Alderman, P.D. 2020. &quot;A Comprehensive R Interface for the DSSAT
+  Cropping Systems Model.&quot; Computers and Electronics in Agriculture
+  172: 105325. DOI: 10.1016/j.compag.2020.105325. URL:
+  https://www.sciencedirect.com/science/article/pii/S0168169919323075.
+
+  Jones, J.W., G. Hoogenboom, C.H. Porter, K.J. Boote, W.D. Batchelor,
+  L.A. Hunt, P.W. Wilkens, U. Singh, A.J. Gijsman, and J.T. Ritchie.
+  2003. &quot;The DSSAT Cropping System Model.&quot; European Journal of Agronomy
+  18 (3-4): 235-265.
+
+  Hoogenboom, G., C.H. Porter, K.J. Boote, V. Shelia, P.W. Wilkens, U.
+  Singh, J.W. White, S. Asseng, J.I. Lizaso, L.P. Moreno, W. Pavan, R.
+  Ogoshi, L.A. Hunt, G.Y. Tsuji, and J.W. Jones. 2019. &quot;The DSSAT Crop
+  Modeling Ecosystem.&quot; In: Advances in Crop Modeling for a Sustainable
+  Agriculture, edited by Kenneth J Boote, 173–216. Cambridge, United
+  Kingdom: Burleigh Dodds Science Publishing.
+
+  Hoogenboom, G., C.H. Porter, V. Shelia, K.J. Boote, U. Singh, J.W.
+  White, W. Pavan, F.A.A. Oliveira, L.P. Moreno-Cadena, J.I. Lizaso, S.
+  Asseng, D.N.L. Pequeno, B.A. Kimball, P.D. Alderman, K.R. Thorp, M.R.
+  Jones, S.V. Cuadra, M.S. Vianna, F.J. Villalobos, T.B. Ferreira, J.
+  Koo, L.A. Hunt, and J.W. Jones. &lt;YEAR&gt;. Decision Support System for
+  Agrotechnology Transfer (DSSAT) Version &lt;VERSION&gt;. Gainesville,
+  Florida, USA: DSSAT Foundation. https://DSSAT.net.
+
+For BibTeX entries use toBibtex(citation(&quot;DSSAT&quot;))
+
+A DSSAT-CSM executable was found here:
+
+  /Users/mo367/Desktop/Analy_project/RDSSATMICH/dscsm048
+
+If this is not the correct executable, please use
+
+  options(DSSAT.CSM=&quot;//path/to/executable&quot;)
+
+ to set the proper location and file name for DSSAT-CSM.</code></pre>
+<pre class="r"><code>library(corrplot)</code></pre>
+<pre><code>corrplot 0.92 loaded</code></pre>
+<pre class="r"><code>TralList &lt;- dir()[dir()%like%&quot;.CSX&quot;]</code></pre>
+<pre class="r"><code>  for(x in TralList){
+      Tral &lt;- read_lines(x)
+      strtTrt &lt;- grep(pattern = &quot;*TREATMENTS&quot;, x = Tral, fixed=T)+2
+      endTrt &lt;- grep(pattern = &quot;*CULTIVARS&quot;, x = Tral, fixed=T)-2
+      Tral &lt;- Tral[strtTrt:endTrt]
+      Tral &lt;- substr(Tral, start = 10, stop = 37)
+      write.table(Tral, &quot;test.txt&quot;, quote = F, col.names = F, row.names = F)
+      Tral &lt;- read.table(&quot;test.txt&quot;, header =F)
+      colnames(Tral) &lt;- c(&quot;Clone&quot;, &quot;TRNO&quot;)
+    
+    MYYY &lt;- here::here(&quot;data&quot;, &quot;ClonTRNO&quot;, paste0(substr(x, 1,8), &quot;.csv&quot;))
+    write.csv(x = Tral, file = MYYY, row.names = F)
+}</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYAB1901.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAB1901 &lt;- OUT1 %&gt;% dplyr::select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYAB1901.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYAB1901 &lt;- left_join(Gernam, OUT_UYAB1901)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYAG1701.CSX&quot;, trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1701 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYAG1701.csv&quot;)</code></pre>
+<pre><code>Rows: 36 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYAG1701 &lt;- left_join(Gernam, OUT_UYAG1701)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYAG1801.CSX&quot;, trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYAG1801.csv&quot;)</code></pre>
+<pre><code>Rows: 36 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYAG1801 &lt;- left_join(Gernam, OUT_UYAG1801)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYAG1901.CSX&quot;, trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYAG1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYAG1901.csv&quot;)</code></pre>
+<pre><code>Rows: 36 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYAG1901 &lt;- left_join(Gernam, OUT_UYAG1901)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYIB1701.CSX&quot;, trtno = 1:33)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1701 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIB1701.csv&quot;)</code></pre>
+<pre><code>Rows: 33 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYIB1701 &lt;- left_join(Gernam, OUT_UYIB1701)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYIB1801.CSX&quot;, trtno = 1:57)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIB1801.csv&quot;)</code></pre>
+<pre><code>Rows: 57 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYIB1801 &lt;- left_join(Gernam, OUT_UYIB1801)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYIB1901.CSX&quot;, trtno = 1:66)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIB1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIB1901.csv&quot;)</code></pre>
+<pre><code>Rows: 66 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYIB1901 &lt;- left_join(Gernam, OUT_UYIB1901)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>#write_dssbatch(&quot;UYIB2001.CSX&quot;, trtno = 1:36)
+#run_dssat(suppress_output = TRUE)
+#OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+ #                             col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYIB2001 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIB2001.csv&quot;)
+#DUYIB1901 &lt;- left_join(Gernam, OUT_UYIB2001)</code></pre>
+<pre class="r"><code>#write_dssbatch(&quot;UYIB2001.CSX&quot;, trtno = 1:67)
+#run_dssat(suppress_output = TRUE)
+#OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+  #                             col_names = NULL, 
+  #                           left_justified = NULL, 
+   #           read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYIB2001 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIB2001.csv&quot;)
+#DUYIB2001 &lt;- left_join(Gernam, OUT_UYIB2001)</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYIK1701.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1701 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIK1701.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYIK1701 &lt;- left_join(Gernam, OUT_UYIK1701)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYIK1801.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIK1801.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYIK1801 &lt;- left_join(Gernam, OUT_UYIK1801)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYIK1901.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYIK1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYIK1901.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYIK1901 &lt;- left_join(Gernam, OUT_UYIK1901)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>#write_dssbatch(&quot;UYKA1801.CSX&quot;, trtno = 1:61)
+#run_dssat(suppress_output = TRUE)
+#OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYKA1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYKA1801.csv&quot;)
+#DUYKA1801 &lt;- left_join(Gernam, OUT_UYKA1801)</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYMO1701.CSX&quot;, trtno = 1:63)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1701 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYMO1701.csv&quot;)</code></pre>
+<pre><code>Rows: 63 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYMO1701 &lt;- left_join(Gernam, OUT_UYMO1701)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYMO1801.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYMO1801.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYMO1801 &lt;- left_join(Gernam, OUT_UYMO1801)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYMO1901.CSX&quot;, trtno = 1:36)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYMO1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYMO1901.csv&quot;)</code></pre>
+<pre><code>Rows: 36 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYMO1901 &lt;- left_join(Gernam, OUT_UYMO1901)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYON1801.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                              col_names = NULL, 
+                            left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYON1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYON1801.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYON1801 &lt;- left_join(Gernam, OUT_UYON1801)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>#write_dssbatch(&quot;UYON1901.CSX&quot;, trtno = 1:64)
+#run_dssat(suppress_output = TRUE)
+#OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                            #   col_names = NULL, 
+                             #left_justified = NULL, 
+              #read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYON1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYON1901.csv&quot;)
+#DUYON1901 &lt;- left_join(Gernam, OUT_UYON1901)</code></pre>
+<pre class="r"><code>#write_dssbatch(&quot;UYOT1801.CSX&quot;, trtno = 1:55)
+#run_dssat(suppress_output = TRUE)
+#OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+ #                              col_names = NULL, 
+ #                            left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYOT1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYOT1801.csv&quot;)
+#DUYOT1801 &lt;- left_join(Gernam, OUT_UYOT1801)</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYUB1901.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYUB1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYUB1901.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYUB1901 &lt;- left_join(Gernam, OUT_UYUB1901)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>write_dssbatch(&quot;UYUM1801.CSX&quot;, trtno = 1:67)
+run_dssat(suppress_output = TRUE)
+OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+                               col_names = NULL, 
+                             left_justified = NULL, 
+              read_only = NULL,  store_v_fmt = FALSE)
+OUT_UYUM1801 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYUM1801.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (1): TRNO
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DUYUM1801 &lt;- left_join(Gernam, OUT_UYUM1801)</code></pre>
+<pre><code>Joining, by = &quot;TRNO&quot;</code></pre>
+<pre class="r"><code>#write_dssbatch(&quot;UYZA1901.CSX&quot;, trtno = 1:4)
+#run_dssat(suppress_output = TRUE)
+#OUT1 &lt;- read_output((here::here(&quot;Evaluate.OUT&quot;)), col_types = NULL, 
+ #                              col_names = NULL, 
+  #                           left_justified = NULL, 
+  #            read_only = NULL,  store_v_fmt = FALSE)
+#OUT_UYZA1901 &lt;- OUT1 %&gt;% select(EXCODE, TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM)
+
+#Gernam &lt;- read_csv(&quot;data/ClonTRNO/UYZA1901.csv&quot;)
+#DUYZA1901 &lt;- left_join(Gernam, OUT_UYZA1901)</code></pre>
+<p>##After GLUE</p>
+<pre class="r"><code>GLUEVAL &lt;- bind_rows(DUYAB1901, DUYAG1701, DUYAG1801, DUYAG1901, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1701, DUYIK1801, DUYIK1901, DUYMO1701, DUYMO1801, DUYMO1901, DUYON1801,  DUYUB1901, DUYUM1801,  .id = &quot;source&quot;) %&gt;% ####DUYAB1901, DUYAG1701, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1901, DUYMO1801, DUYUM1801, DUYZA1901, DUYKA1801, DUYOT1801,
+       mutate(HWAMMS = HWAMM - HWAMS,
+              CWAMMS = CWAMM - CWAMS,
+              LAIXMS = LAIXM - LAIXS) # %&gt;% filter(Clone LAI)
+Parset &lt;- GLUEVAL %&gt;% group_by(Clone) %&gt;%
+                 summarise(HWAMMSm = mean(HWAMMS, na.rm = TRUE),
+                           CWAMMSm = mean(CWAMMS, na.rm = TRUE) ,
+                           LAIXMSm = mean(LAIXMS, na.rm = TRUE))
+#cut(Parset$HWAMMSm, breaks = 5)
+#colnames()
+colnames(GLUEVAL)</code></pre>
+<pre><code> [1] &quot;source&quot; &quot;Clone&quot;  &quot;TRNO&quot;   &quot;EXCODE&quot; &quot;HWAMS&quot;  &quot;HWAMM&quot;  &quot;LAIXS&quot;  &quot;LAIXM&quot; 
+ [9] &quot;CWAMS&quot;  &quot;CWAMM&quot;  &quot;HWAMMS&quot; &quot;CWAMMS&quot; &quot;LAIXMS&quot;</code></pre>
+<pre class="r"><code>write.csv(GLUEVAL, &quot;data/GLUEHWAM_VALana.csv&quot;, quote = F, row.names = F) </code></pre>
+<pre class="r"><code>library(data.table)
+GLUEYIELD &lt;- read.csv(&quot;data/GLUEHWAM_VALana.csv&quot;) #EVALana2.csv
+GLUEYIELD$Location &lt;- GLUEYIELD$EXCODE
+GLUEYIELD$Location[grep(pattern = &quot;^UYAB&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;ABUJA&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYAG&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;AGO&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYIB&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;IBADAN&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYIK&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;IKENNE&quot;
+#GLUEYIELD$Location[grep(pattern = &quot;^UYKA&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;KANO&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYMO&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;MOKWA&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYON&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;ONNE&quot;
+#GLUEYIELD$Location[grep(pattern = &quot;^UYOT&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;OTOBI&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYUB&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;UBIAJA&quot;
+GLUEYIELD$Location[grep(pattern = &quot;^UYUM&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;UMUDIKE&quot;
+#GLUEYIELD$Location[grep(pattern = &quot;^UYZA&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;ZARIA&quot;
+
+GLUEYIELD$Year &lt;- GLUEYIELD$EXCODE
+#GLUEYIELD$Year[grep(pattern = &quot;*2001CS&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;2020&quot;
+GLUEYIELD$Year[grep(pattern = &quot;*1901CS&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;2019&quot;
+GLUEYIELD$Year[grep(pattern = &quot;*1801CS&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;2018&quot;
+GLUEYIELD$Year[grep(pattern = &quot;*1701CS&quot;, x = GLUEYIELD$EXCODE)] &lt;- &quot;2017&quot;</code></pre>
+<pre class="r"><code>GLUEYIELD1 &lt;- GLUEYIELD %&gt;% 
+  select(Clone, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM, LAIXS, Year, Location) %&gt;% 
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         CWAMM = CWAMM / 1000,
+        CWAMS = CWAMS / 1000)</code></pre>
+<pre class="r"><code>library(hydroGOF)
+cor(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>[1] 0.2011147</code></pre>
+<pre class="r"><code>rmse(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM)</code></pre>
+<pre><code>[1] 5.246404</code></pre>
+<pre class="r"><code>nrmse(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM, na.rm =TRUE)</code></pre>
+<pre><code>[1] 121</code></pre>
+<pre class="r"><code>##LAIX
+cor(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>[1] 0.591932</code></pre>
+<pre class="r"><code>rmse(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM)</code></pre>
+<pre><code>[1] 2.438215</code></pre>
+<pre class="r"><code>nrmse(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM, na.rm =TRUE)</code></pre>
+<pre><code>[1] 95.1</code></pre>
+<p>#plot Root dry weight each clone for all environnment/each
+environment for all clone</p>
+<pre class="r"><code>library(hydroGOF)
+GLUELAIXO &lt;- GLUEYIELD1 %&gt;%
+   #filter(!is.na(LAIXM)) %&gt;%
+   group_by(Clone) %&gt;% 
+  summarise(GLUELAIX.Cor = mean(LAIXM - LAIXS),
+                   GLUELAIX.rmse = hydroGOF::rmse(LAIXS, LAIXM, na.rm =TRUE),
+                   GLUELAIX.d = d(LAIXS, LAIXM, na.rm =TRUE))</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre><code>Warning in valindex.default(sim, obs): &#39;sim&#39; and &#39;obs&#39; are empty or they do not
+have any common pair of elements with data !!</code></pre>
+<pre><code>Warning in d.default(LAIXS, LAIXM, na.rm = TRUE): &#39;sum((abs(sim-Om)+abs(obs-
+Om))^2)=0&#39;, it is not possible to compute &#39;IoA&#39;</code></pre>
+<pre class="r"><code>## #each clone for all environnment
+GLUEResYIELD1 &lt;- GLUEYIELD1 %&gt;% dplyr::group_by(Clone) %&gt;%
+  dplyr::summarise(GLUEM.R = round(mean(HWAMM - HWAMS, na.rm =TRUE), 3),
+                   GLUET.M = round(mean(CWAMM - CWAMS, na.rm =TRUE), 3),
+                   GLUER.rmse = round(hydroGOF::rmse(HWAMS, HWAMM, na.rm =TRUE), 3),
+                   GLUET.rmse = round(rmse(CWAMS, CWAMM, na.rm =TRUE), 3),
+                   GLUET.Cor = round(cor(CWAMS, CWAMM, use = &quot;complete.obs&quot;), 3),
+                   GLUER.Cor = round(cor(HWAMS, HWAMM, use = &quot;complete.obs&quot;), 3),
+                   #GLUER.Rsq = rsq(lm(HWAMS ~ HWAMM)),
+                   #GLUER.nrmse = hydroGOF::nrmse(HWAMS, HWAMM, na.rm =TRUE),
+                   
+                   #GLUET.Cor = cor(CWAMS, CWAMM, use = &quot;complete.obs&quot;),
+                   GLUER.d = d(HWAMS, HWAMM, na.rm =TRUE),
+                   #GLUET.nrmse = nrmse(CWAMS, CWAMM, na.rm =TRUE),
+                   GLUET.d = d(CWAMS, CWAMM, na.rm =TRUE))
+
+write.csv(GLUEResYIELD1, &quot;Result/GLUErmse_cor.csv&quot;, quote = F, row.names = F)
+
+#each environment for all clones
+#GLUEResYIELD1 &lt;- GLUEYIELD1 %&gt;% dplyr::group_by(Location) %&gt;%
+#  dplyr::summarise(H.R^2 = (eq(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM), parse = TRUE),
+ #                  H.rmse = rmse(HWAMS, HWAMM),
+ #                  LAI.R^2 = (eq(GLUEYIELD1$LAIXS, GLUEYIELD1$LAIXM), parse = TRUE),
+  #                 LAI.rmse = rmse(LAIXS, LAIXM))
+                   
+
+#write.csv(GLUEResYIELD1, &quot;Result/GLUEHWAMrmse_cor.csv&quot;, quote = F, row.names = F)
+  
+#eq &lt;- function(x,y) {
+#  m &lt;- lm(y ~ x)
+#  as.character(
+ #   as.expression(
+#      substitute(italic(r)^2~&quot;=&quot;~r2,
+ #               list(r2 = format(summary(m)$r.squared, digits = 3)))
+ #   )
+ # )
+#}
+
+eqr &lt;- function(x,y) {
+  m &lt;- round(cor(x, y, use = &quot;complete.obs&quot;), 2)
+  
+}
+
+eqrmse &lt;- function(x,y) {
+  m &lt;- round(rmse(x, y), 1)
+  
+}
+
+eqd &lt;- function(x,y) {
+  m &lt;- round(d(x, y), 2)
+  
+}
+
+
+#MYIELD1 &lt;- lm(YIELD1$HWAMM ~ YIELD1$HWAMS)
+#summary(MYIELD1)
+
+ClonesID &lt;- unique(GLUEYIELD1$Clone) %&gt;% .[order(.)]
+
+for(i in 1:length(ClonesID)) {
+  FileName &lt;- paste(&quot;RegressionGLUE_&quot;, ClonesID[i], &quot;.jpeg&quot;, sep = &quot;&quot;)
+  data &lt;- GLUEYIELD1 %&gt;% filter(Clone == ClonesID[i])
+  
+  Fig &lt;- ggplot(data = data,aes(x = HWAMS, y = HWAMM)) +
+    geom_point(aes(color = Location)) +
+    geom_smooth(method = &quot;lm&quot;) + ggtitle(ClonesID[i]) +
+    xlab(expression(Simulated~Root~weight~(t~ha^{-1}))) +
+    ylab(Observed~Root~weight~(t~ha^{-1})) + 
+    geom_text(x = max(GLUEYIELD1$HWAMS, na.rm = TRUE) - 3.0*sd(GLUEYIELD1$HWAMS, na.rm = TRUE),
+            y = max(GLUEYIELD1$HWAMM, na.rm = TRUE) - 2.85*sd(GLUEYIELD1$HWAMM, na.rm = TRUE), size = 3.5, 
+            label = paste0(&quot;r = &quot;, eqr(data$HWAMM, data$HWAMS))) +
+  #paste0(&quot;r = &quot;, round(cor(GLUEYIELD1$HWAMS, GLUEYIELD1$HWAMM, use = &quot;complete.obs&quot;), 2))) +
+   geom_text(x = max(GLUEYIELD1$HWAMS, na.rm = TRUE) - 2.9*sd(GLUEYIELD1$HWAMS, na.rm = TRUE),
+            y = max(GLUEYIELD1$HWAMM, na.rm = TRUE) - 2.93*sd(GLUEYIELD1$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0(&quot;RMSE = &quot;, eqrmse(data$HWAMM, data$HWAMS))) +
+  geom_text(x = max(GLUEYIELD1$HWAMS, na.rm = TRUE) - 3.0*sd(GLUEYIELD1$HWAMS, na.rm = TRUE),
+            y = max(GLUEYIELD1$HWAMM, na.rm = TRUE) - 3*sd(GLUEYIELD1$HWAMM, na.rm = TRUE), size = 3.5,
+            label = paste0(&quot;d = &quot;, eqd(data$HWAMM, data$HWAMS))) +
+  
+  theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) 
+  
+    ggsave(plot = Fig, filename = FileName,width = 8, height = 6, units = &quot;in&quot;,  path = &quot;Result/PlotGLUEHWAM&quot;, device = &quot;jpeg&quot;, dpi = 350)
+
+}</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<p>##Before Glue estimation</p>
+<pre class="r"><code>EVAL &lt;- bind_rows(DUYAB1901, DUYAG1701, DUYAG1801, DUYAG1901, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1701, DUYIK1801, DUYIK1901, DUYMO1701, DUYMO1801, DUYMO1901, DUYON1801,  DUYUB1901, DUYUM1801,  .id = &quot;source&quot;) %&gt;% ####DUYAB1901, DUYAG1701, DUYIB1701, DUYIB1801, DUYIB1901, DUYIK1901, DUYMO1801, DUYUM1801, DUYZA1901, DUYKA1801, DUYOT1801,1
+#colnames()
+       mutate(HWAMMS = HWAMM - HWAMS,
+              CWAMMS = CWAMM - CWAMS,
+              LAIXMS = LAIXM - LAIXS)
+colnames(EVAL)</code></pre>
+<pre><code> [1] &quot;source&quot; &quot;Clone&quot;  &quot;TRNO&quot;   &quot;EXCODE&quot; &quot;HWAMS&quot;  &quot;HWAMM&quot;  &quot;LAIXS&quot;  &quot;LAIXM&quot; 
+ [9] &quot;CWAMS&quot;  &quot;CWAMM&quot;  &quot;HWAMMS&quot; &quot;CWAMMS&quot; &quot;LAIXMS&quot;</code></pre>
+<pre class="r"><code>write.csv(EVAL, &quot;data/EVALana.csv&quot;, quote = F, row.names = F) </code></pre>
+<pre class="r"><code>library(data.table)
+YIELD &lt;- read.csv(&quot;data/EVALana.csv&quot;)
+YIELD$Location &lt;- YIELD$EXCODE
+YIELD$Location[grep(pattern = &quot;^UYAB&quot;, x = YIELD$EXCODE)] &lt;- &quot;ABUJA&quot;
+YIELD$Location[grep(pattern = &quot;^UYAG&quot;, x = YIELD$EXCODE)] &lt;- &quot;AGO-OWO&quot;
+YIELD$Location[grep(pattern = &quot;^UYIB&quot;, x = YIELD$EXCODE)] &lt;- &quot;IBADAN&quot;
+YIELD$Location[grep(pattern = &quot;^UYIK&quot;, x = YIELD$EXCODE)] &lt;- &quot;IKENNE&quot;
+#YIELD$Location[grep(pattern = &quot;^UYKA&quot;, x = YIELD$EXCODE)] &lt;- &quot;KANO&quot;
+YIELD$Location[grep(pattern = &quot;^UYMO&quot;, x = YIELD$EXCODE)] &lt;- &quot;MOKWA&quot;
+YIELD$Location[grep(pattern = &quot;^UYON&quot;, x = YIELD$EXCODE)] &lt;- &quot;ONNE&quot;
+#YIELD$Location[grep(pattern = &quot;^UYOT&quot;, x = YIELD$EXCODE)] &lt;- &quot;OTOBI&quot;
+YIELD$Location[grep(pattern = &quot;^UYUB&quot;, x = YIELD$EXCODE)] &lt;- &quot;UBIAJA&quot;
+YIELD$Location[grep(pattern = &quot;^UYUM&quot;, x = YIELD$EXCODE)] &lt;- &quot;UMUDIKE&quot;
+#YIELD$Location[grep(pattern = &quot;^UYZA&quot;, x = YIELD$EXCODE)] &lt;- &quot;ZARIA&quot;
+
+YIELD$Year &lt;- YIELD$EXCODE
+#YIELD$Year[grep(pattern = &quot;*2001CS&quot;, x = YIELD$EXCODE)] &lt;- &quot;2020&quot;
+YIELD$Year[grep(pattern = &quot;*1901CS&quot;, x = YIELD$EXCODE)] &lt;- &quot;2019&quot;
+YIELD$Year[grep(pattern = &quot;*1801CS&quot;, x = YIELD$EXCODE)] &lt;- &quot;2018&quot;
+YIELD$Year[grep(pattern = &quot;*1701CS&quot;, x = YIELD$EXCODE)] &lt;- &quot;2017&quot;</code></pre>
+<pre class="r"><code>YIELD1 &lt;- YIELD %&gt;% 
+  select(Clone, HWAMM, HWAMS, CWAMM, CWAMS, LAIXM,LAIXS, Year, Location) %&gt;% 
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+         CWAMM = CWAMM / 1000,
+        CWAMS = CWAMS / 1000)</code></pre>
+<pre class="r"><code>cor(YIELD1$HWAMM, YIELD1$HWAMS, use = &quot;complete.obs&quot;)</code></pre>
+<pre><code>[1] 0.2011147</code></pre>
+<pre class="r"><code>ResYIELD1 &lt;- YIELD1 %&gt;% dplyr::group_by(Clone) %&gt;%
+  dplyr::summarise(M.R = round(mean(HWAMM - HWAMS, na.rm =TRUE), 3),
+                   T.M = round(mean(CWAMM - CWAMS, na.rm =TRUE), 3),
+                   R.rmse = round(hydroGOF::rmse(HWAMS, HWAMM, na.rm =TRUE), 3),
+                   T.rmse = round(rmse(CWAMS, CWAMM, na.rm =TRUE), 3),
+                   T.Cor = round(cor(CWAMS, CWAMM, use = &quot;complete.obs&quot;), 3),
+                   R.Cor = round(cor(HWAMS, HWAMM, use = &quot;complete.obs&quot;), 3),
+                   #R.Rsq = rsq(lm(HWAMS ~ HWAMM)),
+                   #R.nrmse = hydroGOF::nrmse(HWAMS, HWAMM, na.rm =TRUE),
+                   
+                   #T.Cor = cor(CWAMS, CWAMM, use = &quot;complete.obs&quot;),
+                   R.d = d(HWAMS, HWAMM, na.rm =TRUE),
+                   #T.nrmse = nrmse(CWAMS, CWAMM, na.rm =TRUE),
+                   T.d = d(CWAMS, CWAMM, na.rm =TRUE))
+
+write.csv(ResYIELD1, &quot;Result/rmse_cor.csv&quot;, quote = F, row.names = F)
+  
+#MYIELD1 &lt;- lm(YIELD1$HWAMM ~ YIELD1$HWAMS)
+#summary(MYIELD1)
+
+ClonesID &lt;- unique(YIELD1$Clone) %&gt;% .[order(.)]
+
+eq &lt;- function(x,y) {
+  m &lt;- lm(y ~ x)
+  as.character(
+    as.expression(
+      substitute(italic(r)^2~&quot;=&quot;~r2,
+                list(r2 = format(summary(m)$r.squared, digits = 3)))
+    )
+  )
+}
+
+for(i in 1:length(ClonesID)) {
+  FileName &lt;- paste(&quot;Regression_&quot;, ClonesID[i], &quot;.jpeg&quot;, sep = &quot;&quot;)
+  data &lt;- YIELD1 %&gt;% filter(Clone == ClonesID[i])
+  
+  Fig &lt;- ggplot(data = data,aes(x = HWAMM, y = HWAMS)) +
+    geom_point(aes(color = Location)) +
+    geom_smooth(method = &quot;lm&quot;) + ggtitle(ClonesID[i]) +
+    xlab(expression(Observed~Root~weight~(t~ha^{-1}))) + 
+    ylab(Simulated~Root~weight~(t~ha^{-1})) + 
+    geom_text(x = max(data$HWAMM, na.rm = TRUE) - 0.8*sd(data$HWAMM, na.rm = TRUE),
+              y = max(data$HWAMS, na.rm = TRUE) - 0.8*sd(data$HWAMS, na.rm = TRUE),
+              label = eq(data$HWAMM, data$HWAMS), parse = TRUE) +
+    theme_bw()
+  ggsave(plot = Fig, filename = FileName,
+         width = 8, height = 6, units = &quot;in&quot;, path = &quot;Result/Plot&quot;, device = &quot;jpeg&quot;, dpi = 350)
+
+  }</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 1 rows containing non-finite values (stat_smooth).
+Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre class="r"><code>Resut &lt;- read_csv(&quot;Result/rmse_cor.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (8): M.R, T.M, R.rmse, T.rmse, T.Cor, R.Cor, R.d, T.d
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>GLUEResut &lt;- read_csv(&quot;Result/GLUErmse_cor.csv&quot;)</code></pre>
+<pre><code>Rows: 67 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (8): GLUEM.R, GLUET.M, GLUER.rmse, GLUET.rmse, GLUET.Cor, GLUER.Cor, GLU...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>RESUT &lt;- left_join(Resut, GLUEResut) %&gt;%
+  mutate(R.Cor = round(R.Cor, digits = 2),
+         GLUER.Cor = round(GLUER.Cor, digits = 2),
+         #R.sq = round(R.sq, digits = 2),
+         #GLUER.Rsq = round(GLUER.Rsq, digits = 2),
+         R.rmse = round(R.rmse, digits = 2), 
+         GLUER.rmse = round(GLUER.rmse, digits = 2), 
+          # R.nrmse = round(R.nrmse, digits = 2), 
+         #GLUER.nrmse = round(GLUER.rmse, digits = 2), 
+         R.d = round(R.d, digits = 2), 
+         GLUER.d = round(GLUER.d, digits = 2), 
+           T.Cor = round(T.Cor, digits = 2),
+         GLUET.Cor = round(GLUET.Cor, digits = 2),
+         T.rmse = round(T.rmse, digits = 2), 
+         GLUET.rmse = round(GLUET.rmse, digits = 2), 
+           #T.nrmse = round(T.nrmse, digits = 2), 
+         #GLUET.nrmse = round(GLUET.rmse, digits = 2), 
+         T.d = round(T.d, digits = 2), 
+         GLUET.d = round(GLUET.d, digits = 2)) %&gt;%
+  relocate(R.Cor, GLUER.Cor, R.rmse, GLUER.rmse, 
+            R.d, GLUER.d, 
+           T.Cor, GLUET.Cor, T.rmse, GLUET.rmse, 
+            T.d, GLUET.d)# R.nrmse, GLUER.nrmse, T.nrmse, GLUET.nrmse,</code></pre>
+<pre><code>Joining, by = &quot;Clone&quot;</code></pre>
+<pre class="r"><code>write.csv(RESUT, &quot;Result/RESUT.csv&quot;, quote = F, row.names = F) </code></pre>
+<pre class="r"><code>YIELDP &lt;- YIELD %&gt;% 
+       filter(!is.na(HWAMM)) %&gt;%
+       dplyr::group_by(Clone) %&gt;%
+    summarise(RSMEROOT = rmse(HWAMS, HWAMM)) %&gt;%
+   mutate(RSMEROOT = round(RSMEROOT))
+      
+YIELD2 &lt;- YIELD %&gt;% 
+       dplyr::group_by(Clone) %&gt;%
+summarise(MeanROOT = mean(HWAMM, na.rm = TRUE)) %&gt;%
+  mutate(MeanROOT = round(MeanROOT))
+
+YIELDres &lt;- left_join(YIELD1,YIELD2)</code></pre>
+<pre><code>Joining, by = &quot;Clone&quot;</code></pre>
+<pre class="r"><code>write.csv(YIELDres, &quot;data/YIELDres.csv&quot;, quote = F, row.names = F)
+
+#YIELD5 &lt;- YIELD1 %&gt;% 
+ #     mutate(HWAMM = as.numeric(HWAMM),
+  #           HWAMS = as.numeric(HWAMS)) %&gt;% 
+ #           select(Clone, HWAMM,HWAMS) %&gt;%
+             #filter(Clone == &quot;TMEB419&quot;) #%&gt;%
+  #        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+#YIELD5 &lt;- YIELD5  %&gt;% column_to_rownames(var = &quot;Clone&quot;)
+#AnalMYFI2[is.na(AnalMYFI2)] = 0
+#cor(YIELD5, method = &quot;pearson&quot;)
+  
+   #filter (Clone == &quot;TMEB419&quot;) %&gt;%
+  #cor(HWAMM, HWAMS)) #%&gt;%
+   #mutate(RSMEROOT = round(RSMEROOT))
+
+#CLroot &lt;- YIELD1 %&gt;% 
+#  group_by(Clone, Location, Year) %&gt;%
+ # summarise(RSMEROOT = rmse(actual = HWAMM, predicted = HWAMS)) 
+#CLtop &lt;- YIELD1 %&gt;% 
+ # group_by(Clone, Location, Year) %&gt;%
+  #summarise(RSMETOP = rmse(actual = CWAMM, predicted = CWAMS))
+
+#YIELD1 %&gt;% filter(EXCODE %in% &quot;UYAB*&quot;)
+#YIELD1[grep(pattern = &quot;UYAB*&quot;, x = YIELD1$EXCODE), &quot;EXCODE&quot;]
+
+#dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+#rmse(YIELD1$HWAMM, YIELD1$HWAMS)
+ # mutate(Year = ,
+        # HWAMS = as.numeric(is.na(HWAMS)))
+#sqrt(mean((YIELD$HWAMM - YIELD$HWAMS)^2, na.rm = TRUE))
+#mean(YIELD$HWAMM, na.rm = TRUE)
+#rmse(YIELD$HWAMM, YIELD$HWAMS)</code></pre>
+<p>#For environment checking</p>
+<pre class="r"><code>GLUEENV &lt;- GLUEYIELD %&gt;% select(Clone, HWAMM, HWAMS, EXCODE, Year, Location) %&gt;% 
+  mutate(HWAMM = HWAMM / 1000,
+         HWAMS = HWAMS / 1000,
+        Envi = paste0(Location, 20, str_sub(EXCODE, 5, 6)))
+
+GLUEENVID &lt;- unique(GLUEENV$Envi) %&gt;% .[order(.)]
+
+eq &lt;- function(x,y) {
+  m &lt;- lm(y ~ x)
+  as.character(
+    as.expression(
+      substitute(italic(r)^2~&quot;=&quot;~r2,
+                list(r2 = format(summary(m)$r.squared, digits = 3)))
+    )
+  )
+}
+
+for(i in 1:length(GLUEENVID)) {
+  FileName &lt;- paste(&quot;RegressionGLUE_&quot;, GLUEENVID[i], &quot;.jpeg&quot;, sep = &quot;&quot;)
+  dataENV &lt;- GLUEENV %&gt;% filter(Envi == GLUEENVID[i])
+  
+  Fig &lt;- ggplot(data = dataENV,aes(x = HWAMM, y = HWAMS)) +
+    geom_point(aes()) +
+    geom_smooth(method = &quot;lm&quot;) + ggtitle(GLUEENVID[i]) +
+    xlab(expression(Observed~Root~weight~(t~ha^{-1}))) + 
+    ylab(Simulated~Root~weight~(t~ha^{-1})) + 
+    geom_text(x = max(data$HWAMM, na.rm = TRUE) - 0.8*sd(data$HWAMM, na.rm = TRUE),
+              y = max(data$HWAMS, na.rm = TRUE) - 0.8*sd(data$HWAMS, na.rm = TRUE),
+              label = eq(data$HWAMM, data$HWAMS), parse = TRUE) +
+    theme_bw()
+  ggsave(plot = Fig, filename = FileName,
+         width = 8, height = 6, units = &quot;in&quot;, path = &quot;Result/PlotLocat_GLUEHWAM&quot;, device = &quot;jpeg&quot;, dpi = 350)
+}</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<pre><code>Warning: Removed 31 rows containing non-finite values (stat_smooth).</code></pre>
+<pre><code>Warning: Removed 31 rows containing missing values (geom_point).</code></pre>
+<pre><code>`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;
+`geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] corrplot_0.92     DSSAT_0.0.6       hydroGOF_0.4-0    zoo_1.8-11       
+ [5] forcats_0.5.2     stringr_1.4.1     dplyr_1.0.10      purrr_0.3.5      
+ [9] readr_2.1.2       tidyr_1.2.1       tibble_3.1.8      ggplot2_3.3.6    
+[13] tidyverse_1.3.2   data.table_1.14.2 workflowr_1.7.0  
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-159        fs_1.5.2            xts_0.12.1         
+ [4] bit64_4.0.5         lubridate_1.8.0     httr_1.4.4         
+ [7] rprojroot_2.0.3     tools_4.2.1         backports_1.4.1    
+[10] bslib_0.4.0         utf8_1.2.2          R6_2.5.1           
+[13] mgcv_1.8-40         DBI_1.1.3           colorspace_2.0-3   
+[16] withr_2.5.0         sp_1.5-0            tidyselect_1.2.0   
+[19] processx_3.8.0      hydroTSM_0.6-0      bit_4.0.4          
+[22] compiler_4.2.1      git2r_0.30.1        automap_1.0-16     
+[25] textshaping_0.3.6   cli_3.4.1           rvest_1.0.3        
+[28] gstat_2.0-9         xml2_1.3.3          labeling_0.4.2     
+[31] sass_0.4.2          scales_1.2.1        callr_3.7.3        
+[34] proxy_0.4-27        systemfonts_1.0.4   digest_0.6.30      
+[37] foreign_0.8-83      rmarkdown_2.16      pkgconfig_2.0.3    
+[40] htmltools_0.5.3     dbplyr_2.2.1        fastmap_1.1.0      
+[43] rlang_1.0.6         readxl_1.4.1        rstudioapi_0.14    
+[46] FNN_1.1.3.1         farver_2.1.1        jquerylib_0.1.4    
+[49] generics_0.1.3      jsonlite_1.8.3      vroom_1.5.7        
+[52] googlesheets4_1.0.1 magrittr_2.0.3      Matrix_1.5-1       
+[55] Rcpp_1.0.9          munsell_0.5.0       fansi_1.0.3        
+[58] lifecycle_1.0.3     stringi_1.7.8       whisker_0.4        
+[61] yaml_2.3.6          plyr_1.8.7          grid_4.2.1         
+[64] maptools_1.1-4      parallel_4.2.1      promises_1.2.0.1   
+[67] crayon_1.5.2        lattice_0.20-45     splines_4.2.1      
+[70] haven_2.5.1         hms_1.1.2           knitr_1.40         
+[73] ps_1.7.2            pillar_1.8.1        spacetime_1.2-8    
+[76] reprex_2.0.2        glue_1.6.2          evaluate_0.18      
+[79] getPass_0.2-2       modelr_0.1.9        vctrs_0.5.0        
+[82] tzdb_0.3.0          httpuv_1.6.6        cellranger_1.1.0   
+[85] gtable_0.3.1        reshape_0.8.9       assertthat_0.2.1   
+[88] cachem_1.0.6        xfun_0.34           broom_1.0.1        
+[91] e1071_1.7-11        later_1.3.0         ragg_1.2.4         
+[94] class_7.3-20        googledrive_2.0.0   gargle_1.2.1       
+[97] intervals_0.15.2    ellipsis_0.3.2      here_1.0.1         </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

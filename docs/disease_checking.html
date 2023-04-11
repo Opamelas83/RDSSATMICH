@@ -9,9 +9,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
+<meta name="author" content="Opamelas83" />
 
+<meta name="date" content="2022-02-11" />
 
-<title>Home</title>
+<title>disease_checking</title>
 
 <script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,6 +31,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -236,6 +241,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -243,6 +311,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -280,7 +358,9 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">disease_checking</h1>
+<h4 class="author">Opamelas83</h4>
+<h4 class="date">2022-02-11</h4>
 
 </div>
 
@@ -313,7 +393,7 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 2
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span> 0
 </p>
@@ -350,6 +430,90 @@ class="panel-collapse collapse">
 <p>Great! Since the R Markdown file has been committed to the Git
 repository, you know the exact version of the code that produced these
 results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20211116code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20211116)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20211116code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20211116)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
@@ -521,10 +685,11 @@ have uncommitted changes.
 
 <p>
 These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
-(<code>docs/index.html</code>) files. If you’ve configured a remote Git
-repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
-in the table below to view the files as they were in that past version.
+made to the R Markdown (<code>analysis/disease_checking.Rmd</code>) and
+HTML (<code>docs/disease_checking.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
 <div class="table-responsive">
 <table class="table table-condensed table-hover">
@@ -550,44 +715,10 @@ Message
 <tbody>
 <tr>
 <td>
-html
+Rmd
 </td>
 <td>
-<a href="https://rawcdn.githack.com/Opamelas83/RDSSATMICH/6657f9ae839b01fc2a46c2feaf26285b724ecac2/docs/index.html" target="_blank">6657f9a</a>
-</td>
-<td>
-Michelle Okoma
-</td>
-<td>
-2023-04-10
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/Opamelas83/RDSSATMICH/db8509deb3d75ee869d994a00ea3051cde49f752/docs/index.html" target="_blank">db8509d</a>
-</td>
-<td>
-Michelle Okoma
-</td>
-<td>
-2023-04-10
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/Opamelas83/RDSSATMICH/f50ae1d37427115c2493ff8e2732211681f6fb75/docs/index.html" target="_blank">f50ae1d</a>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/f50ae1d37427115c2493ff8e2732211681f6fb75/analysis/disease_checking.Rmd" target="_blank">f50ae1d</a>
 </td>
 <td>
 Michelle Okoma
@@ -604,7 +735,7 @@ Initial commit
 Rmd
 </td>
 <td>
-<a href="https://github.com/Opamelas83/RDSSATMICH/blob/9333df11b7f314e955db89ce250e068adcb46784/analysis/index.Rmd" target="_blank">9333df1</a>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/9333df11b7f314e955db89ce250e068adcb46784/analysis/disease_checking.Rmd" target="_blank">9333df1</a>
 </td>
 <td>
 Michelle Okoma
@@ -623,7 +754,199 @@ Initial project
 </div>
 </div>
 </div>
-<p>Welcome to my research website.</p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.2      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(hydroGOF)</code></pre>
+<pre><code>Loading required package: zoo
+
+Attaching package: &#39;zoo&#39;
+
+The following objects are masked from &#39;package:base&#39;:
+
+    as.Date, as.Date.numeric</code></pre>
+<pre class="r"><code>library(corrplot)</code></pre>
+<pre><code>corrplot 0.92 loaded</code></pre>
+<pre class="r"><code>library(zoo)
+library(rsq)
+
+DIS &lt;- read_csv(&quot;data/IITA2021_CABASE/UYT_GXE_pheno.csv&quot;)</code></pre>
+<pre><code>Rows: 3685 Columns: 94
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (16): programName, programDescription, studyName, studyDescription, stud...
+dbl (77): studyYear, programDbId, studyDbId, plotWidth, plotLength, fieldSiz...
+lgl  (1): plantNumber
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>DISE &lt;- DIS %&gt;% rename(Year = studyYear,
+               Clone = germplasmName,
+               Location = locationName,
+               CB_3Min = &quot;cassava bacterial blight incidence 3-month evaluation|CO_334:0000178&quot;,
+               CB_3Msev = &quot;cassava bacterial blight severity 3-month evaluation|CO_334:0000175&quot;,
+               CGM_1sev = &quot;cassava green mite severity first evaluation|CO_334:0000189&quot;,
+               CGM_2sev = &quot;cassava green mite severity second evaluation|CO_334:0000190&quot;,
+               CMO_1Min = &quot;cassava mosaic disease incidence 1-month evaluation|CO_334:0000195&quot;,
+               CMO_3Min = &quot;cassava mosaic disease incidence 3-month evaluation|CO_334:0000196&quot;,
+               CMO_1Msev = &quot;cassava mosaic disease severity 1-month evaluation|CO_334:0000191&quot;,
+               CMO_3Msev = &quot;cassava mosaic disease severity 3-month evaluation|CO_334:0000192&quot;,
+               HWAM = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+               CWAM = &quot;fresh shoot weight measurement in kg per plot|CO_334:0000016&quot;) %&gt;%
+            select(Year, Clone, Location, CB_3Min, CB_3Msev, CGM_1sev, CGM_2sev, CMO_1Min, CMO_3Min,                         CMO_1Msev, CMO_3Msev, HWAM, CWAM)</code></pre>
+<pre class="r"><code>DISEA &lt;- DISE %&gt;% filter(!is.na(CMO_3Msev)) %&gt;%
+                  dplyr::group_by(Location) %&gt;%
+     dplyr::summarise(RCB_3Min.Cor = cor(CB_3Min, HWAM, use = &quot;complete.obs&quot;),
+                   RCB_3Msev.Cor = cor(CB_3Msev, HWAM, use = &quot;complete.obs&quot;),
+                   RCGM_1sev.Cor = cor(!is.na(CGM_1sev), HWAM, use = &quot;complete.obs&quot;),
+                   RCGM_2sev.Cor = cor(!is.na(CGM_2sev), HWAM, use = &quot;complete.obs&quot;),
+                   RCMO_1Min.Cor = cor(CMO_1Min, HWAM, use = &quot;complete.obs&quot;),
+                   RCMO_3Min.Cor = cor(CMO_3Min, HWAM,  use = &quot;complete.obs&quot;),
+                   RCMO_1Msev.Cor = cor(!is.na(CMO_1Msev), HWAM, use = &quot;complete.obs&quot;),
+                   RCMO_3Msev.Cor = cor(CMO_3Msev, HWAM, use = &quot;complete.obs&quot;),
+                   RCB_3Min.Cor = cor(CB_3Min, CWAM, use = &quot;complete.obs&quot;),
+                   RCB_3Msev.Cor = cor(CB_3Msev, CWAM, use = &quot;complete.obs&quot;),
+                   RCGM_1sev.Cor = cor(!is.na(CGM_1sev), CWAM, use = &quot;complete.obs&quot;),
+                   RCGM_2sev.Cor = cor(!is.na(CGM_2sev), CWAM, use = &quot;complete.obs&quot;),
+                   RCMO_1Min.Cor = cor(CMO_1Min, CWAM, use = &quot;complete.obs&quot;),
+                   RCMO_3Min.Cor = cor(CMO_3Min, CWAM, use = &quot;complete.obs&quot;),
+                   RCMO_1Msev.Cor = cor(CMO_1Msev, CWAM, use = &quot;complete.obs&quot;),
+                   RCMO_3Msev.Cor = cor(CMO_3Msev, CWAM, use = &quot;complete.obs&quot;))</code></pre>
+<pre><code>Warning in cor(!is.na(CGM_1sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero</code></pre>
+<pre><code>Warning in cor(!is.na(CGM_2sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_2sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_2sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_2sev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero</code></pre>
+<pre><code>Warning in cor(!is.na(CMO_1Msev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CMO_1Msev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CMO_1Msev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CMO_1Msev), HWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero</code></pre>
+<pre><code>Warning in cor(!is.na(CGM_1sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_1sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero</code></pre>
+<pre><code>Warning in cor(!is.na(CGM_2sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_2sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_2sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero
+
+Warning in cor(!is.na(CGM_2sev), CWAM, use = &quot;complete.obs&quot;): the standard
+deviation is zero</code></pre>
+<pre class="r"><code>write.csv(DISEA, &quot;Result/LocaDISEA_cor.csv&quot;, quote = F, row.names = F)</code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] rsq_2.5         corrplot_0.92   hydroGOF_0.4-0  zoo_1.8-11     
+ [5] forcats_0.5.2   stringr_1.4.1   dplyr_1.0.10    purrr_0.3.5    
+ [9] readr_2.1.2     tidyr_1.2.1     tibble_3.1.8    ggplot2_3.3.6  
+[13] tidyverse_1.3.2 workflowr_1.7.0
+
+loaded via a namespace (and not attached):
+ [1] nlme_3.1-159        fs_1.5.2            xts_0.12.1         
+ [4] bit64_4.0.5         lubridate_1.8.0     httr_1.4.4         
+ [7] rprojroot_2.0.3     Deriv_4.1.3         tools_4.2.1        
+[10] backports_1.4.1     bslib_0.4.0         utf8_1.2.2         
+[13] R6_2.5.1            DBI_1.1.3           colorspace_2.0-3   
+[16] withr_2.5.0         sp_1.5-0            tidyselect_1.2.0   
+[19] processx_3.8.0      hydroTSM_0.6-0      bit_4.0.4          
+[22] compiler_4.2.1      git2r_0.30.1        automap_1.0-16     
+[25] cli_3.4.1           rvest_1.0.3         gstat_2.0-9        
+[28] xml2_1.3.3          sass_0.4.2          scales_1.2.1       
+[31] callr_3.7.3         proxy_0.4-27        digest_0.6.30      
+[34] minqa_1.2.5         foreign_0.8-83      rmarkdown_2.16     
+[37] pkgconfig_2.0.3     htmltools_0.5.3     lme4_1.1-31        
+[40] dbplyr_2.2.1        fastmap_1.1.0       rlang_1.0.6        
+[43] readxl_1.4.1        rstudioapi_0.14     FNN_1.1.3.1        
+[46] jquerylib_0.1.4     generics_0.1.3      jsonlite_1.8.3     
+[49] vroom_1.5.7         googlesheets4_1.0.1 magrittr_2.0.3     
+[52] Matrix_1.5-1        Rcpp_1.0.9          munsell_0.5.0      
+[55] fansi_1.0.3         lifecycle_1.0.3     stringi_1.7.8      
+[58] whisker_0.4         yaml_2.3.6          MASS_7.3-58.1      
+[61] plyr_1.8.7          grid_4.2.1          maptools_1.1-4     
+[64] parallel_4.2.1      promises_1.2.0.1    crayon_1.5.2       
+[67] lattice_0.20-45     splines_4.2.1       haven_2.5.1        
+[70] hms_1.1.2           knitr_1.40          ps_1.7.2           
+[73] pillar_1.8.1        boot_1.3-28         spacetime_1.2-8    
+[76] reprex_2.0.2        glue_1.6.2          evaluate_0.18      
+[79] getPass_0.2-2       modelr_0.1.9        nloptr_2.0.3       
+[82] vctrs_0.5.0         tzdb_0.3.0          httpuv_1.6.6       
+[85] cellranger_1.1.0    gtable_0.3.1        reshape_0.8.9      
+[88] assertthat_0.2.1    cachem_1.0.6        xfun_0.34          
+[91] broom_1.0.1         e1071_1.7-11        later_1.3.0        
+[94] class_7.3-20        googledrive_2.0.0   gargle_1.2.1       
+[97] intervals_0.15.2    ellipsis_0.3.2     </code></pre>
+</div>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -641,6 +964,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -673,6 +998,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
