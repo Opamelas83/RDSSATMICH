@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Opamelas83" />
+
+<meta name="date" content="2022-04-27" />
+
+<title>StatGXE</title>
+
+<script src="site_libs/header-attrs-2.16/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+
+<link rel="icon" href="https://github.com/workflowr/workflowr-assets/raw/main/img/reproducible.png">
+<!-- Add a small amount of space between sections. -->
+<style type="text/css">
+div.section {
+  padding-top: 12px;
+}
+</style>
+
+
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">RDSSATMICH</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">StatGXE</h1>
+<h4 class="author">Opamelas83</h4>
+<h4 class="date">2022-04-27</h4>
+
+</div>
+
+
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
+<span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+workflowr <span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span>
+</button>
+</p>
+<div id="workflowr-report" class="collapse">
+<ul class="nav nav-tabs">
+<li class="active">
+<a data-toggle="tab" href="#summary">Summary</a>
+</li>
+<li>
+<a data-toggle="tab" href="#checks"> Checks <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
+</li>
+<li>
+<a data-toggle="tab" href="#versions">Past versions</a>
+</li>
+</ul>
+<div class="tab-content">
+<div id="summary" class="tab-pane fade in active">
+<p>
+<strong>Last updated:</strong> 2023-04-10
+</p>
+<p>
+<strong>Checks:</strong> <span
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> 0
+</p>
+<p>
+<strong>Knit directory:</strong> <code>RDSSATMICH/</code> <span
+class="glyphicon glyphicon-question-sign" aria-hidden="true"
+title="This is the local directory in which the code in this file was executed.">
+</span>
+</p>
+<p>
+This reproducible <a href="https://rmarkdown.rstudio.com">R Markdown</a>
+analysis was created with <a
+  href="https://github.com/workflowr/workflowr">workflowr</a> (version
+1.7.0). The <em>Checks</em> tab describes the reproducibility checks
+that were applied when the results were created. The <em>Past
+versions</em> tab lists the development history.
+</p>
+<hr>
+</div>
+<div id="checks" class="tab-pane fade">
+<div id="workflowr-checks" class="panel-group">
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
+</p>
+</div>
+<div id="strongRMarkdownfilestronguptodate"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20211116code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20211116)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20211116code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20211116)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree2a20bdd4d4b7a179e25e32ab12d94cf220914d68targetblank2a20bdda">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Repository version:</strong>
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/2a20bdd4d4b7a179e25e32ab12d94cf220914d68" target="_blank">2a20bdd</a>
+</a>
+</p>
+</div>
+<div
+id="strongRepositoryversionstrongahrefhttpsgithubcomOpamelas83RDSSATMICHtree2a20bdd4d4b7a179e25e32ab12d94cf220914d68targetblank2a20bdda"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>
+Great! You are using Git for version control. Tracking code development
+and connecting the code version to the results is critical for
+reproducibility.
+</p>
+<p>
+The results in this page were generated with repository version
+<a href="https://github.com/Opamelas83/RDSSATMICH/tree/2a20bdd4d4b7a179e25e32ab12d94cf220914d68" target="_blank">2a20bdd</a>.
+See the <em>Past versions</em> tab to see a history of the changes made
+to the R Markdown and HTML files.
+</p>
+<p>
+Note that you need to be careful to ensure that all relevant files for
+the analysis have been committed to Git prior to generating the results
+(you can use <code>wflow_publish</code> or
+<code>wflow_git_commit</code>). workflowr only checks the R Markdown
+file, but you know if there are other scripts or data files that it
+depends on. Below is the status of the Git repository when the results
+were generated:
+</p>
+<pre><code>
+Ignored files:
+    Ignored:    .DS_Store
+    Ignored:    .RData
+    Ignored:    .Rhistory
+    Ignored:    .Rproj.user/
+    Ignored:    CUL_files/.DS_Store
+    Ignored:    Cassava/.DS_Store
+    Ignored:    Cassava/Evaluate.OUT
+    Ignored:    Cassava/FreshWt.OUT
+    Ignored:    Cassava/INFO.OUT
+    Ignored:    Cassava/Leaves.OUT
+    Ignored:    Cassava/Measured.OUT
+    Ignored:    Cassava/MgmtEvent.OUT
+    Ignored:    Cassava/MgmtOps.OUT
+    Ignored:    Cassava/Mulch.OUT
+    Ignored:    Cassava/Overview.OUT
+    Ignored:    Cassava/PlantGr2.OUT
+    Ignored:    Cassava/PlantGrf.OUT
+    Ignored:    Cassava/PlantGro.OUT
+    Ignored:    Cassava/Plantsum.OUT
+    Ignored:    Cassava/SoilCBal.OUT
+    Ignored:    Cassava/SoilCBalSum.OUT
+    Ignored:    Cassava/SoilOrg.OUT
+    Ignored:    Cassava/SoilTemp.OUT
+    Ignored:    Cassava/SoilWat.OUT
+    Ignored:    Cassava/SoilWatBal.OUT
+    Ignored:    Cassava/Summary.OUT
+    Ignored:    Cassava/Tiers.OUT
+    Ignored:    Cassava/WARNING.OUT
+    Ignored:    Cassava/Weather.OUT
+    Ignored:    Evaluate.OUT
+    Ignored:    FreshWt.OUT
+    Ignored:    INFO.OUT
+    Ignored:    Leaves.OUT
+    Ignored:    Measured.OUT
+    Ignored:    MgmtEvent.OUT
+    Ignored:    MgmtOps.OUT
+    Ignored:    Mulch.OUT
+    Ignored:    Needhelp.R
+    Ignored:    OVERVIEW.OUT
+    Ignored:    PlantGr2.OUT
+    Ignored:    PlantGrf.OUT
+    Ignored:    PlantGro.OUT
+    Ignored:    Plantsum.OUT
+    Ignored:    Result/.DS_Store
+    Ignored:    Result/PlotGLUE/
+    Ignored:    Result/PlotLocat_GLUEHWAM/.DS_Store
+    Ignored:    SoilCBal.OUT
+    Ignored:    SoilCBalSum.OUT
+    Ignored:    SoilOrg.OUT
+    Ignored:    SoilTemp.OUT
+    Ignored:    SoilWat.OUT
+    Ignored:    SoilWatBal.OUT
+    Ignored:    Summary.OUT
+    Ignored:    Tiers.OUT
+    Ignored:    WARNING.OUT
+    Ignored:    Weather.OUT
+    Ignored:    Weather/.DS_Store
+    Ignored:    data/.DS_Store
+    Ignored:    data/CSfiles/.DS_Store
+    Ignored:    data/DSSATtempfile/.DS_Store
+    Ignored:    data/IITA2021_CABASE/.DS_Store
+    Ignored:    data/IITA2021_Mich/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/D21J/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/MichelData/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_A/.DS_Store
+    Ignored:    data/IITA2021_Mich/CGM_Data/Set_B/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/.DS_Store
+    Ignored:    data/IITA2021_Mich/Leaf/Area/.DS_Store
+    Ignored:    data/WEATHERdata/.DS_Store
+
+</code></pre>
+<p>
+Note that any generated files, e.g. HTML, png, CSS, etc., are not
+included in this status report because it is ok for generated content to
+have uncommitted changes.
+</p>
+</div>
+</div>
+</div>
+</div>
+<hr>
+</div>
+<div id="versions" class="tab-pane fade">
+
+<p>
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/StatGXE.Rmd</code>) and HTML
+(<code>docs/StatGXE.html</code>) files. If you’ve configured a remote
+Git repository (see <code>?wflow_git_remote</code>), click on the
+hyperlinks in the table below to view the files as they were in that
+past version.
+</p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/2a20bdd4d4b7a179e25e32ab12d94cf220914d68/analysis/StatGXE.Rmd" target="_blank">2a20bdd</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Add my first analysis
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/5039d8b1a38c758e6541f3c6a46dcf2ce4d227c9/analysis/StatGXE.Rmd" target="_blank">5039d8b</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/5a6fcbcd1eed6a82d0b69eb37e6951a56ae67aec/analysis/StatGXE.Rmd" target="_blank">5a6fcbc</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial commit
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/Opamelas83/RDSSATMICH/blob/9333df11b7f314e955db89ce250e068adcb46784/analysis/StatGXE.Rmd" target="_blank">9333df1</a>
+</td>
+<td>
+Michelle Okoma
+</td>
+<td>
+2023-04-10
+</td>
+<td>
+Initial project
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr>
+</div>
+</div>
+</div>
+<div
+id="this-analysis-is-to-analyse-the-difference-beteewn-observed-and-simulated-data-from-dssat-output.-i-try-to-see-how-the-difference-variation-is-going-with-statistical-method"
+class="section level2">
+<h2>This analysis is to analyse the difference beteewn observed and
+simulated data from DSSAT OUTPUT. I try to see how the difference
+variation is going with statistical method</h2>
+<p>#Data preparation for Statistical analysis</p>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.3.6      ✔ purrr   0.3.5 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.4.1 
+✔ readr   2.1.2      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(statgenGxE)
+library(corrplot)</code></pre>
+<pre><code>corrplot 0.92 loaded</code></pre>
+<pre class="r"><code>library(gridExtra)</code></pre>
+<pre><code>
+Attaching package: &#39;gridExtra&#39;
+
+The following object is masked from &#39;package:dplyr&#39;:
+
+    combine</code></pre>
+<pre class="r"><code>library(grid)
+library(gridtext)
+library(lemon)</code></pre>
+<pre><code>
+Attaching package: &#39;lemon&#39;
+
+The following object is masked from &#39;package:purrr&#39;:
+
+    %||%
+
+The following objects are masked from &#39;package:ggplot2&#39;:
+
+    CoordCartesian, element_render</code></pre>
+<pre class="r"><code>GLUEVAL2 &lt;- read_csv(&quot;data/GLUEVALana2.csv&quot;)</code></pre>
+<pre><code>Rows: 899 Columns: 44
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (3): source, Clone, EXCODE
+dbl (41): TRNO, HWAMS, HWAMM, LAIXS, LAIXM, CWAMS, CWAMM, TMIN, TMAX, SRAD, ...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>EVAL2StatGXE1 &lt;- GLUEVAL2 %&gt;% dplyr::select(source, Clone, HWAMMS, HWAMMSsq, ELEV, LAT, LONG, RAIN, RAIN_6, RAIN_9, RAIN_12, RH2M, RH2M_6, RH2M_9, RH2M_12, WIND, WIND_6, WIND_9, WIND_12, SRAD, SRAD_6, SRAD_9, SRAD_12, TMIN, TMIN_6, TMIN_9, TMIN_12, TMAX, TMAX_6, TMAX_9, TMAX_12, PAR, PAR_6, PAR_9, PAR_12, year)
+#EVAL2StatGXE1$HWAMMS &lt;- multMissing(EVAL2StatGXE1$HWAMMS, maxIter = 10, naStrings = NULL)
+#EVAL2StatGXE1$HWAMMSsq &lt;- multMissing(EVAL2StatGXE1$HWAMMSsq, maxIter = 10, naStrings = NULL)
+
+EVAL2StatGXE2 &lt;- EVAL2StatGXE1 %&gt;%
+  filter(source %in% names(table(EVAL2StatGXE1$source))[table(EVAL2StatGXE1$source) &gt; 20])## AMMI functions do not accept more than 30 % missing data. 
+
+EVAL2StatGXE &lt;- statgenSTA::createTD(data = EVAL2StatGXE2, genotype = &quot;Clone&quot;, trial = &quot;source&quot;)</code></pre>
+</div>
+<div
+id="ammiadditive-main-effects-and-multiplicative-interaction-analysis-fits-a-model-which-involves-the-additive-main-effects-i.e.-genotype-and-environment-along-with-multiplicative-interaction-effects."
+class="section level1">
+<h1>AMMI(Additive Main Effects and Multiplicative Interaction) analysis
+fits a model which involves the Additive Main effects (i.e. genotype and
+environment) along with Multiplicative Interaction effects.</h1>
+<pre class="r"><code>AMMIStatGXE &lt;- gxeAmmi(TD = EVAL2StatGXE, trait = &quot;HWAMMS&quot;, nPC = 3)#byYear = 2019
+#summary(AMMIStatGXE)
+write.csv(AMMIStatGXE$anova, &quot;Result/AMMIStatGXEanova.csv&quot;, quote = F, row.names = F)
+write.csv(AMMIStatGXE$importance, &quot;Result/AMMIStatGXEimportance.csv&quot;, quote = F, row.names = F)
+
+## Create an AMMI1 plot.
+#genotype scaling, with emphasis on approximation of relations between genotypes (scale = 0)
+#environment scaling, with emphasis on approximation of relations between environments (scale = 1)
+#symmetric scaling, a compromise (scale = 0.5)
+#jpeg(filename = &quot;AMMI2env.jpeg&quot;, res = 400, width = 14, height = 8, units = &quot;cm&quot;)
+CFIG1 &lt;- plot(AMMIStatGXE, plotType = &quot;AMMI1&quot;, scale = 1, title = &quot;Interactive PC1 vs main effects&quot;) + theme_classic() </code></pre>
+<p><img src="figure/StatGXE.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#dev.off()
+CFIG2 &lt;- plot(AMMIStatGXE, plotType = &quot;AMMI2&quot;, scale = 0.5, title = &quot;PC1 vs PC2&quot;)  + theme_classic()</code></pre>
+<p><img src="figure/StatGXE.Rmd/unnamed-chunk-2-2.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#dev.off()
+#nt &lt;- theme(legend.position=&#39;none&#39;)
+#p = list(CFIG1+nt, CFIG2+nt) %&gt;% map(~.x + labs(x=NULL, y=NULL))
+
+#jpeg(filename = &quot;Result/Rcomparison.jpeg&quot;)
+#grid_arrange_shared_legend(CFIG1+nt, CFIG2+nt)#ncol = 2, nrow = 1
+#dev.off() </code></pre>
+<p>##I use the AMMI envScores to look for a link with env parameters</p>
+<pre class="r"><code># weather data check
+AMMIenvscores1 &lt;- AMMIStatGXE$envScores # using for environ scores
+AMMIenvscores2 &lt;- as.data.frame(AMMIenvscores1) 
+AMMIenvscores3 &lt;- as_tibble(rownames_to_column(AMMIenvscores2)) %&gt;% 
+                          mutate(ENV = rowname) %&gt;%
+                                 #envScPC1 = PC1,
+                                 #envScPC2 = PC2) %&gt;%
+                         dplyr::select(-rowname)
+
+AMMIenvMean1 &lt;- AMMIStatGXE$envMean #using for environ mean (mean of root harvested by envi)n
+AMMIenvMean2 &lt;- as.data.frame(AMMIenvMean1) 
+AMMIenvMean3 &lt;- as_tibble(rownames_to_column(AMMIenvMean2)) %&gt;% 
+                          mutate(ENV = rowname,
+                                envMean = AMMIenvMean1) %&gt;% 
+                         dplyr::select(-rowname, -AMMIenvMean1)
+
+EVAL2StatGXEenv &lt;- EVAL2StatGXE1 %&gt;% 
+                     dplyr::select(-Clone, -HWAMMS, -HWAMMSsq) %&gt;%
+                      mutate(ENV = source) %&gt;%
+                        dplyr::group_by(ENV) %&gt;%
+                         dplyr::summarise(ELEV = unique(ELEV), 
+                                          LAT = unique(LAT), 
+                                          LONG = unique(LONG), 
+                                          RAIN = unique(RAIN),
+                                          RAIN_6 = unique(RAIN_6), 
+                                          RAIN_9 = unique(RAIN_9),
+                                          RAIN_12 = unique(RAIN_12), 
+                                          SRAD = unique(SRAD),
+                                          SRAD_6 = unique(SRAD_6), 
+                                          SRAD_9 = unique(SRAD_9), 
+                                          SRAD_12 = unique(SRAD_12),  
+                                          TMIN = unique(TMIN),
+                                          TMIN_6 = unique(TMIN_6), 
+                                          TMIN_9 = unique(TMIN_9), 
+                                          TMIN_12 = unique(TMIN_12), 
+                                          TMAX = unique(TMAX),
+                                          TMAX_6 = unique(TMAX_6), 
+                                          TMAX_9 = unique(TMAX_9), 
+                                          TMAX_12 = unique(TMAX_12),
+                                          RH2M = unique(RH2M),
+                                          RH2M_6 = unique(RH2M_6), 
+                                          RH2M_9 = unique(RH2M_9), 
+                                          RH2M_12 = unique(RH2M_12), 
+                                          WIND = unique(WIND),
+                                          WIND_6 = unique(WIND_6), 
+                                          WIND_9 = unique(WIND_9), 
+                                          WIND_12 = unique(WIND_12),  
+                                          PAR = unique(PAR),
+                                          PAR_6 = unique(PAR_6), 
+                                          PAR_9 = unique(PAR_9), 
+                                          PAR_12 = unique(PAR_12))
+
+StatGXEenv1 &lt;- left_join(AMMIenvMean3, AMMIenvscores3)</code></pre>
+<pre><code>Joining, by = &quot;ENV&quot;</code></pre>
+<pre class="r"><code>StatGXEenv11 &lt;- left_join(StatGXEenv1, EVAL2StatGXEenv)</code></pre>
+<pre><code>Joining, by = &quot;ENV&quot;</code></pre>
+<pre class="r"><code>StatGXEenv2 &lt;- as_tibble(StatGXEenv11) %&gt;% dplyr::select(-ENV)
+#corrplot(cor(StatGXEenv2[,-2]))
+#corrplot(cor(StatGXEenv2[,-1]))
+#jpeg(filename = &quot;correlationEX.jpeg&quot;, res = 400, width = 14, height = 8, units = &quot;cm&quot;)
+StatGXEenv2_cor &lt;- cor(StatGXEenv2)
+StatGXEenv2_cor &lt;- StatGXEenv2_cor[1:4,]
+Figplot1 &lt;- corrplot(StatGXEenv2_cor, tl.cex = 0.5, number.cex=0.5, method = &quot;number&quot;, sig.level = 0.01, insig = &quot;blank&quot;)</code></pre>
+<p><img src="figure/StatGXE.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#dev.off()</code></pre>
+<p>#soil profile check</p>
+<pre class="r"><code>Tral0 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;))
+strtTrt01 &lt;- grep(pattern = &quot;*NG04041467&quot;, x = Tral0, fixed=T)
+
+Tral01 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 1953, n_max = 6 )#NG04365455 UMUDIKE
+write_lines(Tral01, &quot;test0.txt&quot;)
+Tral01 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+Tral02 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 1966, n_max = 6 )#NG04408648 ONNE
+write_lines(Tral02, &quot;test0.txt&quot;)
+Tral02 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;) 
+
+Tral03 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 1979, n_max = 6 )#NG04309279 UBIAJA
+write_lines(Tral03, &quot;test0.txt&quot;)
+Tral03 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)      
+
+Tral04 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 1992, n_max = 6 )#NG04304916 IKENNE
+write_lines(Tral04, &quot;test0.txt&quot;)
+Tral04 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)      
+
+Tral05 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2005, n_max = 6 )#NG04292017 OTOBI
+write_lines(Tral05, &quot;test0.txt&quot;)
+Tral05 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)   
+
+Tral06 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2018, n_max = 6 )#NG04283331 AGO-OWO
+write_lines(Tral06, &quot;test0.txt&quot;)
+Tral06 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+Tral07 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2031, n_max = 6 )#NG04261714 IBADAN
+write_lines(Tral07, &quot;test0.txt&quot;)
+Tral07 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+Tral08 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2044, n_max = 6 )#NG04171020 MOKWA 
+write_lines(Tral08, &quot;test0.txt&quot;)
+Tral08 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+Tral09 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2057, n_max = 6 )#NG04184010 ABUJA 
+write_lines(Tral09, &quot;test0.txt&quot;)
+Tral09 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+Tral10 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2070, n_max = 6 )#NG04088975 ZARIA 
+write_lines(Tral10, &quot;test0.txt&quot;)
+Tral10 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+Tral11 &lt;- read_lines(here::here(&quot;SOIL.SOL&quot;), skip = 2083, n_max = 6 )#NG04041467 KANO 
+write_lines(Tral11, &quot;test0.txt&quot;)
+Tral11 &lt;- read.table(&quot;test0.txt&quot;, header = FALSE, sep = &quot;&quot;, dec = &quot;.&quot;)
+
+TRAL &lt;- bind_rows(Tral01, Tral02, Tral03, Tral04, Tral05, Tral06, Tral07, Tral08, Tral09, Tral10, Tral11, .id = &quot;source&quot;)    
+TRALA &lt;- TRAL %&gt;% mutate(Location = case_when(source == 1 ~ &quot;UMUDIKE&quot;,
+                                              source == 2 ~ &quot;ONNE&quot;,
+                                              source == 3 ~ &quot;UBIAJA&quot;,
+                                              source == 4 ~ &quot;IKENNE&quot;,
+                                              source == 5 ~ &quot;OTOBI&quot;,
+                                              source == 6 ~ &quot;AGO-OWO&quot;,
+                                              source == 7 ~ &quot;IBADAN&quot;,
+                                              source == 8 ~ &quot;MOKWA&quot;,
+                                              source == 9 ~ &quot;ABUJA&quot;,
+                                              source == 10 ~ &quot;ZARIA&quot;,
+                                              source == 11 ~ &quot;KANO&quot;),
+                         Deth = V1,
+                         SLLL_15 = case_when(V1 == 15 ~ V3),
+                         SLLL_100 = case_when(V1 == 100 ~ V3),
+                         SDUL_15 = case_when(V1 == 15 ~ V4),
+                         SDUL_100 = case_when(V1 == 100 ~ V4),
+                         SSAT_15 = case_when(V1 == 15 ~ V5),
+                         SSAT_100 = case_when(V1 == 100 ~ V5),
+                         SRGF_15 = case_when(V1 == 15 ~ V6),
+                         SRGF_100 = case_when(V1 == 100 ~ V6),
+                         SSKS_15 = case_when(V1 == 15 ~ V7),
+                         SSKS_100 = case_when(V1 == 100 ~ V7),
+                         SBDM_15 = case_when(V1 == 15 ~ V8),
+                         SBDM_100 = case_when(V1 == 100 ~ V8),
+                         SLOC_15 = case_when(V1 == 15 ~ V9),
+                         SLOC_100 = case_when(V1 == 100 ~ V9),
+                         SLCL_15 = case_when(V1 == 15 ~ V10),
+                         SLCL_100 = case_when(V1 == 100 ~ V10),
+                         SLSI_15 = case_when(V1 == 15 ~ V11),
+                         SLSI_100 = case_when(V1 == 100 ~ V11),  
+                         SLNI_15 = case_when(V1 == 15 ~ V13),
+                         SLNI_100 = case_when(V1 == 100 ~ V13), 
+                         SLHW_15 = case_when(V1 == 15 ~ V14),
+                         SLHW_100 = case_when(V1 == 100 ~ V14),
+                         SCEC_15 = case_when(V1 == 15 ~ V16),
+                         SCEC_100 = case_when(V1 == 100 ~ V16)) %&gt;%
+  filter(V1 == 15 | V1 == 100) %&gt;%
+  dplyr::select(-V1, -V2, -V3, -V4, -V5, -V6, -V7, -V8, -V9, -V10, -V11, -V12, -V13, -V14, -V15, -V16, -V17, -source)
+  
+ StatGXEenv1 &lt;- left_join(AMMIenvMean3, AMMIenvscores3)</code></pre>
+<pre><code>Joining, by = &quot;ENV&quot;</code></pre>
+<pre class="r"><code> StatGXEenvsol1 &lt;- StatGXEenv1 %&gt;% 
+   mutate(Location = case_when(ENV == &quot;Abuja19&quot; ~ &quot;ABUJA&quot;,
+                               ENV == &quot;Ago17&quot; ~ &quot;AGO-OWO&quot;,
+                               ENV == &quot;Ago18&quot; ~  &quot;AGO-OWO&quot;,
+                               ENV == &quot;Ago19&quot; ~ &quot;AGO-OWO&quot;,
+                               ENV == &quot;Ibadan17&quot; ~ &quot;IBADAN&quot;,
+                               ENV == &quot;Ibadan18&quot; ~ &quot;IBADAN&quot;, 
+                               ENV == &quot;Ibadan19&quot; ~ &quot;IBADAN&quot;,
+                               ENV == &quot;Ikenne17&quot; ~ &quot;IKENNE&quot;,
+                               ENV == &quot;Ikenne18&quot; ~ &quot;IKENNE&quot;,
+                               ENV == &quot;Ikenne19&quot; ~ &quot;IKENNE&quot;,
+                               ENV == &quot;Kano18&quot; ~ &quot;KANO&quot;,
+                               ENV == &quot;Mokwa17&quot; ~ &quot;MOKWA&quot;,
+                               ENV == &quot;Mokwa18&quot; ~ &quot;MOKWA&quot;,
+                               ENV == &quot;Mokwa19&quot; ~ &quot;MOKWA&quot;,
+                               ENV == &quot;Onne18&quot; ~ &quot;ONNE&quot;,
+                               ENV == &quot;Otobi18&quot; ~ &quot;OTOBI&quot;,
+                               ENV == &quot;Ubiaja19&quot; ~ &quot;UBIAJA&quot;, 
+                              ENV == &quot;Umudike18&quot; ~ &quot;UMUDIKE&quot;))
+                               
+StatGXEenvsol2 &lt;- left_join(StatGXEenvsol1 , TRALA) %&gt;%
+  dplyr::select(-ENV, Deth)#-Location</code></pre>
+<pre><code>Joining, by = &quot;Location&quot;</code></pre>
+<pre class="r"><code>StatGXEenvsol3 &lt;- StatGXEenvsol2 %&gt;% filter(!is.na(SLNI_15)) %&gt;% 
+  dplyr::select(envMean, Location, PC1, PC2, PC3, SLLL_15, SDUL_15, SSAT_15, SSKS_15, SBDM_15, SLOC_15, SLCL_15, SLSI_15, SLHW_15, SCEC_15)#SRGF_15, SLNI_15,
+
+StatGXEenvsol4 &lt;- StatGXEenvsol2 %&gt;% filter(!is.na(SLNI_100)) %&gt;% 
+  dplyr::select(envMean, Location, PC1, PC2, PC3, SLLL_100, SSAT_100, SDUL_100, SSKS_100, SBDM_100, SLOC_100, SLCL_100, SLSI_100, SLHW_100, SCEC_100) #SLNI_100, SRGF_100,
+
+StatGXEenvsol5 &lt;- left_join(StatGXEenvsol3 , StatGXEenvsol4) %&gt;% dplyr::select(-Location) </code></pre>
+<pre><code>Joining, by = c(&quot;envMean&quot;, &quot;Location&quot;, &quot;PC1&quot;, &quot;PC2&quot;, &quot;PC3&quot;)</code></pre>
+<pre class="r"><code>#jpeg(filename = &quot;correlationENsol.jpeg&quot;, res = 400, width = 14, height = 8, units = &quot;cm&quot;)
+#Run only for 15cm of soil profile
+StatGXEenvsol3 &lt;- StatGXEenvsol3 %&gt;% dplyr::select(-Location)
+StatGXEenvsol3_cor &lt;- cor(StatGXEenvsol3)
+StatGXEenvsol3_cor &lt;- StatGXEenvsol3_cor[1:4, ]
+Figplot2 &lt;- corrplot(StatGXEenvsol3_cor, tl.cex = 0.5, number.cex=0.6, method = &quot;number&quot;, sig.level = 0.01, insig = &quot;blank&quot;)</code></pre>
+<p><img src="figure/StatGXE.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#jpeg(filename = &quot;Result/Rcomparison.jpeg&quot;)
+#dev.off()</code></pre>
+<p>#plot all environments parameter in the same plot</p>
+<pre class="r"><code>StatGXEenvT &lt;- left_join(StatGXEenv2,StatGXEenvsol3)</code></pre>
+<pre><code>Joining, by = c(&quot;envMean&quot;, &quot;PC1&quot;, &quot;PC2&quot;, &quot;PC3&quot;)</code></pre>
+<pre class="r"><code>StatGXEenvT_cor &lt;- cor(StatGXEenvT)
+StatGXEenvT_cor &lt;- StatGXEenvT_cor[1:4,]
+corrplot(StatGXEenvT_cor, tl.cex = 0.5, method = &quot;number&quot;, sig.level = 0.01, insig = &quot;blank&quot;)</code></pre>
+<p><img src="figure/StatGXE.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>No longer important ##filter environ with total dry root mean between
+1st and 3rd quantile to continue Model calibration</p>
+<pre class="r"><code>#envMeanFiltered &lt;- AMMIenvMean3 %&gt;% filter(envMean &gt; quantile(envMean, 0.25) &amp; envMean &lt; quantile(envMean, 0.75))
+#genoMeanFiltered &lt;- AMMIgenoMean3 %&gt;% filter(genoMean &gt; quantile(genoMean, 0.25) &amp; genoMean &lt; quantile(genoMean, 0.75))</code></pre>
+</div>
+<div
+id="i-use-the-ammi-genoscores-to-look-for-a-link-with-penotype-parameters"
+class="section level1">
+<h1>I use the AMMI genoScores to look for a link with penotype
+parameters</h1>
+<pre class="r"><code>PhenoDIS &lt;- read_csv(&quot;data/IITA2021_CABASE/UYT_GXE_pheno.csv&quot;)</code></pre>
+<pre><code>Rows: 3685 Columns: 94
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (16): programName, programDescription, studyName, studyDescription, stud...
+dbl (77): studyYear, programDbId, studyDbId, plotWidth, plotLength, fieldSiz...
+lgl  (1): plantNumber
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>spec(PhenoDIS)</code></pre>
+<pre><code>cols(
+  studyYear = col_double(),
+  programDbId = col_double(),
+  programName = col_character(),
+  programDescription = col_character(),
+  studyDbId = col_double(),
+  studyName = col_character(),
+  studyDescription = col_character(),
+  studyDesign = col_character(),
+  plotWidth = col_double(),
+  plotLength = col_double(),
+  fieldSize = col_double(),
+  fieldTrialIsPlannedToBeGenotyped = col_character(),
+  fieldTrialIsPlannedToCross = col_character(),
+  plantingDate = col_character(),
+  harvestDate = col_character(),
+  locationDbId = col_double(),
+  locationName = col_character(),
+  germplasmDbId = col_double(),
+  germplasmName = col_character(),
+  germplasmSynonyms = col_character(),
+  observationLevel = col_character(),
+  observationUnitDbId = col_double(),
+  observationUnitName = col_character(),
+  replicate = col_double(),
+  blockNumber = col_double(),
+  plotNumber = col_double(),
+  rowNumber = col_double(),
+  colNumber = col_double(),
+  entryType = col_character(),
+  plantNumber = col_logical(),
+  `L chromometer value|CO_334:0002065` = col_double(),
+  `a chromometer value|CO_334:0002066` = col_double(),
+  `apical pubescence visual rating 0-2|CO_334:0000309` = col_double(),
+  `b chromometer value|CO_334:0002064` = col_double(),
+  `branching level counting|CO_334:0000079` = col_double(),
+  `cassava bacterial blight incidence 3-month evaluation|CO_334:0000178` = col_double(),
+  `cassava bacterial blight severity 3-month evaluation|CO_334:0000175` = col_double(),
+  `cassava green mite severity first evaluation|CO_334:0000189` = col_double(),
+  `cassava green mite severity second evaluation|CO_334:0000190` = col_double(),
+  `cassava mosaic disease incidence 1-month evaluation|CO_334:0000195` = col_double(),
+  `cassava mosaic disease incidence 3-month evaluation|CO_334:0000196` = col_double(),
+  `cassava mosaic disease severity 1-month evaluation|CO_334:0000191` = col_double(),
+  `cassava mosaic disease severity 3-month evaluation|CO_334:0000192` = col_double(),
+  `central leaf shape visual rating 1-10|CO_334:0000119` = col_double(),
+  `dry matter content by specific gravity method|CO_334:0000160` = col_double(),
+  `dry matter content percentage|CO_334:0000092` = col_double(),
+  `dry yield|CO_334:0000014` = col_double(),
+  `ease of peeling root cortex visual rating 1-3|CO_334:0000308` = col_double(),
+  `first apical branch height measurement in cm|CO_334:0000106` = col_double(),
+  `first fully expanded leaf color visual rating 1-9|CO_334:0000102` = col_double(),
+  `fresh root yield|CO_334:0000013` = col_double(),
+  `fresh shoot weight measurement in kg per plot|CO_334:0000016` = col_double(),
+  `fresh storage root weight per plot|CO_334:0000012` = col_double(),
+  `fufu dry weight in kg|CO_334:0002019` = col_double(),
+  `fufu fibre weight in g|CO_334:0002016` = col_double(),
+  `fufu initial weight in kg|CO_334:0002013` = col_double(),
+  `fufu peel weight in kg|CO_334:0002014` = col_double(),
+  `fufu peeled root weight in kg|CO_334:0002015` = col_double(),
+  `fufu pressed weight in kg|CO_334:0002018` = col_double(),
+  `gari fried weight in kg|CO_334:0002026` = col_double(),
+  `gari initial weight in kg|CO_334:0002020` = col_double(),
+  `gari mash weight in kg|CO_334:0002023` = col_double(),
+  `gari peel weight in kg|CO_334:0002021` = col_double(),
+  `gari peeled root weight in kg|CO_334:0002022` = col_double(),
+  `gari pressed weight in kg|CO_334:0002024` = col_double(),
+  `gari pulverised weight in kg|CO_334:0002025` = col_double(),
+  `gari shaft coarse weight in g|CO_334:0002027` = col_double(),
+  `gari shaft medium weight in g|CO_334:0002028` = col_double(),
+  `harvest index variable|CO_334:0000015` = col_double(),
+  `initial vigor assessment 1-7|CO_334:0000009` = col_double(),
+  `petiole color visual rating 1-9|CO_334:0000023` = col_double(),
+  `plant architecture visual rating 1-5|CO_334:0000099` = col_double(),
+  `plant height measurement in cm|CO_334:0000018` = col_double(),
+  `plant stands harvested counting|CO_334:0000010` = col_double(),
+  `root evaluation scaled 1-5|CO_334:0000228` = col_double(),
+  `root neck length visual rating 0-7|CO_334:0000022` = col_double(),
+  `root number counting|CO_334:0000011` = col_double(),
+  `root weight in air|CO_334:0000157` = col_double(),
+  `root weight in water|CO_334:0000158` = col_double(),
+  `rotted storage root counting|CO_334:0000084` = col_double(),
+  `specific gravity|CO_334:0000163` = col_double(),
+  `sprout count at one-month|CO_334:0000213` = col_double(),
+  `sprout count at three-month|CO_334:0000214` = col_double(),
+  `sprouting proportion|CO_334:0000008` = col_double(),
+  `starch content percentage|CO_334:0000071` = col_double(),
+  `staygreen visual scale 1-9|CO_334:0000224` = col_double(),
+  `storage root cortex color visual rating 1-4|CO_334:0000115` = col_double(),
+  `storage root periderm color visual rating 1-4|CO_334:0000064` = col_double(),
+  `storage root pulp color visual rating 1-3|CO_334:0000021` = col_double(),
+  `storage root shape visual rating 1-6|CO_334:0000020` = col_double(),
+  `storage root size visual rating 1-7|CO_334:0000019` = col_double(),
+  `total carotenoid by chart 1-8|CO_334:0000161` = col_double(),
+  `unexpanded apical leaf color visual rating 1-9|CO_334:0000101` = col_double(),
+  notes = col_character()
+)</code></pre>
+<pre class="r"><code>PhenoDISE &lt;- PhenoDIS %&gt;% rename(Year = studyYear,
+               Clone = germplasmName,
+               Location = locationName,
+               CB_3Min = &quot;cassava bacterial blight incidence 3-month evaluation|CO_334:0000178&quot;,
+               CB_3Msev = &quot;cassava bacterial blight severity 3-month evaluation|CO_334:0000175&quot;,
+               CGM_1sev = &quot;cassava green mite severity first evaluation|CO_334:0000189&quot;,
+               CGM_2sev = &quot;cassava green mite severity second evaluation|CO_334:0000190&quot;,
+               CMO_1Min = &quot;cassava mosaic disease incidence 1-month evaluation|CO_334:0000195&quot;,
+               CMO_3Min = &quot;cassava mosaic disease incidence 3-month evaluation|CO_334:0000196&quot;,
+               CMO_1Msev = &quot;cassava mosaic disease severity 1-month evaluation|CO_334:0000191&quot;,
+               CMO_3Msev = &quot;cassava mosaic disease severity 3-month evaluation|CO_334:0000192&quot;,
+               HWAM = &quot;fresh storage root weight per plot|CO_334:0000012&quot;,
+               CWAM = &quot;fresh shoot weight measurement in kg per plot|CO_334:0000016&quot;) %&gt;%
+            dplyr::select(Clone, CB_3Min, CB_3Msev, CGM_1sev, CGM_2sev, CMO_1Min, CMO_3Min,                         CMO_1Msev, CMO_3Msev)# year, Location, HWAM, CWAM
+write.csv(PhenoDISE, &quot;data/IITA2021_Mich/PhenoDisea.csv&quot;, quote = F, row.names = F)</code></pre>
+<pre class="r"><code>#phenotype data measured from Ibadan 2021.
+Phenocomp1 &lt;- read_csv(&quot;data/IITA2021_Mich/Phenotyp_Mich2021.csv&quot;)</code></pre>
+<pre><code>Rows: 720 Columns: 31
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (1): accession_name
+dbl (30): rep_number, plant_number, stem_nu, branching_point, branchpoint1_F...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>Phenocomp2 &lt;- Phenocomp1  %&gt;% 
+        group_by(accession_name) %&gt;%
+        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))</code></pre>
+<pre><code>Warning: `funs()` was deprecated in dplyr 0.8.0.
+ℹ Please use a list of either functions or lambdas:
+
+# Simple named list: list(mean = mean, median = median)
+
+# Auto named with `tibble::lst()`: tibble::lst(mean, median)
+
+# Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</code></pre>
+<pre class="r"><code>Phenocomp3 &lt;- Phenocomp2 %&gt;% mutate(Clone = accession_name,
+                                    branchP = branching_point) %&gt;%
+            dplyr::select(Clone, stem_nu, stem_D, branchP, plant_H)
+
+#complete with leaf area data
+Phenoleaf1 &lt;- read_csv(&quot;data/IITA2021_Mich/AreaData.csv&quot;)</code></pre>
+<pre><code>New names:
+Rows: 630 Columns: 5
+── Column specification
+──────────────────────────────────────────────────────── Delimiter: &quot;,&quot; chr
+(2): accession_name, Slice dbl (3): ...1, leaf_no, Total.Area
+ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+Specify the column types or set `show_col_types = FALSE` to quiet this message.
+• `` -&gt; `...1`</code></pre>
+<pre class="r"><code>spec(Phenoleaf1)</code></pre>
+<pre><code>cols(
+  ...1 = col_double(),
+  accession_name = col_character(),
+  leaf_no = col_double(),
+  Slice = col_character(),
+  Total.Area = col_double()
+)</code></pre>
+<pre class="r"><code>#To solve Clone name issue
+#Phenoleaf1$accession_name &lt;- Phenoleaf1$accession_name %&gt;%
+ # gsub(pattern = &quot;IITA_TMS_IB&quot;, replacement = &quot;IITA-TMS-&quot;) %&gt;% 
+ # gsub(pattern = &quot;TMS14F1159P00&quot;, replacement = &quot;TMS14F1159P000&quot;)
+Phenoleaf1$accession_name &lt;- Phenoleaf1$accession_name %&gt;% str_replace_all( c(&quot;IITA_TMS_IBA00070&quot;=&quot;IITA-TMS-IBA000070&quot;,
+                                             &quot;IITA_TMS_IBA30572&quot;=&quot;IITA-TMS-IBA30572&quot;,
+                                             &quot;IITA_TMS_IBA980581&quot;=&quot;IITA-TMS-IBA980581&quot;,
+                                             &quot;IITA_TMS_IBA982101&quot;=&quot;IITA-TMS-IBA982101&quot;,
+                                             &quot;TMS14F1159P003&quot;=&quot;TMS14F1159P0003&quot;))
+Phenoleaf2 &lt;- Phenoleaf1  %&gt;% 
+        group_by(accession_name) %&gt;%
+        dplyr::summarise_all(funs(mean(., na.rm = TRUE)))</code></pre>
+<pre><code>Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA</code></pre>
+<pre><code>Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA
+
+Warning in mean.default(Slice, na.rm = TRUE): argument is not numeric or
+logical: returning NA</code></pre>
+<pre class="r"><code>Phenoleaf3 &lt;- Phenoleaf2 %&gt;%
+               mutate(Clone = accession_name,
+                      LeafArea = Total.Area) %&gt;%
+              dplyr::select(Clone, LeafArea)
+
+#complete with disease
+PhenoDisea1 &lt;- read_csv(&quot;data/IITA2021_Mich/PhenoDisea.csv&quot;)</code></pre>
+<pre><code>Rows: 3685 Columns: 9
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (1): Clone
+dbl (8): CB_3Min, CB_3Msev, CGM_1sev, CGM_2sev, CMO_1Min, CMO_3Min, CMO_1Mse...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>spec(PhenoDisea1)</code></pre>
+<pre><code>cols(
+  Clone = col_character(),
+  CB_3Min = col_double(),
+  CB_3Msev = col_double(),
+  CGM_1sev = col_double(),
+  CGM_2sev = col_double(),
+  CMO_1Min = col_double(),
+  CMO_3Min = col_double(),
+  CMO_1Msev = col_double(),
+  CMO_3Msev = col_double()
+)</code></pre>
+<pre class="r"><code>PhenoDisea2 &lt;- PhenoDisea1 %&gt;% 
+           group_by(Clone) %&gt;%
+            dplyr::summarise_all(funs(mean(., na.rm = TRUE)))
+
+#Phenocolen &lt;- unique(Phenocol)
+
+Phenosum1 &lt;- left_join( PhenoDisea2, Phenocomp3)</code></pre>
+<pre><code>Joining, by = &quot;Clone&quot;</code></pre>
+<pre class="r"><code>Phenosum &lt;- left_join(Phenosum1, Phenoleaf3)         </code></pre>
+<pre><code>Joining, by = &quot;Clone&quot;</code></pre>
+<pre class="r"><code>AMMIgenoScores1 &lt;- AMMIStatGXE$genoScores #using for genotype score
+AMMIgenoScores2 &lt;- as.data.frame(AMMIgenoScores1) 
+AMMIgenoScores3 &lt;- as_tibble(rownames_to_column(AMMIgenoScores2)) %&gt;% 
+                          mutate(Clone = rowname) %&gt;%
+                                 #genoScPC1 = PC1,
+                                  #genoScPC2 = PC2) %&gt;%
+                         dplyr::select(-rowname)
+
+AMMIgenoMean1 &lt;- AMMIStatGXE$genoMean #using for genotype mean (mean of root harvested by clone across all environment)
+AMMIgenoMean2 &lt;- as.data.frame(AMMIgenoMean1) 
+AMMIgenoMean3 &lt;- as_tibble(rownames_to_column(AMMIgenoMean2)) %&gt;% 
+                          mutate(Clone = rowname,
+                                genoMean = AMMIgenoMean1) %&gt;% 
+                         dplyr::select(-rowname, -AMMIgenoMean1)
+
+StatGXEgeno1 &lt;- left_join(AMMIgenoMean3, AMMIgenoScores3)</code></pre>
+<pre><code>Joining, by = &quot;Clone&quot;</code></pre>
+<pre class="r"><code>StatGXEgeno11 &lt;- left_join(StatGXEgeno1, Phenosum)</code></pre>
+<pre><code>Joining, by = &quot;Clone&quot;</code></pre>
+<pre class="r"><code>StatGXEgeno11$branchP &lt;- multMissing(StatGXEgeno11$branchP, maxIter = 10, naStrings = NULL)
+StatGXEgeno11$LeafArea &lt;- multMissing(StatGXEgeno11$LeafArea, maxIter = 10, naStrings = NULL)
+StatGXEgeno2 &lt;- as_tibble(StatGXEgeno11) %&gt;% dplyr::select(-Clone)
+#jpeg(filename = &quot;corrplogenocheck.jpeg&quot;, res = 400, width = 14, height = 8, units = &quot;cm&quot;)
+StatGXEgeno2_cor &lt;- cor(StatGXEgeno2)
+StatGXEgeno2_cor &lt;- StatGXEgeno2_cor[1:4, ]
+Figplot2 &lt;- corrplot(StatGXEgeno2_cor, tl.cex = 0.5, number.cex=0.6, method = &quot;number&quot;, sig.level = 0.01, insig = &quot;blank&quot;)</code></pre>
+<p><img src="figure/StatGXE.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>#dev.off()  </code></pre>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.2.1 (2022-06-23)
+Platform: x86_64-apple-darwin17.0 (64-bit)
+Running under: macOS Big Sur ... 10.16
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.2/Resources/lib/libRlapack.dylib
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] grid      stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] lemon_0.4.5      gridtext_0.1.5   gridExtra_2.3    corrplot_0.92   
+ [5] statgenGxE_1.0.5 forcats_0.5.2    stringr_1.4.1    dplyr_1.0.10    
+ [9] purrr_0.3.5      readr_2.1.2      tidyr_1.2.1      tibble_3.1.8    
+[13] ggplot2_3.3.6    tidyverse_1.3.2  workflowr_1.7.0 
+
+loaded via a namespace (and not attached):
+ [1] fs_1.5.2            lubridate_1.8.0     bit64_4.0.5        
+ [4] httr_1.4.4          rprojroot_2.0.3     tools_4.2.1        
+ [7] backports_1.4.1     bslib_0.4.0         utf8_1.2.2         
+[10] R6_2.5.1            DBI_1.1.3           colorspace_2.0-3   
+[13] withr_2.5.0         tidyselect_1.2.0    processx_3.8.0     
+[16] bit_4.0.4           compiler_4.2.1      git2r_0.30.1       
+[19] cli_3.4.1           rvest_1.0.3         statgenSTA_1.0.9   
+[22] xml2_1.3.3          labeling_0.4.2      sass_0.4.2         
+[25] scales_1.2.1        callr_3.7.3         digest_0.6.30      
+[28] rmarkdown_2.16      pkgconfig_2.0.3     htmltools_0.5.3    
+[31] highr_0.9           dbplyr_2.2.1        fastmap_1.1.0      
+[34] rlang_1.0.6         readxl_1.4.1        rstudioapi_0.14    
+[37] farver_2.1.1        jquerylib_0.1.4     generics_0.1.3     
+[40] jsonlite_1.8.3      vroom_1.5.7         googlesheets4_1.0.1
+[43] magrittr_2.0.3      dotCall64_1.0-2     Rcpp_1.0.9         
+[46] munsell_0.5.0       fansi_1.0.3         lifecycle_1.0.3    
+[49] stringi_1.7.8       whisker_0.4         yaml_2.3.6         
+[52] plyr_1.8.7          parallel_4.2.1      promises_1.2.0.1   
+[55] crayon_1.5.2        lattice_0.20-45     haven_2.5.1        
+[58] hms_1.1.2           knitr_1.40          ps_1.7.2           
+[61] pillar_1.8.1        reprex_2.0.2        glue_1.6.2         
+[64] evaluate_0.18       getPass_0.2-2       data.table_1.14.2  
+[67] modelr_0.1.9        vctrs_0.5.0         spam_2.9-1         
+[70] tzdb_0.3.0          httpuv_1.6.6        cellranger_1.1.0   
+[73] gtable_0.3.1        assertthat_0.2.1    cachem_1.0.6       
+[76] xfun_0.34           SpATS_1.0-17        xtable_1.8-4       
+[79] broom_1.0.1         later_1.3.0         googledrive_2.0.0  
+[82] gargle_1.2.1        ellipsis_0.3.2      here_1.0.1         </code></pre>
+</div>
+</div>
+
+
+<!-- Adjust MathJax settings so that all math formulae are shown using
+TeX fonts only; see
+https://docs.mathjax.org/en/latest/web/configuration.html. This will make
+the presentation more consistent at the cost of the webpage sometimes
+taking slightly longer to load. Note that this only works because the
+footer is added to webpages before the MathJax javascript. -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
