@@ -35,7 +35,7 @@ EVAL2StatGXE <- statgenSTA::createTD(data = EVAL2StatGXE2, genotype = "Clone", t
 effects.
 ```{r}
 AMMIStatGXE <- gxeAmmi(TD = EVAL2StatGXE, trait = "HWAMMS", nPC = 3)#byYear = 2019
-summary(AMMIStatGXE)
+#summary(AMMIStatGXE)
 write.csv(AMMIStatGXE$anova, "Result/AMMIStatGXEanova.csv", quote = F, row.names = F)
 write.csv(AMMIStatGXE$importance, "Result/AMMIStatGXEimportance.csv", quote = F, row.names = F)
 
