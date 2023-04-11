@@ -31,8 +31,7 @@ EVAL2StatGXE <- statgenSTA::createTD(data = EVAL2StatGXE2, genotype = "Clone", t
 ```
 
 
-# AMMI(Additive Main Effects and Multiplicative Interaction) analysis fits a model which involves the Additive Main effects (i.e. genotype and environment) along with Multiplicative Interaction
-effects.
+# AMMI(Additive Main Effects and Multiplicative Interaction) analysis fits a model which involves the Additive Main effects (i.e. genotype and environment) along with Multiplicative Interaction effects.
 ```{r}
 AMMIStatGXE <- gxeAmmi(TD = EVAL2StatGXE, trait = "HWAMMS", nPC = 3)#byYear = 2019
 #summary(AMMIStatGXE)
