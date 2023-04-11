@@ -82,7 +82,7 @@ ENVinform <- ENVinfo %>%
                                               ENVI == "Ubiaja19" ~ "June 2019",
                                               ENVI == "Umudike18" ~ "July 2018",
                                               ENVI == "Zaria19" ~ "June 2019")) %>%
-             select(Location, "Geo Loc", "Soil", YEAR, ENVI, "Planting Date", "TMIN (°C)", "TMAX (°C)", "RAIN (mm)", "RH2M (%)", "SRAD (MJ/m^2/day)", "PAR (W/m^2)", "WIND (m/s)")
+             dplyr::select(Location, "Geo Loc", "Soil", YEAR, ENVI, "Planting Date", "TMIN (°C)", "TMAX (°C)", "RAIN (mm)", "RH2M (%)", "SRAD (MJ/m^2/day)", "PAR (W/m^2)", "WIND (m/s)")
                     
 write.csv(ENVinform, "data/Paper_Table1.csv", quote = T, row.names = F)
 ```
@@ -297,17 +297,6 @@ REGR_R <- COMP1 %>%
  #                           Statut = "afterGLUE") 
 #COMP_RR <- bind_rows(COMP_R,COMP_RGLUE) %>% select(Statut, R)
 #ggboxplot(COMP_RR, x = "Statut", y = "R", color = "Statut", add = "jitter")+
-
-## for R square 
-COMP_Rsq <- COMP1 %>% dplyr::select(R.sq) %>%
-                     mutate("R²" = R.sq,
-                            Statut = "BeforeGLUE")
-COMP_RsqGLUE <- COMP1 %>% dplyr::select(GLUER.Rsq) %>% 
-                     mutate("R²" = GLUER.Rsq,
-                            Statut = "afterGLUE") 
-COMP_Rsq <- bind_rows(COMP_Rsq,COMP_RsqGLUE) %>% dplyr::select(Statut, "R²")
-ggboxplot(COMP_Rsq, x = "Statut", y = "R²", color = "Statut", add = "jitter")+
-  stat_compare_means()
 
 
 
