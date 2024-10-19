@@ -47,7 +47,7 @@ stattest <- REGR_R %>%
   t.test()
 p.value <- stattest$p.value
 
-#jpeg(filename = "Rcompare.jpeg", res = 400, width = 14, height = 8, units = "cm")
+#(jpeg(filename = "Rcompare.jpeg", res = 400, width = 14, height = 8, units = "cm"))
 
 CompFIG1 <- ggplot(data = REGR_R, aes(x = beforeGLUE, y = afterGLUE))+
   geom_point(aes()) + 
@@ -146,7 +146,7 @@ CompFIG3 <- ggplot(data = REGR_d, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x =
     scale_color_manual(name = "Legend", 
                      values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
   #scale_linetype_manual(name ="Median", values = "solid", colours()) +
-   annotate(x = 0.15, y = 0.7, label = paste0("t.test, ", "p < 0.001"),
+   annotate(x = 0.4, y = 0.7, label = paste0("t.test, ", "p < 0.001"),
             color = "black", geom = "text") +
   theme_classic() #+ # for removing grille hjust = 1
 
@@ -280,15 +280,12 @@ CompFIG3 <- ggplot(data = REGR_d, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x =
             color = "black", geom = "text") +
   theme_classic() #+ # for removing grille hjust = 1
 
-
 nt <- theme(legend.position='none')
 p = list(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt) %>% map(~.x + labs(x=NULL, y=NULL))
 #jpeg(filename = "Result/Rcomparison_TOP.jpeg")
 grid_arrange_shared_legend(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt, ncol = 2, nrow = 2)
 #dev.off() 
 ```
-
-
 
 ###General Figure root yield
 ```{r}
@@ -356,7 +353,6 @@ ggplot(data = GLUEADANA,aes(x = HWAMS, y = HWAMM)) +
 #dev.off()
  
 ```
-
 
 ###General Figure TOP YIELD
 ```{r}
@@ -718,7 +714,7 @@ Check the rain and tha Temperature
 library(plotly)
 library(magick)
 library(rgl)
-EVAL2 <- read_csv("data/GLUEVALana2.csv")
+EVAL2 <- read_csv("data/GLUEVALana2C.csv")
 EVAL2$Location <- EVAL2$EXCODE
 EVAL2$Location[grep(pattern = "^UYAB", x = EVAL2$EXCODE)] <- "ABUJA"
 EVAL2$Location[grep(pattern = "^UYAG", x = EVAL2$EXCODE)] <- "AGO"
@@ -728,13 +724,14 @@ EVAL2$Location[grep(pattern = "^UYMO", x = EVAL2$EXCODE)] <- "MOKWA"
 EVAL2$Location[grep(pattern = "^UYON", x = EVAL2$EXCODE)] <- "ONNE"
 EVAL2$Location[grep(pattern = "^UYUB", x = EVAL2$EXCODE)] <- "UBIAJA"
 EVAL2$Location[grep(pattern = "^UYUM", x = EVAL2$EXCODE)] <- "UMUDIKE"
-
+EVAL2 <- EVAL2 %>% mutate(HWAMMS = HWAMMS / 1000)
 
 ggplot(EVAL2, aes(RAIN, HWAMMS)) +
   geom_point(aes(color = Location)) +
   scale_color_brewer(palette="Dark2") +
-  ylab("Obs - Sim") +
-  ggtitle("Model deviation vs RAIN")
+  ylab("Obs - Sim (t ha-1)") +
+  ggtitle("Model deviation vs RAIN") +
+  stat_summary(aes(y = HWAMMS,group=1), fun.y=mean, colour="black", geom="line",group=1)
   
 #stat_summary(aes(y = HWAMMS,group=1), fun.y=mean, colour="black", geom="line",group=1)
 
@@ -743,9 +740,9 @@ ggplot(EVAL2, aes(RAIN, HWAMMS)) +
 ggplot(EVAL2, aes(TMAX, HWAMMS)) +
   geom_point(aes(color = Location)) +
   scale_color_brewer(palette="Dark2") +
-  ylab("Obs - Sim") +
+  ylab("Obs - Sim (t ha-1)") +
   ggtitle("Model deviation vs TMAX")
-  #stat_summary(aes(y = HWAMMS,group=1), fun.y=mean, colour="black", geom="line",group=1)
+  stat_summary(aes(y = HWAMMS,group=1), fun.y=mean, colour="black", geom="line",group=1)
  
 #OMP <- EVAL2 %>% dplyr::select(Lorgl::plot3d( EVAL2$HWAMMS, EVAL2$TMAX, EVAL2$RAIN, col=EVAL2$colour)cation, HWAMMS, RAIN, TMAX) %>% as.data.frame()
 #, type = "p", radius = .2, col=as.character(c("UBIAJA", "UMUDIKE", "MOKWA", "ONNE", "IBADAN",  "IKENNE", "ABUJA", "AGO")))

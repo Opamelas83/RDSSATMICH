@@ -248,11 +248,29 @@ MyCUL77a <- MyCUL77 %>%
                          Coefficient == "NODWT" ~ cv(MyCUL3$NODWT),#*100,
                          Coefficient == "NODLT" ~ cv(MyCUL3$NODLT),#*100,
                          Coefficient == "PARUE" ~ cv(MyCUL4$PARUE),#*100,
-                         Coefficient == "KCAN" ~ (cv(MyCUL4$KCAN)))) %>% #*100
+                         Coefficient == "KCAN" ~ cv(MyCUL4$KCAN)), 
+            Mean = dplyr::case_when(Coefficient == "B01ND" ~ mean(MyCUL3$B01ND),
+                         Coefficient == "B12ND" ~ mean(MyCUL3$B12ND),
+                         Coefficient == "B23ND" ~ mean(MyCUL3$B23ND),
+                         Coefficient == "B34ND" ~ mean(MyCUL3$B34ND),
+                         Coefficient == "BR1FX" ~ mean(MyCUL3$BR1FX),
+                         Coefficient == "BR2FX" ~ mean(MyCUL3$BR2FX),
+                         Coefficient == "BR3FX" ~ mean(MyCUL3$BR3FX),
+                         Coefficient == "BR4FX" ~ mean(MyCUL3$BR4FX),
+                         Coefficient == "LAXS" ~ mean(MyCUL3$LAXS),
+                         Coefficient == "SLAS" ~ mean(MyCUL3$SLAS),
+                         Coefficient == "LLIFA" ~ mean(MyCUL3$LLIFA),
+                         Coefficient == "LPEFR" ~ mean(MyCUL3$LPEFR),
+                         Coefficient == "LNSLP" ~ mean(MyCUL3$LNSLP),
+                         Coefficient == "NODWT" ~ mean(MyCUL3$NODWT),
+                         Coefficient == "NODLT" ~ mean(MyCUL3$NODLT),
+                         Coefficient == "PARUE" ~ mean(MyCUL4$PARUE),
+                         Coefficient == "KCAN" ~ mean(MyCUL4$KCAN))) %>%
   mutate(Max = round(Max, 1),
          Min = round(Min, 1),
+         Mean = round(Mean, 1),
          "CV (%)" = round(CV, 1)) %>% 
-  dplyr::select(Coefficient, Definition, Max, Min, "CV (%)")
+  dplyr::select(Coefficient, Definition, Max, Min, Mean, "CV (%)")
         
 write.csv(MyCUL77a, "Result/Paper_Table22.csv", quote = F, row.names = F)
 

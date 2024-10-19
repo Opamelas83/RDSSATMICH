@@ -14,6 +14,7 @@ library(DSSAT)
 library(tidyverse)
 library(data.table)
 library(corrplot)
+library(hydroGOF)
 TralList <- dir()[dir()%like%".CSX"]
 ```
 
@@ -35,7 +36,6 @@ TralList <- dir()[dir()%like%".CSX"]
 ```
 
 ##Run dscsm (next time, Try to run dscsm for all treatment )
-
 ```{r}
 write_dssbatch("UYAB1901.CSX", trtno = 1:67)
 run_dssat(suppress_output = TRUE)
@@ -53,16 +53,17 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
                                col_names = NULL, 
                              left_justified = NULL, 
               read_only = NULL,  store_v_fmt = FALSE)
+
 OUTweath_UYAB1901 <- OUT2 %>% slice(1:406) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYAB1704.WTH"), skip = 903, n_max = 406)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M) 
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M) 
 OUTweath_UYAB1901 <- left_join(OUTweath_UYAB1901, HUMID2)
 #Merge column
 DUYAB1901$TMIN <- mean(OUTweath_UYAB1901$TMIN, na.rm = TRUE)
@@ -96,13 +97,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYAG1701 <- OUT2 %>% slice(1:317) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYOW1704.WTH"), skip = 246, n_max = 317)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M) 
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS, TMAX, TMIN, RH2M)  
 OUTweath_UYAG1701 <- left_join(OUTweath_UYAG1701, HUMID2)
 
 #Merge column
@@ -139,13 +140,14 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYAG1801 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYOW1704.WTH"), skip = 541, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M) 
 OUTweath_UYAG1801 <- left_join(OUTweath_UYAG1801, HUMID2)
 
 #Merge column
@@ -181,13 +183,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYAG1901 <- OUT2 %>% slice(1:367) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYOW1704.WTH"), skip = 885, n_max = 367)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYAG1901 <- left_join(OUTweath_UYAG1901, HUMID2)
 
 #Merge column
@@ -222,13 +224,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYIB1701 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYIB1704.WTH"), skip = 255, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYIB1701 <- left_join(OUTweath_UYIB1701, HUMID2)
 
 #Merge column
@@ -264,13 +266,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYIB1801 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYIB1704.WTH"), skip = 620, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYIB1801 <- left_join(OUTweath_UYIB1801, HUMID2)
 
 #Merge column
@@ -306,13 +308,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYIB1901 <- OUT2 %>% slice(1:341) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYIB1704.WTH"), skip = 869, n_max = 341)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYIB1901 <- left_join(OUTweath_UYIB1901, HUMID2)
 
 #Merge column
@@ -327,7 +329,6 @@ DUYIB1901$ELEV <- 189
 DUYIB1901$LAT <- 7.4661
 DUYIB1901$LONG <- 3.9302
 ```
-
 
 ```{r}
 write_dssbatch("UYIK1701.CSX", trtno = 1:67)
@@ -349,13 +350,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYIK1701 <- OUT2 %>% slice(1:371) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYIK1704.WTH"), skip = 240, n_max = 371)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYIK1701 <- left_join(OUTweath_UYIK1701, HUMID2)
 
 #Merge column
@@ -391,13 +392,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYIK1801 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYIK1704.WTH"), skip = 537, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYIK1801 <- left_join(OUTweath_UYIK1801, HUMID2)
 
 #Merge column
@@ -433,13 +434,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYIK1901 <- OUT2 %>% slice(1:381) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYIK1704.WTH"), skip = 885, n_max = 381)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)   
 OUTweath_UYIK1901 <- left_join(OUTweath_UYIK1901, HUMID2)
 
 #Merge column
@@ -518,13 +519,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYMO1701 <- OUT2 %>% slice(1:384) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYMO1704.WTH"), skip = 237, n_max = 384)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)   
 OUTweath_UYMO1701 <- left_join(OUTweath_UYMO1701, HUMID2)
 
 #Merge column
@@ -560,13 +561,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYMO1801 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYMO1704.WTH"), skip = 534, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)   
 OUTweath_UYMO1801 <- left_join(OUTweath_UYMO1801, HUMID2)
 
 #Merge column
@@ -602,13 +603,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYMO1901 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYMO1704.WTH"), skip = 911, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYMO1901 <- left_join(OUTweath_UYMO1901, HUMID2)
 
 #Merge column
@@ -644,13 +645,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYON1801 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYON1704.WTH"), skip = 486, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M) 
 OUTweath_UYON1801 <- left_join(OUTweath_UYON1801, HUMID2)
 
 #Merge column
@@ -709,7 +710,6 @@ Not run
 #DUYOT1801$LONG <- 8.2857
 ```
 
-
 ```{r}
 write_dssbatch("UYUB1901.CSX", trtno = 1:67)
 run_dssat(suppress_output = TRUE)
@@ -730,13 +730,13 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYUB1901 <- OUT2 %>% slice(1:370) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYUB1704.WTH"), skip = 885, n_max = 370)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
 OUTweath_UYUB1901 <- left_join(OUTweath_UYUB1901, HUMID2)
 
 #Merge column
@@ -772,14 +772,14 @@ OUT2 <- read_output((here::here("Weather.OUT")), col_types = NULL,
 OUTweath_UYUM1801 <- OUT2 %>% slice(1:366) %>% 
                  mutate(TMAX = TMXD, TMIN = TMND, RAIN = PRED, 
                         PAR = PARD, WIND = WDSD) %>%
-             dplyr::select(TMIN, TMAX, RAIN, SRAD, PAR, WIND)
+             dplyr::select(DAS, TMIN, TMAX, RAIN, SRAD, PAR, WIND)
 
 HUMID1 <- read_lines(here::here("UYUM1704.WTH"), skip = 577, n_max = 366)
 write_lines(HUMID1, (here::here("HUMIDUS.txt")))
 HUMIDEC <- read.table(here::here("HUMIDUS.txt"), header = FALSE, sep = "", dec = ".")
-HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6)%>% 
-                       dplyr::select(TMAX, TMIN, RH2M)  
-OUTweath_UYUM1801 <- left_join(OUTweath_UYUM1801, HUMID2)
+HUMID2 <- HUMIDEC %>% mutate(TMAX = V4, TMIN = V3, RH2M = V6, DAS = row_number()) %>% 
+                       dplyr::select(DAS,TMAX, TMIN, RH2M)  
+OUTweath_UYUM1801 <- left_join(OUTweath_UYUM1801, HUMID2, by = c("TMIN", "TMAX"))
 
 #Merge column
 DUYUM1801$TMIN <- mean(OUTweath_UYUM1801$TMIN, na.rm = TRUE)
@@ -837,7 +837,6 @@ Not run
 #DUYZA1901$LONG <- 7.7315
 ```
 
-
 ```{r}
 #get all the evaluate Output
 GLUEVAL2 <- bind_rows(Abuja19 = DUYAB1901, Ago17 = DUYAG1701, Ago18 = DUYAG1801, Ago19 = DUYAG1901, Ibadan17 = DUYIB1701, Ibadan18 = DUYIB1801, Ibadan19 = DUYIB1901, Ikenne17 = DUYIK1701, Ikenne18 = DUYIK1801, Ikenne19 = DUYIK1901, Mokwa17 = DUYMO1701, Mokwa18 = DUYMO1801, Mokwa19 = DUYMO1901, Onne18 = DUYON1801, Ubiaja19 = DUYUB1901, Umudike18 = DUYUM1801, .id = "source") %>%
@@ -848,7 +847,6 @@ colnames(GLUEVAL2)
 GLUEVAL2$year <- as.numeric(paste0("20", str_extract(GLUEVAL2$source, "\\d{2}+")))
 write.csv(GLUEVAL2, "data/GLUEHWAM_VALana.csv", quote = F, row.names = F)# EVALana.csv
 ```
-
 
 ##create location
 ```{r}
@@ -874,6 +872,53 @@ GLUEYIELD$Year[grep(pattern = "*1801CS", x = GLUEYIELD$EXCODE)] <- "2018"
 GLUEYIELD$Year[grep(pattern = "*1701CS", x = GLUEYIELD$EXCODE)] <- "2017"
 ```
 
+#Check estimation by env
+```{r}
+GLUEVAL2_envir <- read_csv("data/GLUEHWAM_VALana.csv")
+GLUEVAL2_envir <- GLUEVAL2_envir %>% dplyr::select(source, Clone, HWAMS, HWAMM, HWAMMS, RAIN, RH2M, WIND, SRAD, TMIN, TMAX, PAR, year) %>% mutate(Environment = source)
+#each environment for all clones
+RES_envir <- GLUEVAL2_envir %>% dplyr::group_by(Environment) %>%
+  dplyr::summarise(Obs = round(mean(HWAMM, na.rm = TRUE) / 1000, 1),
+                   Sim = round(mean(HWAMS, na.rm = TRUE) / 1000, 1),
+                   r = round(cor(HWAMS, HWAMM, use = "complete.obs"), 2),
+                   rmse = round(rmse(HWAMS, HWAMM) / 1000, 1),
+                   nrmse = round((nrmse(HWAMS, HWAMM) / 1000)*100),
+                   d = round(d(HWAMS, HWAMM, na.rm = TRUE), 2),
+                   `Total Clones` = length(Clone))
+write.csv(RES_envir, "Result/GLUEHWAMenv.csv", quote = F, row.names = F)
+#write.csv(RES_envir, "Result/GLUEHWAMenv_ObsSim.csv", quote = F, row.names = F)
+hist(RES_envir$nrmse, breaks = c(0,10,20,40,60), freq = TRUE)
+```
+
+#Check estimation by Genotype
+```{r}
+GLUEVAL2_envir <- read_csv("data/GLUEHWAM_VALana.csv")
+GLUEVAL2_envir <- GLUEVAL2_envir %>% dplyr::select(source, Clone, HWAMS, HWAMM, HWAMMS, RAIN, RH2M, WIND, SRAD, TMIN, TMAX, PAR, year) %>% mutate(Environment = source)
+#each environment for all clones
+RES_geno <- GLUEVAL2_envir %>% dplyr::group_by(Clone) %>%
+  dplyr::summarise(r = round(cor(HWAMS, HWAMM, use = "complete.obs"), 2),
+                   RMSE = round(rmse(HWAMS, HWAMM) / 1000, 1),
+                   nRMSE = round((nrmse(HWAMS, HWAMM) / 1000)*100),
+                   d = round(d(HWAMS, HWAMM, na.rm = TRUE), 2),
+                   `Total ENV` = length(Environment))
+write.csv(RES_geno, "Result/GLUEHWAMgenotype.csv", quote = F, row.names = F)
+#jpeg(filename = "Result/Hist nrmse.jpeg")
+ggplot(RES_geno, aes(x = nRMSE)) + 
+  geom_histogram(aes(y = after_stat(count / sum(count))), binwidth = 10, boundary=0) + 
+  ylab("Percentage") +
+ # scale_y_continuous(breaks = seq(0,10,20,25))+
+  scale_x_continuous(breaks = seq(0,25,10))+
+stat_bin(
+     binwidth = 10, boundary=0, geom = "text", color = "white",
+    aes(y = after_stat(count / sum(count)), 
+        label = scales::percent(after_stat(count / sum(count)))),
+    position = position_stack(vjust = 0.5)
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  ggtitle("Histogram of cultivar nRMSE") +
+   theme_bw() + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank())
+#dev.off() 
+```
 
 
 ####For Prcom
@@ -1584,6 +1629,7 @@ write.csv(GLUEVAL2, "data/GLUEVALana2.csv", quote = F, row.names = F)
 ```
 
 
+
 #PRcomp using Prcomp to
 ```{r}
 #library(FactoMineR); library(factoextra); library(corrplot); library(stats)
@@ -1638,4 +1684,3 @@ write.csv(GLUEVAL2, "data/GLUEVALana2.csv", quote = F, row.names = F)
 #corrplot(PRvar$cos2, is.corr=FALSE)
 
 ```
-

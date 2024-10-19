@@ -18,8 +18,10 @@ library(gridExtra)
 library(grid)
 library(gridtext)
 library(lemon)
-GLUEVAL2 <- read_csv("data/GLUEVALana2.csv")
-EVAL2StatGXE1 <- GLUEVAL2 %>% dplyr::select(source, Clone, HWAMMS, HWAMMSsq, ELEV, LAT, LONG, RAIN, RAIN_6, RAIN_9, RAIN_12, RH2M, RH2M_6, RH2M_9, RH2M_12, WIND, WIND_6, WIND_9, WIND_12, SRAD, SRAD_6, SRAD_9, SRAD_12, TMIN, TMIN_6, TMIN_9, TMIN_12, TMAX, TMAX_6, TMAX_9, TMAX_12, PAR, PAR_6, PAR_9, PAR_12, year)
+GLUEVAL2 <- read_csv("data/GLUEVALana2c.csv")
+EVAL2StatGXE1 <- GLUEVAL2 %>% 
+  dplyr::select(source, Clone, HWAMMS, HWAMMSsq, ELEV, LAT, LONG, RAIN, RAIN_6, RAIN_9, RAIN_12, RH2M, RH2M_6, RH2M_9, RH2M_12, WIND, WIND_6, WIND_9, WIND_12, SRAD, SRAD_6, SRAD_9, SRAD_12, TMIN, TMIN_6, TMIN_9, TMIN_12, TMAX, TMAX_6, TMAX_9, TMAX_12, PAR, PAR_6, PAR_9, PAR_12, year) %>% 
+  mutate(HWAMMS = HWAMMS / 1000)
 #EVAL2StatGXE1$HWAMMS <- multMissing(EVAL2StatGXE1$HWAMMS, maxIter = 10, naStrings = NULL)
 #EVAL2StatGXE1$HWAMMSsq <- multMissing(EVAL2StatGXE1$HWAMMSsq, maxIter = 10, naStrings = NULL)
 
@@ -27,7 +29,6 @@ EVAL2StatGXE2 <- EVAL2StatGXE1 %>%
   filter(source %in% names(table(EVAL2StatGXE1$source))[table(EVAL2StatGXE1$source) > 20])## AMMI functions do not accept more than 30 % missing data. 
 
 EVAL2StatGXE <- statgenSTA::createTD(data = EVAL2StatGXE2, genotype = "Clone", trial = "source")
-
 ```
 
 
@@ -43,7 +44,7 @@ write.csv(AMMIStatGXE$importance, "Result/AMMIStatGXEimportance.csv", quote = F,
 #environment scaling, with emphasis on approximation of relations between environments (scale = 1)
 #symmetric scaling, a compromise (scale = 0.5)
 #jpeg(filename = "AMMI2env.jpeg", res = 400, width = 14, height = 8, units = "cm")
-CFIG1 <- plot(AMMIStatGXE, plotType = "AMMI1", scale = 1, title = "Interactive PC1 vs main effects") + theme_classic() 
+#CFIG1 <- plot(AMMIStatGXE, plotType = "AMMI1", scale = 1, title = "Interactive PC1 vs main effects") + theme_classic() 
 #dev.off()
 CFIG2 <- plot(AMMIStatGXE, plotType = "AMMI2", scale = 0.5, title = "PC1 vs PC2")  + theme_classic()
 #dev.off()

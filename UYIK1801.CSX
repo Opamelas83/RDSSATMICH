@@ -175,7 +175,7 @@ IKENNE
 
 *PLANTING DETAILS
 @P PDATE EDATE  PPOP  PPOE  PLME  PLDS  PLRS  PLRD  PLDP  PLWT  PAGE  PENV  PLPH  SPRL                        PLNAME
- 1 18168   -99     1   -99     V     R   100    90    20   450   -99   -99     1    25                        Culvars
+ 1 18168   -99  1.25   -99     V     R   100    90    20   450   -99   -99     1    25                        Culvars
 
 *IRRIGATION AND WATER MANAGEMENT
 @I  EFIR  IDEP  ITHR  IEPT  IOFF  IAME  IAMT IRNAME
@@ -209,7 +209,7 @@ IKENNE
 
 *SIMULATION CONTROLS
 @N GENERAL     NYERS NREPS START SDATE RSEED SNAME.................... SMODEL
- 1 GE              1     1     S 18167  2150 Cultivars                 CSYCA
+ 1 GE              1     1     S 18168  2150 Cultivars                 CSYCA
 @N OPTIONS     WATER NITRO SYMBI PHOSP POTAS DISES  CHEM  TILL   CO2
  1 OP              Y     N     N     N     N     N     N     Y     M
 @N METHODS     WTHER INCON LIGHT EVAPO INFIL PHOTO HYDRO NSWIT MESOM MESEV MESOL
