@@ -43,10 +43,10 @@ statte <- REGR_R %>%
 stattest <- REGR_R %>%
   mutate(beforeGLUE = as.numeric(beforeGLUE),
          afterGLUE = as.numeric(afterGLUE)) %>%
-  dplyr::select(beforeGLUE, afterGLUE) %>%
-  t.test()
-p.value <- stattest$p.value
-
+  dplyr::select(beforeGLUE, afterGLUE)
+ t.test_R <- t.test(stattest$beforeGLUE, stattest$afterGLUE, paired = TRUE)
+p.value <- t.test_R$p.value
+ 
 #(jpeg(filename = "Rcompare.jpeg", res = 400, width = 14, height = 8, units = "cm"))
 
 CompFIG1 <- ggplot(data = REGR_R, aes(x = beforeGLUE, y = afterGLUE))+
@@ -63,7 +63,7 @@ CompFIG1 <- ggplot(data = REGR_R, aes(x = beforeGLUE, y = afterGLUE))+
   geom_vline(data = medians, mapping = aes(xintercept = beforeGLUE, color = "Median beforeGLUE")) +
   scale_color_manual(name = "Legend", 
                      values = c("Identity line" = "green", "Median afterGLUE" = "red", "Median beforeGLUE" = "blue")) +
-  annotate(x = -0.23, y = 0.40, label = paste0("t.test, ", "p = ", round(p.value, 2)),
+  annotate(x = -0.23, y = 0.40, label = paste0("t.test, ", "p = ",  "p < 0.001"),
            color = "black", geom = "text") +
   theme_classic() 
 #dev.off()
@@ -84,9 +84,9 @@ mediansRMSE <- REGR_RMSE %>%
 stattestRMSE <- REGR_RMSE %>%
   mutate(beforeGLUE = as.numeric(beforeGLUE),
          afterGLUE = as.numeric(afterGLUE)) %>%
-  dplyr::select(beforeGLUE, afterGLUE) %>%
-  t.test()
-pRMSE.value <- stattestRMSE$p.value
+  dplyr::select(beforeGLUE, afterGLUE)
+t.testRMSE <- t.test(stattestRMSE$beforeGLUE, y=stattestRMSE$afterGLUE, paired = TRUE)
+pRMSE.value <- t.testRMSE$p.value
 
 #jpeg(filename = "RMSEcompare.jpeg", res = 400, width = 14, height = 8, units = "cm")
 CompFIG2 <- ggplot(data = REGR_RMSE, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
@@ -125,9 +125,9 @@ mediansd <- REGR_d %>%
 stattestd <- REGR_d %>%
   mutate(beforeGLUE = as.numeric(beforeGLUE),
          afterGLUE = as.numeric(afterGLUE)) %>%
-  dplyr::select(beforeGLUE, afterGLUE) %>%
-  t.test()
-pd.value <- stattestd$p.value
+  dplyr::select(beforeGLUE, afterGLUE)
+t.testd <- t.test(stattestd$beforeGLUE, y=stattestd$afterGLUE, paired = TRUE)
+pd.value <- t.testd $p.value
 
 #jpeg(filename = "dcompare.jpeg")#, res = 400, width = 14, height = 8, units = "cm")
 CompFIG3 <- ggplot(data = REGR_d, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x = Clone, y = RMSE, color = Performance, fill = Performance), size = 2) +
@@ -282,7 +282,7 @@ CompFIG3 <- ggplot(data = REGR_d, aes(x = beforeGLUE, y = afterGLUE)) + #aes(x =
 
 nt <- theme(legend.position='none')
 p = list(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt) %>% map(~.x + labs(x=NULL, y=NULL))
-#jpeg(filename = "Result/Rcomparison_TOP.jpeg")
+#jpeg(filename = "Result/Rcomparison_ROOT.jpeg")
 grid_arrange_shared_legend(CompFIG1+nt, CompFIG2+nt, CompFIG3+nt, ncol = 2, nrow = 2)
 #dev.off() 
 ```
