@@ -103,7 +103,7 @@ for(j in TRaits){
     DataM <- PHenos %>% filter(studyName == i, TRait == j)
     meanNreps <- DataM %>%
      count(germplasmName) %$% mean(n)
-    Formula1 <- "Value ~ (1|repInTrial) + (1|blockInRep ) + (1|germplasmName)" 
+    Formula1 <- "Value ~ (1|repInTrial) + (1|germplasmName)" 
 Formula <- ifelse(unique(DataM$studyName) %in% WWs, Formula1, paste0(Formula1," + PropPHar"))
     if(nrow(DataM) != 0){
           try(MixedModels <-lmer(as.formula(Formula), data = DataM))
